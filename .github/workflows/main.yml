@@ -37,3 +37,7 @@ jobs:
         git add .
         git diff-index --quiet HEAD || git commit -m "Publish ASP.NET Core app"
         git push
+
+    env:
+      DOTNET_ROOT: /home/runner/.dotnet
+      ACCESS_TOKEN: ${{ secrets.PAT_TOKEN }}
