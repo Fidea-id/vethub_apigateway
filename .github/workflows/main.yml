@@ -32,9 +32,10 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
-        git commit -m "Publish ASP.NET Core app"
-        git push
+        git commit -m "Publish ASP.NET Core app"    
+        git push https://<PAT>@github.com/andhika18/vethub_apigateway.git
 
     env:
       DOTNET_ROOT: /home/runner/.dotnet
       ACCESS_TOKEN: ${{ secrets.PAT_TOKEN }}
+      PAT: ${{ secrets.PAT_TOKEN }}
