@@ -3,7 +3,7 @@ name: ASP.NET Core Publish
 on:
   push:
     branches:
-      - master
+      - origin/master
 
 jobs:
   build-and-publish:
