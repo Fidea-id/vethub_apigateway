@@ -27,14 +27,13 @@ jobs:
     - name: Copy files to parent directory
       run: cp -r ./publish/* ..
 
-    - name: Configure Git
+    - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-
-    - name: Commit and push changes
-      run: |
-        git status
+        git add .
+        git commit -m "Publish ASP.NET Core app"
+        git push
 
     env:
       DOTNET_ROOT: /home/runner/.dotnet
