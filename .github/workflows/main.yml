@@ -35,9 +35,6 @@ jobs:
     - name: Commit and push changes
       run: |
         git status
-        git add .
-        git commit -m "Publish ASP.NET Core app"
-        git push
 
     env:
       DOTNET_ROOT: /home/runner/.dotnet
