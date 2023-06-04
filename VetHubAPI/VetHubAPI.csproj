@@ -42,8 +42,4 @@
     <None Include="wwwroot\Template\Email\TestTemplate.cshtml" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Publish\" />
-  </ItemGroup>
-
 </Project>
