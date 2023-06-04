@@ -3,7 +3,7 @@ name: ASP.NET Core Publish
 on:
   push:
     branches:
-      - origin/master
+      - master
 
 jobs:
   build-and-publish:
@@ -26,11 +26,14 @@ jobs:
       
     - name: Copy files to parent directory
       run: cp -r ./publish/* ..
-
-    - name: Commit and push changes
+      
+    - name: Configure Git
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+
+    - name: Commit and push changes
+      run: |
         git add .
-        git commit -m "Publish ASP.NET Core app"
+        git diff-index --quiet HEAD || git commit -m "Publish ASP.NET Core app"
         git push
