@@ -46,14 +46,14 @@ namespace Application
                 else if (keyEnvironment == "PRODUCTION")
                 {
                     //PRODUCTION
-                    uri.MasterAPIURI = "https://localhost:44333/";
-                    uri.ClientAPIURI = "https://localhost:44390/";
+                    uri.MasterAPIURI = "https://master.fideaweb.my.id/api/";
+                    uri.ClientAPIURI = "https://client.fideaweb.my.id/api/";
                 }
                 else if (keyEnvironment == "STAGING")
                 {
                     //STAGING
-                    uri.MasterAPIURI = "https://localhost:44333/";
-                    uri.ClientAPIURI = "https://localhost:44390/";
+                    uri.MasterAPIURI = "https://masterstaging.fideaweb.my.id/api/";
+                    uri.ClientAPIURI = "https://clientstaging.fideaweb.my.id/api/";
                 }
                 else
                 {
