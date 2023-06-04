@@ -26,4 +26,4 @@ jobs:
       - name: Transfer files to server
         run: |
           sudo mkdir -p /var/www/apistaging.fideaweb.id/Publish
-          scp -r -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i ${{ env.SSH_AUTH_SOCK }} ./publish/* fidea@103.30.194.242:/var/www/apistaging.fideaweb.id/Publish
+          scp -r -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -i ${{ secrets.SSH_PRIVATE_KEY }} ./publish/* fidea@103.30.194.242:/var/www/apistaging.fideaweb.id/Publish
