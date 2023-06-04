@@ -26,7 +26,7 @@ jobs:
       
     - name: Copy files to parent directory
       run: cp -r ./publish/* ..
-      
+
     - name: Configure Git
       run: |
         git config --local user.email "action@github.com"
