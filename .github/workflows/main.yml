@@ -22,13 +22,7 @@ jobs:
       run: dotnet restore
 
     - name: Build and publish
-      run: dotnet publish -c Release -o ../publish
-      
-    - name: Create destination directory
-      run: mkdir -p /var/www/api/publish/
-      
-    - name: Copy files to /var/www/api/publish/
-      run: sudo cp -r ./publish/* /var/www/apistaging.fideaweb.id/publish/
+      run: dotnet publish -c Release -o ./publish
 
     - name: Commit and push changes
       run: |
