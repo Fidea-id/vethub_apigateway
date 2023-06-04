@@ -28,11 +28,9 @@ jobs:
       run: cp -r ./publish/* ..
 
     - name: Commit and push changes
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
         git commit -m "Publish ASP.NET Core app"
-        git push https://github.com/andhika18/vethub_apigateway.git HEAD:master
+        git push https://andhika18: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@github.com/andhika18/vethub_apigateway.git HEAD:master
