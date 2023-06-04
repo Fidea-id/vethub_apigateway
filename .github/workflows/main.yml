@@ -35,7 +35,7 @@ jobs:
     - name: Commit and push changes
       run: |
         git add .
-        git diff-index --quiet HEAD || git commit -m "Publish ASP.NET Core app"
+        git commit -m "Publish ASP.NET Core app"
         git push
 
     env:
