@@ -30,8 +30,11 @@ namespace Application.Services.Implementations
         {
             try
             {
+                var newDBName = "VetHub_Client_" + Guid.NewGuid().ToString();
+                data.Entity = newDBName;
                 var requestJson = JsonConvert.SerializeObject(data);
                 var response = await _restAPIService.PostResponse<RegisterResponse>("Master", "Auth/Register", requestJson);
+                var generateDB = await _restAPIService.GetResponse<RegisterResponse>("Client", "Master/GenerateInitDB/" + newDBName);
                 return response;
             }
             catch (Exception ex)
