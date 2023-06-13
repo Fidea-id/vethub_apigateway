@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Models;
+﻿using Domain.Entities.Models.Masters;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Utils

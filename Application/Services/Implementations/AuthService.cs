@@ -1,6 +1,9 @@
 ﻿using Application.Services.Contracts;
-using Domain.Entities.Requests;
+using Domain.Entities;
+using Domain.Entities.Models.Clients;
+using Domain.Entities.Requests.Masters;
 using Domain.Entities.Responses;
+using Domain.Entities.Responses.Masters;
 using Newtonsoft.Json;
 
 namespace Application.Services.Implementations
@@ -18,7 +21,7 @@ namespace Application.Services.Implementations
             try
             {
                 var requestJson = JsonConvert.SerializeObject(data);
-                var response = await _restAPIService.PostResponse<LoginResponse>("Master", "Auth/Login", requestJson);
+                var response = await _restAPIService.PostResponse<LoginResponse>(APIType.Master, "Auth/Login", requestJson);
                 return response;
             }
             catch (Exception ex)
@@ -30,11 +33,26 @@ namespace Application.Services.Implementations
         {
             try
             {
-                var newDBName = "VetHub_Client_" + Guid.NewGuid().ToString();
+                var newDBName = "VetHub_Client_" + Guid.NewGuid().ToString().Replace("-", "");
                 data.Entity = newDBName;
                 var requestJson = JsonConvert.SerializeObject(data);
-                var response = await _restAPIService.PostResponse<RegisterResponse>("Master", "Auth/Register", requestJson);
-                var generateDB = await _restAPIService.GetResponse<RegisterResponse>("Client", "Master/GenerateInitDB/" + newDBName);
+
+                //register
+                var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register", requestJson);
+                //create db
+                var generateDB = await _restAPIService.GetResponse<string>(APIType.Client, "Master/GenerateInitDB/" + newDBName);
+                //insert user profile
+                var newProfile = new Profile
+                {
+                    Email = data.Email,
+                    Entity = newDBName,
+                    GlobalId = response.Id,
+                    Name = "",
+                    Photo = "",
+                    Roles = data.Roles
+                };
+                var profileJson = JsonConvert.SerializeObject(newProfile);
+                var userProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{data.Entity}", profileJson);
                 return response;
             }
             catch (Exception ex)
@@ -52,7 +70,7 @@ namespace Application.Services.Implementations
         {
             try
             {
-                var response = await _restAPIService.GetResponse<UserProfileResponse>("Master", "Auth/User/" + id, auth);
+                var response = await _restAPIService.GetResponse<UserProfileResponse>(APIType.Master, "Auth/User/" + id, auth);
                 return response;
             }
             catch (Exception ex)

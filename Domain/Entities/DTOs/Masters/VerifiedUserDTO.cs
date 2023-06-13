@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Domain.Entities.DTOs
+﻿namespace Domain.Entities.DTOs.Masters
 {
     public class VerifiedUserDTO
     {

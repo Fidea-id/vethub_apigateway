@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Masters\**" />
+    <EmbeddedResource Remove="Masters\**" />
+    <None Remove="Masters\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentEmail.Core" Version="3.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.1" />
@@ -16,7 +22,8 @@
   <ItemGroup>
     <None Remove="Entities\DTOs\" />
   </ItemGroup>
+
   <ItemGroup>
-    <Folder Include="Entities\DTOs\" />
+    <Folder Include="Entities\DTOs\Clients\" />
   </ItemGroup>
 </Project>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Entities;
 
 namespace Application.Services.Contracts
 {
@@ -10,5 +6,6 @@ namespace Application.Services.Contracts
     {
         Uri GetMasterAPIUri(string query = null);
         Uri GetClientAPIUri(string query = null);
+        Uri GetAPIUri(APIType type, string query = null);
     }
 }

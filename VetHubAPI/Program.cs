@@ -4,6 +4,7 @@ using Serilog;
 using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 builder.Host.UseSerilog((ctx, lc) => lc
     .MinimumLevel.Information()
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
@@ -11,20 +12,23 @@ builder.Host.UseSerilog((ctx, lc) => lc
 );
 
 // Add services to the container.
-builder.Services.AddApplicationServices(builder.Configuration);
+services.AddApplicationServices(builder.Configuration);
 
-builder.Services.AddControllers();
+services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+
+// Register HttpClient as a singleton in your startup.cs
+services.AddSingleton<HttpClient>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 //}
 
 app.UseCustomExceptionHandler();

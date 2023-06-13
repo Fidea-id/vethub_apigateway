@@ -1,92 +1,129 @@
 ﻿using Application.Services.Contracts;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using RestSharp.Authenticators;
-using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Domain.Entities;
 using Domain.Entities.Responses;
+using Newtonsoft.Json;
+using System.Text;
+using System.Web;
 
 namespace Application.Services.Implementations
 {
-    public class RestAPIService: IRestAPIService
+    public class RestAPIService : IRestAPIService
     {
         private IUriService _uriService;
-        public RestAPIService(IUriService uriService)
+        private readonly HttpClient _httpClient;
+
+        public RestAPIService(IUriService uriService, HttpClient httpClient)
         {
             _uriService = uriService;
+            _httpClient = httpClient;
         }
-
-        public async Task<T> GetResponse<T>(string type, string url, string auth = null) where T:class
+        public async Task<T> GetResponse<T>(APIType type, string url, string auth = null) where T : class
         {
-            Uri getUrl;
-            if (type == "Master")
-            {
-                getUrl = _uriService.GetMasterAPIUri();
-            }
-            else if (type == "Client")
-            {
-                getUrl = _uriService.GetClientAPIUri();
-            }
-            else
-            {
-                throw new Exception("Invalid type request!");
-            }
-
-            var options = new RestClientOptions(getUrl);
-            var client = new RestClient(options);
-
-            var request = new RestRequest(url, Method.Get).AddHeader("Content-Type", "application/json");
+            Uri getUrl = _uriService.GetAPIUri(type);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, getUrl + url);
             if (auth != null)
             {
-                request.AddHeader("Authorization", auth);
+                request.Headers.Add("Authorization", auth);
             }
-            var response = await client.ExecuteAsync(request);
-            if (!response.IsSuccessful)
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
             {
-                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(response.Content);
-                throw new Exception(errors.Errors[0].Message, errors.Errors[0].Detail);
+                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
+                throw new Exception($"{type} {errors.Errors[0].Message}", errors.Errors[0].Detail);
             }
-
-            return JsonConvert.DeserializeObject<T>(response.Content) ?? default;
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
 
-        public async Task<T> PostResponse<T>(string type, string url, string obj, string auth = null) where T : class
+        public async Task<T> GetResponseFilter<T, TFilter>(APIType type, string url, string auth = null, TFilter queryParams = null) where T : class where TFilter : BaseEntityFilter
         {
-            Uri getUrl;
-            if(type == "Master")
+            Uri getUrl = _uriService.GetAPIUri(type);
+            var builder = new UriBuilder(getUrl + url);
+            var queryParameters = HttpUtility.ParseQueryString(builder.Query);
+
+            if (queryParams != null)
             {
-                getUrl = _uriService.GetMasterAPIUri();
-            }
-            else if (type == "Client")
-            {
-                getUrl = _uriService.GetClientAPIUri();
-            }
-            else
-            {
-                throw new Exception("Invalid type request!");
+                var filterProperties = queryParams.GetType().GetProperties();
+                foreach (var property in filterProperties)
+                {
+                    var value = property.GetValue(queryParams);
+                    if (value != null)
+                    {
+                        var propertyName = property.Name;
+                        queryParameters[property.Name] = value.ToString();
+                    }
+                }
             }
 
-            var options = new RestClientOptions(getUrl);
-            var client = new RestClient(options);
+            builder.Query = queryParameters.ToString();
+            string requestUrl = builder.ToString();
 
-            var request = new RestRequest(url, Method.Post).AddJsonBody(obj).AddHeader("Content-Type", "application/json");
-            if(auth != null)
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            if (auth != null)
             {
-                request.AddHeader("Authorization", auth);
-            }
-            var response = await client.ExecuteAsync(request);
-            if (!response.IsSuccessful)
-            {
-                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(response.Content);
-                throw new Exception(errors.Errors[0].Message, errors.Errors[0].Detail);
+                request.Headers.Add("Authorization", auth);
             }
 
-            return JsonConvert.DeserializeObject<T>(response.Content) ?? default;
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
+                throw new Exception($"{type} {errors.Errors[0].Message}", errors.Errors[0].Detail);
+            }
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
+        }
+
+        public async Task<T> PostResponse<T>(APIType type, string url, string obj, string auth = null) where T : class
+        {
+            Uri getUrl = _uriService.GetAPIUri(type);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, getUrl + url);
+            request.Content = new StringContent(obj, Encoding.UTF8, "application/json");
+            if (auth != null)
+            {
+                request.Headers.Add("Authorization", auth);
+            }
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
+                throw new Exception($"{type} {errors.Errors[0].Message}", errors.Errors[0].Detail);
+            }
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
+        }
+
+        public async Task<T> PutResponse<T>(APIType type, string url, int id, string obj, string auth = null) where T : class
+        {
+            Uri getUrl = _uriService.GetAPIUri(type);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, $"{getUrl + url}/{id}");
+            request.Content = new StringContent(obj, Encoding.UTF8, "application/json");
+            if (auth != null)
+            {
+                request.Headers.Add("Authorization", auth);
+            }
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
+                throw new Exception($"{type} {errors.Errors[0].Message}", errors.Errors[0].Detail);
+            }
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
+        }
+
+        public async Task<T> DeleteResponse<T>(APIType type, string url, int id, string auth = null) where T : class
+        {
+            Uri getUrl = _uriService.GetAPIUri(type);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, $"{getUrl + url}/{id}");
+            if (auth != null)
+            {
+                request.Headers.Add("Authorization", auth);
+            }
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
+                throw new Exception($"{type} {errors.Errors[0].Message}", errors.Errors[0].Detail);
+            }
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
     }
 }

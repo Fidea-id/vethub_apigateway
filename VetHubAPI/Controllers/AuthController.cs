@@ -1,6 +1,6 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
-using Domain.Entities.Requests;
+using Domain.Entities.Requests.Masters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,14 +20,14 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> Login(UserLoginRequest data)
         {
             var result = await _authService.LoginAsync(data);
-            return ResponseUtil.CustomOk(result,200);
+            return ResponseUtil.CustomOk(result, 200);
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterRequest data)
         {
             var result = await _authService.RegisterUserAsync(data);
-            return ResponseUtil.CustomOk(result,200);
+            return ResponseUtil.CustomOk(result, 200);
         }
 
         [HttpGet("User/{id}")]
@@ -37,7 +37,7 @@ namespace VetHubAPI.Controllers
             //Get the AuthToken
             string authToken = HttpContext.Request.Headers["Authorization"];
             var user = await _authService.GetUserProfileByIdAsync(id, authToken);
-            return ResponseUtil.CustomOk(user,200);
+            return ResponseUtil.CustomOk(user, 200);
         }
 
         [HttpGet("GetEmailOrUserName")]
@@ -46,7 +46,7 @@ namespace VetHubAPI.Controllers
             //Get the AuthToken
             string authToken = HttpContext.Request.Headers["Authorization"];
             var user = await _authService.GetByNameOrEmailAsync(value, authToken);
-            return ResponseUtil.CustomOk(user,200);
+            return ResponseUtil.CustomOk(user, 200);
         }
     }
 }

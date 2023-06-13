@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Entities.Models;
+using Domain.Entities.Models.Masters;
 using Domain.Entities.Responses;
 
 namespace Application.Utils
@@ -21,7 +21,7 @@ namespace Application.Utils
         public static IMapper Mapper => Lazy.Value;
     }
 
-    public class MappingProfile : Profile
+    public class MappingProfile : AutoMapper.Profile
     {
         public MappingProfile()
         {

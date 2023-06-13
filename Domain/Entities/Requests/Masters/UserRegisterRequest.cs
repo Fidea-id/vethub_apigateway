@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Domain.Entities.Requests
+﻿namespace Domain.Entities.Requests.Masters
 {
     public class UserRegisterRequest
     {

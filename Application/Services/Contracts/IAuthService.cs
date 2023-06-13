@@ -1,5 +1,6 @@
-﻿using Domain.Entities.Requests;
+﻿using Domain.Entities.Requests.Masters;
 using Domain.Entities.Responses;
+using Domain.Entities.Responses.Masters;
 
 namespace Application.Services.Contracts
 {
