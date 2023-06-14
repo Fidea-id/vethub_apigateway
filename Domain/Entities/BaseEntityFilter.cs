@@ -8,5 +8,7 @@
         public DateTime? UpdatedAt { get; set; }
         public string? SortProp { get; set; }
         public string? SortMode { get; set; }
+        public int? Take { get; set; }
+        public int? Skip { get; set; }
     }
 }

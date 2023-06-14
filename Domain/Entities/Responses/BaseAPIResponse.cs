@@ -15,6 +15,15 @@
         public string Message { get; set; }
     }
 
+    public class BaseAPIResponse
+    {
+        public BaseAPIResponse()
+        {
+        }
+        public int StatusCode { get; set; }
+        public string Message { get; set; }
+    }
+
     public class BaseAPIErrorResponse
     {
         public string Title { get; set; }

@@ -39,7 +39,7 @@ namespace Application.Services.Implementations
             Uri getUrl = _uriService.GetAPIUri(type);
             var builder = new UriBuilder(getUrl + url);
             var queryParameters = HttpUtility.ParseQueryString(builder.Query);
-
+            
             if (queryParams != null)
             {
                 var filterProperties = queryParams.GetType().GetProperties();
@@ -52,6 +52,14 @@ namespace Application.Services.Implementations
                         queryParameters[property.Name] = value.ToString();
                     }
                 }
+            }
+            if (queryParams?.Take.HasValue == true)
+            {
+                queryParameters["Take"] = queryParams.Take.Value.ToString();
+            }
+            if (queryParams?.Skip.HasValue == true)
+            {
+                queryParameters["Skip"] = queryParams.Skip.Value.ToString();
             }
 
             builder.Query = queryParameters.ToString();
