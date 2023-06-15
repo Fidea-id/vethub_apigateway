@@ -39,20 +39,23 @@ namespace Application.Services.Implementations
 
                 //register
                 var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register", requestJson);
-                //create db
-                var generateDB = await _restAPIService.GetResponse<string>(APIType.Client, "Master/GenerateInitDB/" + newDBName);
-                //insert user profile
-                var newProfile = new Profile
+                if (response.Roles != "Superadmin")
                 {
-                    Email = data.Email,
-                    Entity = newDBName,
-                    GlobalId = response.Id,
-                    Name = "",
-                    Photo = "",
-                    Roles = data.Roles
-                };
-                var profileJson = JsonConvert.SerializeObject(newProfile);
-                var userProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{data.Entity}", profileJson);
+                    //create db
+                    var generateDB = await _restAPIService.GetResponse<string>(APIType.Client, "Master/GenerateInitDB/" + newDBName);
+                    //insert user profile
+                    var newProfile = new Profile
+                    {
+                        Email = data.Email,
+                        Entity = newDBName,
+                        GlobalId = response.Id,
+                        Name = "",
+                        Photo = "",
+                        Roles = data.Roles
+                    };
+                    var profileJson = JsonConvert.SerializeObject(newProfile);
+                    var userProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{data.Entity}", profileJson);
+                }
                 return response;
             }
             catch (Exception ex)

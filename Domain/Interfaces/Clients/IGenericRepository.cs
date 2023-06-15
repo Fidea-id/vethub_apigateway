@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Interfaces
+namespace Domain.Interfaces.Clients
 {
     public interface IGenericRepository<T, TFilter> where T : class where TFilter : BaseEntityFilter
 

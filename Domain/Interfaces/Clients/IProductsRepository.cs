@@ -2,7 +2,7 @@
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Responses;
 
-namespace Domain.Interfaces
+namespace Domain.Interfaces.Clients
 {
     public interface IProductsRepository : IGenericRepository<Products, ProductsFilter>
     {

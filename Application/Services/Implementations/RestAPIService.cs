@@ -39,7 +39,7 @@ namespace Application.Services.Implementations
             Uri getUrl = _uriService.GetAPIUri(type);
             var builder = new UriBuilder(getUrl + url);
             var queryParameters = HttpUtility.ParseQueryString(builder.Query);
-            
+
             if (queryParams != null)
             {
                 var filterProperties = queryParams.GetType().GetProperties();
