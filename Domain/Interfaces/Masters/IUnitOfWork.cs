@@ -3,7 +3,10 @@
     public interface IUnitOfWork : IDisposable
     {
         //tambahkan interface repository disini
-        Task<int> Complete();
+        Task BeginTransaction();
+        Task CommitTransaction();
+        Task RollbackTransaction();
+        Task<int> SaveChanges();
         IUserRepository UserRepository { get; }
         IBillPaymentsRepository BillPaymentsRepository { get; }
         IClinicsRepository ClinicsRepository { get; }
