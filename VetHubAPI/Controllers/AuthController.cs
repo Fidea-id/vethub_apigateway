@@ -24,7 +24,7 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(UserRegisterRequest data)
+        public async Task<IActionResult> Register(FullRegisterClinicRequest data)
         {
             var result = await _authService.RegisterUserAsync(data);
             return ResponseUtil.CustomOk(result, 200);

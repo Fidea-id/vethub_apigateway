@@ -29,32 +29,32 @@ namespace Application.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<RegisterResponse> RegisterUserAsync(UserRegisterRequest data)
+        public async Task<RegisterResponse> RegisterUserAsync(FullRegisterClinicRequest data)
         {
             try
             {
                 var newDBName = "VetHub_Client_" + Guid.NewGuid().ToString().Replace("-", "");
-                data.Entity = newDBName;
-                var requestJson = JsonConvert.SerializeObject(data);
+                data.ClinicData.Entity = newDBName;
+                var registerRequestJson = JsonConvert.SerializeObject(data);
 
                 //register
-                var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register", requestJson);
+                var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register", registerRequestJson);
                 if (response.Roles != "Superadmin")
                 {
-                    //create db
+                    //create db client
                     var generateDB = await _restAPIService.GetResponse<string>(APIType.Client, "Master/GenerateInitDB/" + newDBName);
                     //insert user profile
                     var newProfile = new Profile
                     {
-                        Email = data.Email,
+                        Email = data.OwnerData.Email,
                         Entity = newDBName,
                         GlobalId = response.Id,
-                        Name = "",
-                        Photo = "",
-                        Roles = data.Roles
+                        Name = data.OwnerData.Name,
+                        Photo = data.OwnerData.Photo,
+                        Roles = "Owner"
                     };
                     var profileJson = JsonConvert.SerializeObject(newProfile);
-                    var userProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{data.Entity}", profileJson);
+                    var userProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{newDBName}", profileJson);
                 }
                 return response;
             }
