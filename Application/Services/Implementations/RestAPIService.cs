@@ -133,5 +133,20 @@ namespace Application.Services.Implementations
             }
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
+
+        public async Task<T> GetPlaceResponse<T>(string url, string query) where T : class
+        {
+            var api_key = "ke97ccNgULm0FwJXGscDIE5LCRZqAf";
+            var base_url = $"https://api.goapi.id/v1/regional/{url}?api_key={api_key}&{query}";
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, base_url);
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
+                throw new Exception($"GoAPI {errors.Errors[0].Message}", errors.Errors[0].Detail);
+            }
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
+        }
     }
 }

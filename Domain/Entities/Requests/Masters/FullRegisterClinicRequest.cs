@@ -1,5 +1,4 @@
-﻿using Domain.Entities.Requests;
-namespace Domain.Entities.Requests.Masters
+﻿namespace Domain.Entities.Requests.Masters
 {
     public class OwnerRequest
     {

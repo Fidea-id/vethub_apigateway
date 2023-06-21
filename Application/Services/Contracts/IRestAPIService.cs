@@ -4,6 +4,8 @@ namespace Application.Services.Contracts
 {
     public interface IRestAPIService
     {
+        Task<T> GetPlaceResponse<T>(string url, string query = null)
+            where T : class;
         Task<T> GetResponse<T>(APIType type, string url, string auth = null)
             where T : class;
         Task<T> GetResponseFilter<T, TFilter>(APIType type, string url, string auth = null, TFilter queryParams = null)
