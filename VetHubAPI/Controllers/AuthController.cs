@@ -1,8 +1,10 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
+using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Masters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace VetHubAPI.Controllers
 {
@@ -47,6 +49,20 @@ namespace VetHubAPI.Controllers
             string authToken = HttpContext.Request.Headers["Authorization"];
             var user = await _authService.GetByNameOrEmailAsync(value, authToken);
             return ResponseUtil.CustomOk(user, 200);
+        }
+
+        [HttpPost("CheckUserActivation")]
+        public async Task<IActionResult> CheckUserActivation(ActivationRequest request)
+        {
+            var check = await _authService.CheckUserActivationAsync(request);
+            return Ok(check);
+        }
+
+        [HttpPost("UserActivation")]
+        public async Task<IActionResult> UserActivation(ActivationRequest request)
+        {
+            var check = await _authService.UserActivationAsync(request);
+            return Ok(check);
         }
     }
 }

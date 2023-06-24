@@ -81,5 +81,33 @@ namespace Application.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<BaseAPIResponse> CheckUserActivationAsync(ActivationRequest request)
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/CheckUserActivation", json);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<BaseAPIResponse> UserActivationAsync(ActivationRequest request)
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/UserActivation", json);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

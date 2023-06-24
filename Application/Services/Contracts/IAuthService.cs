@@ -10,5 +10,7 @@ namespace Application.Services.Contracts
         public Task<RegisterResponse> RegisterUserAsync(FullRegisterClinicRequest data);
         public Task<UserProfileResponse> GetByNameOrEmailAsync(string value, string auth);
         public Task<UserProfileResponse> GetUserProfileByIdAsync(int id, string auth);
+        public Task<BaseAPIResponse> CheckUserActivationAsync(ActivationRequest request);
+        public Task<BaseAPIResponse> UserActivationAsync(ActivationRequest request);
     }
 }
