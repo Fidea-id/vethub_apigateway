@@ -3,7 +3,7 @@ using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
-using Domain.Entities.Requests;
+using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -59,7 +59,7 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost("Owners")]
-        public async Task<IActionResult> PostOwner([FromBody] Owners request)
+        public async Task<IActionResult> PostOwner([FromBody] OwnersPetsRequest request)
         {
             try
             {
@@ -69,9 +69,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PostResponse<Owners>(APIType.Client, "Owners", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 

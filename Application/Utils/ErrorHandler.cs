@@ -26,7 +26,7 @@ namespace Application.Utils
                     {
                         Field = exception.Source,
                         Message = exception.Message.Replace("exception:", "").Replace("One or more errors occurred. (", "").Replace(")", ""),
-                        Detail = exception
+                        Detail = exception.InnerException
                     };
                     errors.Add(error);
 

@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities.Requests
+﻿namespace Domain.Entities.Requests.Clients
 {
     public class OwnersRequest
     {

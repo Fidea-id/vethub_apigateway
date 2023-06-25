@@ -28,8 +28,7 @@ namespace Application.Services.Implementations
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
-                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
-                throw new Exception($"{type} {errors.Errors[0].Message}", errors.Errors[0].Detail);
+                await ThrowError(response, $"{type}");
             }
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
@@ -74,8 +73,7 @@ namespace Application.Services.Implementations
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
-                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
-                throw new Exception($"{type} {errors.Errors[0].Message}", errors.Errors[0].Detail);
+                await ThrowError(response, $"{type}");
             }
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
@@ -93,8 +91,7 @@ namespace Application.Services.Implementations
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
-                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
-                throw new Exception($"{type} {errors.Errors[0].Message}", errors.Errors[0].Detail);
+                await ThrowError(response, $"{type}");
             }
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
@@ -111,8 +108,7 @@ namespace Application.Services.Implementations
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
-                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
-                throw new Exception($"{type} {errors.Errors[0].Message}", errors.Errors[0].Detail);
+                await ThrowError(response, $"{type}");
             }
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
@@ -128,8 +124,7 @@ namespace Application.Services.Implementations
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
-                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
-                throw new Exception($"{type} {errors.Errors[0].Message}", errors.Errors[0].Detail);
+                await ThrowError(response, $"{type}");
             }
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
@@ -143,10 +138,17 @@ namespace Application.Services.Implementations
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
-                var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
-                throw new Exception($"GoAPI {errors.Errors[0].Message}", errors.Errors[0].Detail);
+                await ThrowError(response, "Go");
             }
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
+        }
+
+        private async Task ThrowError(HttpResponseMessage response, string type)
+        {
+            var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
+            var newExc = new Exception($"{errors.Errors[0].Message}");
+            newExc.Source = $"{type}API-{errors.Errors[0].Field}";
+            throw newExc;
         }
     }
 }

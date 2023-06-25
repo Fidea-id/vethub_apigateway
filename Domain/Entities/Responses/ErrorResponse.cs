@@ -19,6 +19,13 @@ namespace Domain.Entities.Responses
                     .ToList();
         }
     }
+
+    public class APIErrorResponse
+    {
+        public string Title { get; set; }
+        public string Message { get; set; }
+        public int StatusCode { get; set; }
+    }
     public class ErrorResponse
     {
         public string Field { get; set; }
