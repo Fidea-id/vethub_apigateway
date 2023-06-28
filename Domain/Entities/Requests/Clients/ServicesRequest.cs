@@ -6,6 +6,6 @@
         public int? Duration { get; set; }
         public string? DurationType { get; set; }
         public bool? IsActive { get; set; }
-        public int? Price { get; set; }
+        public double? Price { get; set; }
     }
 }

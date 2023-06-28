@@ -12,6 +12,7 @@ namespace Domain.Entities.Responses
         public string Category { get; set; }
         public bool IsBundle { get; set; }
         public bool HasDiscount { get; set; }
+        public double Price { get; set; }
         public IEnumerable<ProductBundles>? Bundles { get; set; }
         public IEnumerable<ProductDiscounts>? Discounts { get; set; }
     }

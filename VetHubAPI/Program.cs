@@ -32,6 +32,7 @@ app.UseSwaggerUI();
 //}
 
 app.UseCustomExceptionHandler();
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 

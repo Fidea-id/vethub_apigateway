@@ -5,6 +5,7 @@ namespace Domain.Interfaces.Clients
 {
     public interface IProfileRepository : IGenericRepository<Profile, ProfileFilter>
     {
+        Task<Profile> GetByGlobalId(string dbName, int id);
     }
 }
 

@@ -10,6 +10,7 @@ namespace Domain.Interfaces.Masters
         Task UpdatePassword(int userId, string newPassword);
         Task<IEnumerable<Roles>> GetRoles();
         Task<Roles> GetRoleById(int id);
+        Task<Users> GetByEmail(string email);
         Task<IEnumerable<VerifiedUserDTO>> GetVerifiedUsers();
     }
 }
