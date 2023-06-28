@@ -6,8 +6,8 @@
         public int? SubscriptionId { get; set; }
         public string? Period { get; set; }
         public string? Status { get; set; }
-        public int? Price { get; set; }
-        public int? Discount { get; set; }
-        public int? Total { get; set; }
+        public double? Price { get; set; }
+        public double? Discount { get; set; }
+        public double? Total { get; set; }
     }
 }

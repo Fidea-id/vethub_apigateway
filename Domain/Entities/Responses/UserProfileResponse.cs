@@ -1,9 +1,12 @@
 ﻿namespace Domain.Entities.Responses
 {
-    public class UserProfileResponse : BaseEntity
+    public class UserProfileResponse
     {
-        public string UserName { get; set; }
+        public int Id { get; set; }
+        public int GlobalId { get; set; }
+        public string Name { get; set; }
         public string Email { get; set; }
+        public string Photo { get; set; }
         public string Roles { get; set; }
     }
 }

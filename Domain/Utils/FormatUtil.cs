@@ -78,31 +78,6 @@ namespace Domain.Utils
             }
         }
 
-        public static List<ImageProp> HasImageProperty(object obj)
-        {
-            var sourceProperties = obj.GetType().GetProperties();
-            var imageProperty = sourceProperties.Where(x => x.Name == "Image" || x.Name.Contains("Picture")).ToList();
-            var data = new List<ImageProp>();
-            if (imageProperty != null)
-            {
-                foreach (var property in imageProperty)
-                {
-                    var imageValue = property.GetValue(obj);
-                    var imageType = property.Name;
-                    if (imageValue != null)
-                    {
-                        var imageProp = new ImageProp()
-                        {
-                            Name = imageType,
-                            Image = imageValue.ToString()
-                        };
-                        data.Add(imageProp);
-                    }
-                }
-            }
-            return data;
-        }
-
         public static void ConvertUpdateObject<TSource, TDestination>(TSource source, TDestination destination)
             where TSource : class
             where TDestination : class

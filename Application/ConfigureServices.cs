@@ -16,6 +16,7 @@ namespace Application
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRestAPIService, RestAPIService>();
+            services.AddScoped<IFileUploadService, FileUploadService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
@@ -42,18 +43,21 @@ namespace Application
                     //LOCAL
                     uri.MasterAPIURI = "https://localhost:44382/api/";
                     uri.ClientAPIURI = "https://localhost:44381/api/";
+                    uri.APIURI = "https://localhost:44380/";
                 }
                 else if (keyEnvironment == "PRODUCTION")
                 {
                     //PRODUCTION
                     uri.MasterAPIURI = "https://master.fideaweb.my.id/api/";
                     uri.ClientAPIURI = "https://client.fideaweb.my.id/api/";
+                    uri.APIURI = "https://localhost:44380/";
                 }
                 else if (keyEnvironment == "STAGING")
                 {
                     //STAGING
                     uri.MasterAPIURI = "https://masterstaging.fideaweb.my.id/api/";
                     uri.ClientAPIURI = "https://clientstaging.fideaweb.my.id/api/";
+                    uri.APIURI = "https://apistaging.fideaweb.my.id/api/";
                 }
                 else
                 {

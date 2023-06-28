@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Domain.Entities.Models.Masters
 {
     public class BillStatus: BaseEntity
     {
+        [MaxLength(100)]
         public string Name { get; set; }
         public string Description { get; set; }
     }

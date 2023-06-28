@@ -1,9 +1,11 @@
 ﻿using Application.Services.Contracts;
 using Domain.Entities;
 using Domain.Entities.Models.Clients;
+using Domain.Entities.Requests.Clients;
 using Domain.Entities.Requests.Masters;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Masters;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 namespace Application.Services.Implementations
@@ -11,8 +13,11 @@ namespace Application.Services.Implementations
     public class AuthService : IAuthService
     {
         private IRestAPIService _restAPIService;
-        public AuthService(IRestAPIService restAPIService)
+        private IFileUploadService _fileUploadService;
+
+        public AuthService(IRestAPIService restAPIService, IFileUploadService fileUploadService)
         {
+            _fileUploadService = fileUploadService;
             _restAPIService = restAPIService;
         }
 
@@ -74,12 +79,25 @@ namespace Application.Services.Implementations
             try
             {
                 var response = await _restAPIService.GetResponse<UserProfileResponse>(APIType.Master, "Auth/User/" + id, auth);
-                return response;
+                //get profile client data
+                var responseClient = await _restAPIService.GetResponse<UserProfileResponse> (APIType.Client,"Profile/User/" + response.Id, auth);
+                //return combine profile
+                return CombineMasterClientProfile(response, responseClient);             
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        private UserProfileResponse CombineMasterClientProfile(UserProfileResponse master, UserProfileResponse client)
+        {
+
+            //client profile data to global profile
+            master.GlobalId = master.Id;
+            master.Id = client.Id;
+            master.Photo = client.Photo;
+            return master;
         }
 
         public async Task<BaseAPIResponse> CheckUserActivationAsync(ActivationRequest request)
@@ -107,6 +125,42 @@ namespace Application.Services.Implementations
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<string> UploadProfilePicture(IFormFile file, string folder)
+        {
+            var upload = await _fileUploadService.UploadImageAsync(file, folder);
+            return upload;
+        }
+
+        public async Task<UserProfileResponse> UpdateProfile(int id, ProfileRequest request, string auth)
+        {
+            try
+            {
+                var response = await _restAPIService.GetResponse<UserProfileResponse>(APIType.Master, "Auth/User/" + id, auth);
+                //get profile client data
+                string obj = JsonConvert.SerializeObject(request);
+                //update global profile
+                var responseGlobal = await _restAPIService.PutResponse<UserProfileResponse>(APIType.Master, "Auth/User", response.Id, obj, auth);
+                if(responseGlobal != null)
+                {
+                    //update profile client
+                    var responseClient = await _restAPIService.PutResponse<UserProfileResponse>(APIType.Client, "Profile", response.Id, obj, auth);
+                    //combine profile
+                    response = CombineMasterClientProfile(responseGlobal, responseClient);
+                }
+
+                if(request.Email !=null)
+                {
+                    //send email confirmation
+                }
+
+                return response;
+            }
+            catch
+            {
+                throw;
             }
         }
     }
