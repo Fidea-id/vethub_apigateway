@@ -45,15 +45,6 @@ namespace VetHubAPI.Controllers
             return ResponseUtil.CustomOk(user, 200);
         }
 
-        //[HttpGet("GetEmailOrUserName")]
-        //public async Task<IActionResult> GetUserEmail(string value)
-        //{
-        //    //Get the AuthToken
-        //    string authToken = HttpContext.Request.Headers["Authorization"];
-        //    var user = await _authService.GetByNameOrEmailAsync(value, authToken);
-        //    return ResponseUtil.CustomOk(user, 200);
-        //}
-
         [HttpPost("CheckUserActivation")]
         public async Task<IActionResult> CheckUserActivation(ActivationRequest request)
         {

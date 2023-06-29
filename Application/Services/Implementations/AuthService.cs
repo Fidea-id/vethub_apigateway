@@ -153,7 +153,7 @@ namespace Application.Services.Implementations
 
                 if(request.Email !=null)
                 {
-                    //send email confirmation
+                    //TODO:send email confirmation
                 }
 
                 return response;

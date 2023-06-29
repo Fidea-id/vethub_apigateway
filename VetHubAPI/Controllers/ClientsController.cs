@@ -1,4 +1,5 @@
 ﻿using Application.Services.Contracts;
+using Application.Services.Implementations;
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.Filters.Clients;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -18,9 +20,11 @@ namespace VetHubAPI.Controllers
     public class ClientsController : Controller
     {
         private readonly IRestAPIService _restAPIService;
-        public ClientsController(IRestAPIService restAPIService)
+        private readonly IFileUploadService _fileUploadService;
+        public ClientsController(IRestAPIService restAPIService, IFileUploadService fileUploadService)
         {
             _restAPIService = restAPIService;
+            _fileUploadService = fileUploadService;
         }
 
         //Clients Owner
@@ -74,6 +78,16 @@ namespace VetHubAPI.Controllers
                 throw;
             }
         }
+
+        [HttpPost("OwnersImage")]
+        public async Task<IActionResult> UploadOwnersPicture(IFormFile file)
+        {
+            //Get the AuthToken
+            var user = User.FindFirstValue("Id");
+            var upload = await _fileUploadService.UploadImageAsync(file, $"owners/{user}");
+            return Ok(upload);
+        }
+
 
         [HttpPut("Owners/{id}")]
         public async Task<IActionResult> PutOwner(int id, [FromBody] OwnersRequest request)
@@ -177,6 +191,16 @@ namespace VetHubAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPost("PatientsImage")]
+        public async Task<IActionResult> UploadPatientsPicture(IFormFile file)
+        {
+            //Get the AuthToken
+            var user = User.FindFirstValue("Id");
+            var upload = await _fileUploadService.UploadImageAsync(file, $"patients/{user}");
+            return Ok(upload);
+        }
+
 
         [HttpPut("Patients/{id}")]
         public async Task<IActionResult> PutPatient(int id, [FromBody] PatientsRequest request)
