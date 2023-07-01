@@ -7,6 +7,7 @@ namespace Domain.Entities.Models.Clients
         public int OwnersId { get; set; }
         [MaxLength(100)]
         public string Name { get; set; }
+        public string Photo { get; set; }
         [MaxLength(25)]
         public string Species { get; set; }
         [MaxLength(50)]
