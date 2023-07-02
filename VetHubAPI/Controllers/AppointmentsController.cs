@@ -1,40 +1,36 @@
 ﻿using Application.Services.Contracts;
-using Domain.Entities.Filters.Clients;
-using Domain.Entities.Models.Clients;
+using Domain.Entities.Filters.Masters;
+using Domain.Entities.Models.Masters;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Application.Utils;
-using Domain.Entities.Responses.Masters;
-using Domain.Entities.Responses;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Security.Claims;
-using Domain.Entities.Requests.Clients;
 
 namespace VetHubAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class StaffController : Controller
+    public class AppointmentsController : Controller
     {
         private readonly IRestAPIService _restAPIService;
-        public StaffController(IRestAPIService restAPIService)
+        public AppointmentsController(IRestAPIService restAPIService)
         {
             _restAPIService = restAPIService;
         }
 
+        //TODO: not yet
         [HttpGet]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetStaff([FromQuery] ProfileFilter filter)
+        public async Task<IActionResult> GetBillPayment([FromQuery] BillPaymentsFilter filter)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Profile>, ProfileFilter>(APIType.Client, "Profile", authToken, filter);
+                var response = await _restAPIService.GetResponseFilter<IEnumerable<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments", authToken, filter);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -45,13 +41,13 @@ namespace VetHubAPI.Controllers
 
         [HttpGet("{id}")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetStaffById(int id)
+        public async Task<IActionResult> GetBillPaymentById(int id)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<Profile>(APIType.Client, $"Profile/{id}", authToken);
+                var response = await _restAPIService.GetResponse<BillPayments>(APIType.Master, $"BillPayments/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -60,56 +56,54 @@ namespace VetHubAPI.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostStaff([FromBody] ProfileRequest request)
+        [HttpGet("status")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetBillStatus()
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-
-                //register at master
-                var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register/Staff", JsonConvert.SerializeObject(request), authToken);
-                //register at client
-                var responseClient = await _restAPIService.PostResponse<RegisterResponse>(APIType.Client, $"Profile/{response.Id}", JsonConvert.SerializeObject(request), authToken);
-
+                var response = await _restAPIService.GetResponseFilter<IEnumerable<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments/status", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpPost("ActiveDeactive/{id}")]
-        public async Task<IActionResult> ActiveDeactiveStaff(int id)
+        [HttpGet("status/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetBillStatustById(int id)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-
-                return ResponseUtil.CustomOk("", 200);
+                var response = await _restAPIService.GetResponse<BillPayments>(APIType.Master, $"BillPayments/status/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStaff(int id, [FromBody] ProfileRequest request)
+        [HttpPost("Owners")]
+        public async Task<IActionResult> PostBillPayments([FromBody] BillPayments request)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-
-                return ResponseUtil.CustomOk("", 200);
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<BillPayments>(APIType.Master, "BillPayments", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                return StatusCode(500, ex.Message);
             }
         }
     }

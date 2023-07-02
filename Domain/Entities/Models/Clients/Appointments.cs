@@ -7,6 +7,7 @@
         public DateTime Date { get; set; }
         public int StaffId { get; set; }
         public int ServiceId { get; set; }
+        public int StatusId { get; set; }
         public string Notes { get; set; }
     }
 }

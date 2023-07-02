@@ -8,5 +8,6 @@
         IOwnersRepository OwnersRepository { get; }
         IPatientsRepository PatientsRepository { get; }
         IProductsRepository ProductsRepository { get; }
+        IAppointmentRepository AppointmentRepository { get; }
     }
 }
