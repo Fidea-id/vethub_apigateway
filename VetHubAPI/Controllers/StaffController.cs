@@ -11,6 +11,7 @@ using Domain.Entities.Responses.Masters;
 using Domain.Entities.Responses;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Security.Claims;
+using Domain.Entities.Requests.Clients;
 
 namespace VetHubAPI.Controllers
 {
@@ -60,20 +61,23 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostStaff([FromBody] Profile request)
+        public async Task<IActionResult> PostStaff([FromBody] ProfileRequest request)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
 
-                //register
-                var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register/Staff", JsonConvert.SerializeObject(request));
+                //register at master
+                var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register/Staff", JsonConvert.SerializeObject(request), authToken);
+                //register at client
+                var responseClient = await _restAPIService.PostResponse<RegisterResponse>(APIType.Client, $"Profile/{response.Id}", JsonConvert.SerializeObject(request), authToken);
+
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
     }
