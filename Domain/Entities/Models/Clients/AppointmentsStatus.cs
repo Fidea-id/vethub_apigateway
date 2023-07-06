@@ -12,5 +12,6 @@ namespace Domain.Entities.Models.Clients
         [MaxLength(100)]
         public string Name { get; set; }
         public string Description { get; set; }
+        public int Weight { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
+using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses;
 
 namespace Domain.Interfaces.Clients
@@ -8,6 +9,7 @@ namespace Domain.Interfaces.Clients
     {
         Task AddProductDiscounts(ProductDiscounts discount, string dbName);
         Task AddProductCategories(ProductCategories categories, string dbName);
+        Task AddProductCategoriesRange(IEnumerable<ProductCategories> categories, string dbName);
         Task AddProductBundles(ProductBundles bundles, string dbName);
         Task UpdateProductDiscounts(int id, ProductDiscounts discount, string dbName);
         Task UpdateProductBundles(int id, ProductBundles bundles, string dbName);

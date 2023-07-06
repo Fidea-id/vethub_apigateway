@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Application.Utils;
+using Domain.Entities.Models.Clients;
+using Domain.Entities.Filters.Clients;
+using Domain.Entities.Requests.Clients;
 
 namespace VetHubAPI.Controllers
 {
@@ -24,13 +27,13 @@ namespace VetHubAPI.Controllers
         //TODO: not yet
         [HttpGet]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetBillPayment([FromQuery] BillPaymentsFilter filter)
+        public async Task<IActionResult> GetAppointment([FromQuery] AppointmentsFilter filter)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments", authToken, filter);
+                var response = await _restAPIService.GetResponseFilter<IEnumerable<Appointments>, AppointmentsFilter>(APIType.Client, "Appointments", authToken, filter);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -41,13 +44,30 @@ namespace VetHubAPI.Controllers
 
         [HttpGet("{id}")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetBillPaymentById(int id)
+        public async Task<IActionResult> GetAppointmentById(int id)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<BillPayments>(APIType.Master, $"BillPayments/{id}", authToken);
+                var response = await _restAPIService.GetResponse<Appointments>(APIType.Client, $"Appointments/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("today")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetTodayAppointment()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<Appointments>(APIType.Client, $"Appointments/today", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -58,13 +78,13 @@ namespace VetHubAPI.Controllers
 
         [HttpGet("status")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetBillStatus()
+        public async Task<IActionResult> GetAppointmentStatus()
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments/status", authToken);
+                var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsStatus>>(APIType.Client, "Appointments/status", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -75,13 +95,13 @@ namespace VetHubAPI.Controllers
 
         [HttpGet("status/{id}")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetBillStatustById(int id)
+        public async Task<IActionResult> GetAppointmentStatusById(int id)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<BillPayments>(APIType.Master, $"BillPayments/status/{id}", authToken);
+                var response = await _restAPIService.GetResponse<AppointmentsStatus>(APIType.Client, $"Appointments/status/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -91,14 +111,14 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost("Owners")]
-        public async Task<IActionResult> PostBillPayments([FromBody] BillPayments request)
+        public async Task<IActionResult> PostAppointments([FromBody] AppointmentsRequest request)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
-                var response = await _restAPIService.PostResponse<BillPayments>(APIType.Master, "BillPayments", requestJson, authToken);
+                var response = await _restAPIService.PostResponse<Appointments>(APIType.Client, "Appointments", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
