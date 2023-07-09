@@ -13,5 +13,6 @@ namespace Domain.Interfaces.Clients
     public interface IAppointmentRepository : IGenericRepository<Appointments, AppointmentsFilter>
     {
         //Task<IEnumerable<PatientsListResponse>> GetPatientsList(string dbName, AppointmentsFilter filter);
+        Task AddStatusRange(IEnumerable<AppointmentsStatus> entities, string dbName);
     }
 }

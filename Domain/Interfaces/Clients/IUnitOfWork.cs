@@ -4,6 +4,7 @@
     {
         //tambahkan interface repository disini
         IProfileRepository ProfileRepository { get; }
+        IGenerateTableRepository GenerateTableRepository { get; }
         IServicesRepository ServicesRepository { get; }
         IOwnersRepository OwnersRepository { get; }
         IPatientsRepository PatientsRepository { get; }
