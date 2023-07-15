@@ -60,6 +60,8 @@ namespace Application.Services.Implementations
                     };
                     var profileJson = JsonConvert.SerializeObject(newProfile);
                     var userProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{newDBName}", profileJson);
+
+                    var initField = await _restAPIService.PostResponse<string>(APIType.Client, $"Master/GenerateInitDBField/{newDBName}", null);
                 }
                 return response;
             }

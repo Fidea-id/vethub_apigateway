@@ -83,7 +83,10 @@ namespace Application.Services.Implementations
             Uri getUrl = _uriService.GetAPIUri(type);
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, getUrl + url);
-            request.Content = new StringContent(obj, Encoding.UTF8, "application/json");
+            if (!string.IsNullOrEmpty(obj))
+            {
+                request.Content = new StringContent(obj, Encoding.UTF8, "application/json");
+            }
             if (auth != null)
             {
                 request.Headers.Add("Authorization", auth);

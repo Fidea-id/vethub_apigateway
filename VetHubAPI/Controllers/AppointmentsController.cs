@@ -67,7 +67,7 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<Appointments>(APIType.Client, $"Appointments/today", authToken);
+                var response = await _restAPIService.GetResponse<IEnumerable<Appointments>>(APIType.Client, $"Appointments/Today", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -84,7 +84,7 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsStatus>>(APIType.Client, "Appointments/status", authToken);
+                var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsStatus>>(APIType.Client, "Appointments/Status", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)

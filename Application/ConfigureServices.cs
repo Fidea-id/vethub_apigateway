@@ -48,16 +48,16 @@ namespace Application
                 else if (keyEnvironment == "PRODUCTION")
                 {
                     //PRODUCTION
-                    uri.MasterAPIURI = "https://master.fideaweb.my.id/api/";
-                    uri.ClientAPIURI = "https://client.fideaweb.my.id/api/";
-                    uri.APIURI = "https://localhost:44380/";
+                    uri.MasterAPIURI = "https://master.vethub.id/api/";
+                    uri.ClientAPIURI = "https://client.vethub.id/api/";
+                    uri.APIURI = "https://api.vethub.id/api/";
                 }
                 else if (keyEnvironment == "STAGING")
                 {
                     //STAGING
-                    uri.MasterAPIURI = "https://masterstaging.fideaweb.my.id/api/";
-                    uri.ClientAPIURI = "https://clientstaging.fideaweb.my.id/api/";
-                    uri.APIURI = "https://apistaging.fideaweb.my.id/api/";
+                    uri.MasterAPIURI = "https://mastersg.vethub.id/api/";
+                    uri.ClientAPIURI = "https://clientsg.vethub.id/api/";
+                    uri.APIURI = "https://apisg.vethub.id/api/";
                 }
                 else
                 {

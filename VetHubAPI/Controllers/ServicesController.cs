@@ -57,7 +57,7 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostService([FromBody] Services request)
+        public async Task<IActionResult> PostService([FromBody] ServicesRequest request)
         {
             try
             {

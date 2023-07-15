@@ -14,5 +14,6 @@ namespace Domain.Interfaces.Clients
     {
         //Task<IEnumerable<PatientsListResponse>> GetPatientsList(string dbName, AppointmentsFilter filter);
         Task AddStatusRange(IEnumerable<AppointmentsStatus> entities, string dbName);
+        Task<IEnumerable<AppointmentsStatus>> GetAllStatus(string dbName);
     }
 }
