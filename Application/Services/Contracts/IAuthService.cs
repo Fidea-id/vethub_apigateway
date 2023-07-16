@@ -16,5 +16,8 @@ namespace Application.Services.Contracts
         public Task<BaseAPIResponse> UserActivationAsync(ActivationRequest request);
         public Task<string> UploadProfilePicture(IFormFile file, string path);
         public Task<UserProfileResponse> UpdateProfile(int id, ProfileRequest request, string auth);
+        public Task<BaseAPIResponse> ForgotPasswordAsync(ForgotPasswordRequest request);
+        public Task<BaseAPIResponse> ChangeForgotPasswordAsync(ForgotPasswordRequest request);
+        public Task<BaseAPIResponse> ChangePasswordAsync(ForgotPasswordRequest request, string auth);
     }
 }

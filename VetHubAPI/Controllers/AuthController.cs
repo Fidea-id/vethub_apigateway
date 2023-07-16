@@ -79,5 +79,30 @@ namespace VetHubAPI.Controllers
             var check = await _authService.UserActivationAsync(request);
             return Ok(check);
         }
+
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var check = await _authService.ForgotPasswordAsync(request);
+            return Ok(check);
+        }
+
+        [HttpPost("ChangeForgotPassword")]
+        public async Task<IActionResult> ChangeForgotPassword(ForgotPasswordRequest request)
+        {
+            var check = await _authService.ChangeForgotPasswordAsync(request);
+            return Ok(check);
+        }
+
+        [HttpPost("ChangePassword")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> ChangePassword(ForgotPasswordRequest request)
+        {
+            //Get the AuthToken
+            string authToken = HttpContext.Request.Headers["Authorization"];
+            var userId = User.FindFirstValue("Id");
+            var check = await _authService.ChangePasswordAsync(request, authToken);
+            return Ok(check);
+        }
     }
 }

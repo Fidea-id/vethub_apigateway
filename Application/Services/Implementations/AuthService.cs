@@ -165,5 +165,47 @@ namespace Application.Services.Implementations
                 throw;
             }
         }
+
+        public async Task<BaseAPIResponse> ForgotPasswordAsync(ForgotPasswordRequest request)
+        {
+            try
+            {
+                string obj = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/ForgotPassword/", obj);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<BaseAPIResponse> ChangeForgotPasswordAsync(ForgotPasswordRequest request)
+        {
+            try
+            {
+                string obj = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/ChangeForgotPassword/", obj);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<BaseAPIResponse> ChangePasswordAsync(ForgotPasswordRequest request, string auth)
+        {
+            try
+            {
+                string obj = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/ChangePassword/", obj, auth);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
