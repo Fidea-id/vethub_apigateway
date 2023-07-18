@@ -175,6 +175,23 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpGet("Patients/Owner/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetPatientByOwnerId(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<Patients>>(APIType.Client, $"Patients/Owner/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPost("Patients")]
         public async Task<IActionResult> PostPatient([FromBody] Patients request)
         {
