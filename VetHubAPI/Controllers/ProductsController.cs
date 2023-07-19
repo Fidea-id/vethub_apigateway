@@ -22,6 +22,7 @@ namespace VetHubAPI.Controllers
             _restAPIService = restAPIService;
         }
 
+        #region Product
         [HttpGet]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetProduct([FromQuery] ProductsFilter filter)
@@ -105,5 +106,92 @@ namespace VetHubAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        #endregion
+
+        #region Product Category
+        [HttpGet("Category")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetProductCategory([FromQuery] ProductCategoriesFilter filter)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponseFilter<IEnumerable<ProductCategories>, ProductCategoriesFilter>(APIType.Client, "Products/Category", authToken, filter);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("Category/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetProductCategoryById(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<ProductCategories>(APIType.Client, $"Products/Category/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("Category")]
+        public async Task<IActionResult> PostProductCategory([FromBody] ProductsCategoriesRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<ProductCategories>(APIType.Client, "Products/Category", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("Category/{id}")]
+        public async Task<IActionResult> PutProductCategory(int id, [FromBody] ProductsCategoriesRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<ProductCategories>(APIType.Client, "Products/Category", id, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("Category/{id}")]
+        public async Task<IActionResult> DeleteProductCategory(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.DeleteResponse<ProductCategories>(APIType.Client, "Products/Category", id, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        #endregion
     }
 }

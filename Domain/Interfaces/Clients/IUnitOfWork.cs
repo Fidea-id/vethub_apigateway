@@ -9,6 +9,8 @@
         IOwnersRepository OwnersRepository { get; }
         IPatientsRepository PatientsRepository { get; }
         IProductsRepository ProductsRepository { get; }
+        IProductBundlesRepository ProductBundlesRepository { get; }
+        IProductCategoriesRepository ProductCategoriesRepository { get; }
         IAppointmentRepository AppointmentRepository { get; }
     }
 }
