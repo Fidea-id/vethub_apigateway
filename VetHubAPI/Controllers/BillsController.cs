@@ -2,7 +2,6 @@
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.Filters.Masters;
-using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -55,7 +54,7 @@ namespace VetHubAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        
+
         [HttpGet("status")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetBillStatus()

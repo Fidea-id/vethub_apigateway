@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses;

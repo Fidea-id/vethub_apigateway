@@ -82,9 +82,9 @@ namespace Application.Services.Implementations
             {
                 var response = await _restAPIService.GetResponse<UserProfileResponse>(APIType.Master, "Auth/User/" + id, auth);
                 //get profile client data
-                var responseClient = await _restAPIService.GetResponse<UserProfileResponse> (APIType.Client,"Profile/User/" + response.Id, auth);
+                var responseClient = await _restAPIService.GetResponse<UserProfileResponse>(APIType.Client, "Profile/User/" + response.Id, auth);
                 //return combine profile
-                return CombineMasterClientProfile(response, responseClient);             
+                return CombineMasterClientProfile(response, responseClient);
             }
             catch (Exception ex)
             {
@@ -145,7 +145,7 @@ namespace Application.Services.Implementations
                 string obj = JsonConvert.SerializeObject(request);
                 //update global profile
                 var responseGlobal = await _restAPIService.PutResponse<UserProfileResponse>(APIType.Master, "Auth/User", response.Id, obj, auth);
-                if(responseGlobal != null)
+                if (responseGlobal != null)
                 {
                     //update profile client
                     var responseClient = await _restAPIService.PutResponse<UserProfileResponse>(APIType.Client, "Profile", response.Id, obj, auth);
@@ -153,7 +153,7 @@ namespace Application.Services.Implementations
                     response = CombineMasterClientProfile(responseGlobal, responseClient);
                 }
 
-                if(request.Email !=null)
+                if (request.Email != null)
                 {
                     //TODO:send email confirmation
                 }

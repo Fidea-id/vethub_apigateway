@@ -1,12 +1,4 @@
-﻿using Domain.Entities.Models.Masters;
-using Domain.Entities.Requests.Masters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Entities.Responses.Masters
+﻿namespace Domain.Entities.Responses.Masters
 {
     public class ClientClinicListResponse
     {
@@ -32,7 +24,7 @@ namespace Domain.Entities.Responses.Masters
         public double Price { get; set; }
         public double? Discount { get; set; }
         public double Total { get; set; }
-    } 
+    }
     public class ClientOwnerResponse
     {
         public int Id { get; set; }

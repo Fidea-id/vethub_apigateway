@@ -1,5 +1,4 @@
-﻿using System;
-namespace Domain.Entities.Requests.Clients
+﻿namespace Domain.Entities.Requests.Clients
 {
     public class PatientsBodyConditionRequest
     {

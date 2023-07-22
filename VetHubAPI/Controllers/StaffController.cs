@@ -1,17 +1,14 @@
 ﻿using Application.Services.Contracts;
+using Application.Utils;
+using Domain.Entities;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
-using Domain.Entities;
+using Domain.Entities.Requests.Clients;
+using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Application.Utils;
-using Domain.Entities.Responses.Masters;
-using Domain.Entities.Responses;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Security.Claims;
-using Domain.Entities.Requests.Clients;
 
 namespace VetHubAPI.Controllers
 {

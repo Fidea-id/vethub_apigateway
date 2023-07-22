@@ -1,6 +1,4 @@
 ﻿using Application.Services.Contracts;
-using Application.Utils;
-using Domain.Entities.Models.Clients;
 using Domain.Entities.Responses;
 using Microsoft.AspNetCore.Mvc;
 
