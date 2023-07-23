@@ -1,11 +1,9 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
-using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Requests.Masters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System.Security.Claims;
 
 namespace VetHubAPI.Controllers

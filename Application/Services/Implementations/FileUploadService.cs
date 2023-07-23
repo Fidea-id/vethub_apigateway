@@ -1,11 +1,6 @@
 ﻿using Application.Services.Contracts;
 using Domain.Utils;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services.Implementations
 {
@@ -74,7 +69,7 @@ namespace Application.Services.Implementations
                 {
                     throw new Exception("No file provided");
                 }
-                
+
                 var baseUrl = _uriService.GetBaseUri();
                 var uniqueFileName = FormatUtil.GenerateUniqueFileName(file.FileName);
                 var url = $"{baseUrl}Upload/v/{folder}/{uniqueFileName}";

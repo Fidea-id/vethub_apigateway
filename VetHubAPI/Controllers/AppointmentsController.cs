@@ -1,15 +1,14 @@
 ﻿using Application.Services.Contracts;
-using Domain.Entities.Filters.Masters;
-using Domain.Entities.Models.Masters;
+using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.Filters.Clients;
+using Domain.Entities.Models.Clients;
+using Domain.Entities.Requests.Clients;
+using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Application.Utils;
-using Domain.Entities.Models.Clients;
-using Domain.Entities.Filters.Clients;
-using Domain.Entities.Requests.Clients;
 
 namespace VetHubAPI.Controllers
 {
@@ -24,7 +23,6 @@ namespace VetHubAPI.Controllers
             _restAPIService = restAPIService;
         }
 
-        //TODO: not yet
         [HttpGet]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetAppointment([FromQuery] AppointmentsFilter filter)
@@ -51,6 +49,40 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<Appointments>(APIType.Client, $"Appointments/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("Detail")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetAppointmentDetail()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsDetailResponse>>(APIType.Client, "Appointments/Detail", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("Detail/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetAppointmentDetailById(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<AppointmentsDetailResponse>(APIType.Client, $"Appointments/Detail/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -110,7 +142,7 @@ namespace VetHubAPI.Controllers
             }
         }
 
-        [HttpPost("Owners")]
+        [HttpPost]
         public async Task<IActionResult> PostAppointments([FromBody] AppointmentsRequest request)
         {
             try
@@ -118,7 +150,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
-                var response = await _restAPIService.PostResponse<Appointments>(APIType.Client, "Appointments", requestJson, authToken);
+                var response = await _restAPIService.PostResponse<AppointmentsDetailResponse>(APIType.Client, "Appointments", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
