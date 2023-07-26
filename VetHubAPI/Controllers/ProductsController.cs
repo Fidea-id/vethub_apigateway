@@ -32,7 +32,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<IEnumerable<Products>, ProductsFilter>(APIType.Client, "Products", authToken, filter);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<Products, IEnumerable<Products>>(response, 200);
             }
             catch (Exception ex)
             {
@@ -118,7 +118,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<IEnumerable<ProductCategories>, ProductCategoriesFilter>(APIType.Client, "Products/Category", authToken, filter);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<ProductCategories, IEnumerable<ProductCategories>>(response, 200);
             }
             catch (Exception ex)
             {

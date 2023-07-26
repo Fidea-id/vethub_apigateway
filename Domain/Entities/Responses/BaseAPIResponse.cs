@@ -11,6 +11,7 @@
             Data = data;
         }
         public T? Data { get; set; }
+        public int TotalData { get; set; }
         public int StatusCode { get; set; }
         public string Message { get; set; }
     }

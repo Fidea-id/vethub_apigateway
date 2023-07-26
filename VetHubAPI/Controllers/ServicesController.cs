@@ -31,7 +31,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<IEnumerable<Services>, ServicesFilter>(APIType.Client, "Services", authToken, filter);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<Services, IEnumerable<Services>>(response, 200);
             }
             catch (Exception ex)
             {

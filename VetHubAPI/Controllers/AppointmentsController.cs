@@ -32,7 +32,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<IEnumerable<Appointments>, AppointmentsFilter>(APIType.Client, "Appointments", authToken, filter);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<Appointments, IEnumerable<Appointments>>(response, 200);
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsDetailResponse>>(APIType.Client, "Appointments/Detail", authToken);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<AppointmentsDetailResponse, IEnumerable<AppointmentsDetailResponse>>(response, 200);
             }
             catch (Exception ex)
             {
@@ -100,7 +100,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<Appointments>>(APIType.Client, $"Appointments/Today", authToken);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<Appointments, IEnumerable<Appointments>>(response, 200);
             }
             catch (Exception ex)
             {
@@ -117,7 +117,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsStatus>>(APIType.Client, "Appointments/Status", authToken);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<AppointmentsStatus, IEnumerable<AppointmentsStatus>>(response, 200);
             }
             catch (Exception ex)
             {

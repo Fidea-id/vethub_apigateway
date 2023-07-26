@@ -2,6 +2,7 @@
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.Filters.Masters;
+using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +31,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<IEnumerable<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments", authToken, filter);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<BillPayments, IEnumerable<BillPayments>>(response, 200);
             }
             catch (Exception ex)
             {
@@ -64,7 +65,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<IEnumerable<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments/status", authToken);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<BillPayments, IEnumerable<BillPayments>>(response, 200);
             }
             catch (Exception ex)
             {

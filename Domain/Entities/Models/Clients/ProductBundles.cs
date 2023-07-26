@@ -2,7 +2,8 @@
 {
     public class ProductBundles : BaseEntity
     {
-        public int ProductId { get; set; }
+        public int BundleId { get; set; }
+        public int ItemId { get; set; }
         public double Quantity { get; set; }
     }
 }

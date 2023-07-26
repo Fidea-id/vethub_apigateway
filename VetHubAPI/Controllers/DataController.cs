@@ -34,7 +34,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<IEnumerable<Animals>, NameBaseEntityFilter>(APIType.Client, "Animal", authToken, filter);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<Animals, IEnumerable<Animals>>(response, 200);
             }
             catch (Exception ex)
             {
@@ -120,7 +120,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<IEnumerable<Breeds>, NameBaseEntityFilter>(APIType.Client, "Breed", authToken, filter);
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOkList<Breeds, IEnumerable<Breeds>>(response, 200);
             }
             catch (Exception ex)
             {
