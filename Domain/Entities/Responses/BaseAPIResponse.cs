@@ -21,6 +21,12 @@
         public BaseAPIResponse()
         {
         }
+
+        public BaseAPIResponse(int status, string message)
+        {
+            StatusCode = status;
+            Message = message;
+        }
         public int StatusCode { get; set; }
         public string Message { get; set; }
     }

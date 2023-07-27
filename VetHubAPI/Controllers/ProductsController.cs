@@ -4,10 +4,12 @@ using Domain.Entities;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
+using Domain.Entities.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -185,6 +187,39 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.DeleteResponse<ProductCategories>(APIType.Client, "Products/Category", id, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        #endregion
+        #region ProductDetail
+        [HttpGet("Detail")]
+        public async Task<IActionResult> GetProductDetail()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<ProductDetailsResponse>>(APIType.Client, "Products/Detail", authToken);
+                return ResponseUtil.CustomOkList<ProductDetailsResponse, IEnumerable<ProductDetailsResponse>>(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("Detail/{id}")]
+        public async Task<IActionResult> GetProductDetail(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"]!;
+                var response = await _restAPIService.GetResponse<ProductDetailsResponse>(APIType.Client, "Products/Detail/" + id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)

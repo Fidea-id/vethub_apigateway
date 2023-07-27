@@ -1,6 +1,7 @@
 ﻿using Application.Services.Contracts;
 using Domain.Entities;
 using Domain.Entities.Responses;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Text;
 using System.Web;
@@ -10,12 +11,15 @@ namespace Application.Services.Implementations
     public class RestAPIService : IRestAPIService
     {
         private IUriService _uriService;
+        private readonly ILogger<RestAPIService> _logger;
         private readonly HttpClient _httpClient;
 
-        public RestAPIService(IUriService uriService, HttpClient httpClient)
+        public RestAPIService(IUriService uriService, HttpClient httpClient,
+            ILoggerFactory loggerFactory)
         {
             _uriService = uriService;
             _httpClient = httpClient;
+            _logger = loggerFactory.CreateLogger<RestAPIService>();
         }
         public async Task<T> GetResponse<T>(APIType type, string url, string auth = null) where T : class
         {
@@ -30,6 +34,7 @@ namespace Application.Services.Implementations
             {
                 await ThrowError(response, $"{type}");
             }
+            _logger.LogInformation("Success Get Response " +type, getUrl.ToString());
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
 
@@ -75,6 +80,7 @@ namespace Application.Services.Implementations
             {
                 await ThrowError(response, $"{type}");
             }
+            _logger.LogInformation("Success Get Response Filter " + type, getUrl.ToString());
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
 
@@ -96,6 +102,7 @@ namespace Application.Services.Implementations
             {
                 await ThrowError(response, $"{type}");
             }
+            _logger.LogInformation("Success Post Response " + type, getUrl.ToString());
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
 
@@ -113,6 +120,7 @@ namespace Application.Services.Implementations
             {
                 await ThrowError(response, $"{type}");
             }
+            _logger.LogInformation("Success Put Response " + type, getUrl.ToString());
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
 
@@ -129,6 +137,7 @@ namespace Application.Services.Implementations
             {
                 await ThrowError(response, $"{type}");
             }
+            _logger.LogInformation("Success Delete Response " + type, getUrl.ToString());
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
 
@@ -149,7 +158,9 @@ namespace Application.Services.Implementations
         private async Task ThrowError(HttpResponseMessage response, string type)
         {
             var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
-            var newExc = new Exception($"{errors.Errors[0].Message}");
+            var message = errors.Errors[0].Message;
+            _logger.LogError($"{type}API-{errors.Errors[0].Field}-{message}");
+            var newExc = new Exception($"{message}");
             newExc.Source = $"{type}API-{errors.Errors[0].Field}";
             throw newExc;
         }

@@ -26,4 +26,10 @@
   <ItemGroup>
     <Folder Include="Entities\DTOs\Clients\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DevExpress.Xpo.v23.1">
+      <HintPath>E:\.nuget\devexpress.xpo\23.1.4\lib\netstandard2.0\DevExpress.Xpo.v23.1.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

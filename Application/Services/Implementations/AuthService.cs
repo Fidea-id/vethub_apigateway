@@ -6,6 +6,7 @@ using Domain.Entities.Requests.Masters;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Application.Services.Implementations
@@ -13,12 +14,15 @@ namespace Application.Services.Implementations
     public class AuthService : IAuthService
     {
         private IRestAPIService _restAPIService;
+        private readonly ILogger<AuthService> _logger;
         private IFileUploadService _fileUploadService;
 
-        public AuthService(IRestAPIService restAPIService, IFileUploadService fileUploadService)
+        public AuthService(IRestAPIService restAPIService, IFileUploadService fileUploadService,
+            ILoggerFactory loggerFactory)
         {
             _fileUploadService = fileUploadService;
             _restAPIService = restAPIService;
+            _logger = loggerFactory.CreateLogger<AuthService>();
         }
 
         public async Task<LoginResponse> LoginAsync(UserLoginRequest data)
@@ -27,6 +31,8 @@ namespace Application.Services.Implementations
             {
                 var requestJson = JsonConvert.SerializeObject(data);
                 var response = await _restAPIService.PostResponse<LoginResponse>(APIType.Master, "Auth/Login", requestJson);
+                //update schema db client
+                var generateDB = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, "Master/CheckSchemeDB", "Bearer " + response.SessionToken);
                 return response;
             }
             catch (Exception ex)
