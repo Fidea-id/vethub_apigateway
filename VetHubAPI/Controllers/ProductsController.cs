@@ -76,6 +76,22 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpPut("Deactive/{id}")]
+        public async Task<IActionResult> DeactiveProduct(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.PutResponse<BaseAPIResponse>(APIType.Client, "Products/Deactive", id, "", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, [FromBody] ProductsRequest request)
         {
@@ -101,6 +117,25 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.DeleteResponse<Products>(APIType.Client, "Products", id, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        #endregion
+
+        #region ProductBundle
+        [HttpPost("Bundle")]
+        public async Task<IActionResult> PostProductAsBundle([FromBody] ProductAsBundleRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<Products>(APIType.Client, "Products/Bundle", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -195,6 +230,7 @@ namespace VetHubAPI.Controllers
             }
         }
         #endregion
+
         #region ProductDetail
         [HttpGet("Detail")]
         public async Task<IActionResult> GetProductDetail()
@@ -228,5 +264,108 @@ namespace VetHubAPI.Controllers
             }
         }
         #endregion
+
+        #region ProductDiscount
+        [HttpGet("Discount")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetProductDiscount([FromQuery] ProductDiscountsFilter filter)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponseFilter<IEnumerable<ProductDiscounts>, ProductDiscountsFilter>(APIType.Client, "Products/Discount", authToken, filter);
+                return ResponseUtil.CustomOkList<ProductDiscounts, IEnumerable<ProductDiscounts>>(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("Discount/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetProductDiscountById(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<ProductDiscounts>(APIType.Client, $"Products/Discount/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("Discount")]
+        public async Task<IActionResult> PostProductDiscount([FromBody] ProductsDiscountsRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<ProductDiscounts>(APIType.Client, "Products/Discount", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("Discount/{id}")]
+        public async Task<IActionResult> PutProductDiscount(int id, [FromBody] ProductsDiscountsRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<ProductDiscounts>(APIType.Client, "Products/Discount", id, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("Discount/{id}")]
+        public async Task<IActionResult> DeleteProductDiscount(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.DeleteResponse<ProductDiscounts>(APIType.Client, "Products/Discount", id, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("Discount/Deactive/{id}")]
+        public async Task<IActionResult> DeactiveProductDiscount(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.PutResponse<BaseAPIResponse>(APIType.Client, "Products/Discount/Deactive", id, "", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        #endregion
+
     }
 }

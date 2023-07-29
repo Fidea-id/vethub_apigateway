@@ -11,6 +11,7 @@
         IProductsRepository ProductsRepository { get; }
         IProductBundlesRepository ProductBundlesRepository { get; }
         IProductCategoriesRepository ProductCategoriesRepository { get; }
+        IProductDiscountsRepository ProductDiscountsRepository { get; }
         IAppointmentRepository AppointmentRepository { get; }
         IAnimalRepository AnimalRepository { get; }
         IBreedRepository BreedRepository { get; }
