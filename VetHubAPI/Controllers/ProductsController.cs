@@ -5,6 +5,7 @@ using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses;
+using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -274,8 +275,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<ProductDiscounts>, ProductDiscountsFilter>(APIType.Client, "Products/Discount", authToken, filter);
-                return ResponseUtil.CustomOkList<ProductDiscounts, IEnumerable<ProductDiscounts>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<IEnumerable<ProductDiscountDetailResponse>, ProductDiscountsFilter>(APIType.Client, "Products/Discount", authToken, filter);
+                return ResponseUtil.CustomOkList<ProductDiscountDetailResponse, IEnumerable<ProductDiscountDetailResponse>>(response, 200);
             }
             catch (Exception ex)
             {
