@@ -99,8 +99,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<IEnumerable<Appointments>>(APIType.Client, $"Appointments/Today", authToken);
-                return ResponseUtil.CustomOkList<Appointments, IEnumerable<Appointments>>(response, 200);
+                var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsDetailResponse>>(APIType.Client, $"Appointments/Today", authToken);
+                return ResponseUtil.CustomOkList<AppointmentsDetailResponse, IEnumerable<AppointmentsDetailResponse>>(response, 200);
             }
             catch (Exception ex)
             {

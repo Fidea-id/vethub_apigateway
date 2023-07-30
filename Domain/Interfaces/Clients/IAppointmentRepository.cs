@@ -10,6 +10,7 @@ namespace Domain.Interfaces.Clients
         Task AddStatusRange(IEnumerable<AppointmentsStatus> entities, string dbName);
         Task<IEnumerable<AppointmentsStatus>> GetAllStatus(string dbName);
         Task<IEnumerable<AppointmentsDetailResponse>> GetAllDetailList(string dbName);
+        Task<IEnumerable<AppointmentsDetailResponse>> GetAllDetailListToday(string dbName);
         Task<AppointmentsDetailResponse> GetAllDetail(int id, string dbName);
     }
 }

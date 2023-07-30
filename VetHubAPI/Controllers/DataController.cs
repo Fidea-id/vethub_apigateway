@@ -9,6 +9,7 @@ using Application.Utils;
 using Application.Services.Contracts;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Filters;
+using Domain.Entities.Responses.Clients;
 
 namespace VetHubAPI.Controllers
 {
@@ -33,7 +34,7 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Animals>, NameBaseEntityFilter>(APIType.Client, "Animal", authToken, filter);
+                var response = await _restAPIService.GetResponseFilter<IEnumerable<Animals>, NameBaseEntityFilter>(APIType.Client, "Data/Animal", authToken, filter);
                 return ResponseUtil.CustomOkList<Animals, IEnumerable<Animals>>(response, 200);
             }
             catch (Exception ex)
@@ -50,7 +51,7 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<Animals>(APIType.Client, $"Animal/{id}", authToken);
+                var response = await _restAPIService.GetResponse<Animals>(APIType.Client, $"Data/Animal/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -67,7 +68,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
-                var response = await _restAPIService.PostResponse<Animals>(APIType.Client, "Animal", requestJson, authToken);
+                var response = await _restAPIService.PostResponse<Animals>(APIType.Client, "Data/Animal", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -84,7 +85,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
-                var response = await _restAPIService.PutResponse<Animals>(APIType.Client, "Animal", id, requestJson, authToken);
+                var response = await _restAPIService.PutResponse<Animals>(APIType.Client, "Data/Animal", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -100,7 +101,7 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.DeleteResponse<Animals>(APIType.Client, "Animal", id, authToken);
+                var response = await _restAPIService.DeleteResponse<Animals>(APIType.Client, "Data/Animal", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -119,8 +120,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Breeds>, NameBaseEntityFilter>(APIType.Client, "Breed", authToken, filter);
-                return ResponseUtil.CustomOkList<Breeds, IEnumerable<Breeds>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<IEnumerable<BreedAnimalResponse>, NameBaseEntityFilter>(APIType.Client, "Data/Breed", authToken, filter);
+                return ResponseUtil.CustomOkList<BreedAnimalResponse, IEnumerable<BreedAnimalResponse>>(response, 200);
             }
             catch (Exception ex)
             {
@@ -136,7 +137,7 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<Breeds>(APIType.Client, $"Breed/{idAnimal}", authToken);
+                var response = await _restAPIService.GetResponse<Breeds>(APIType.Client, $"Data/Breed/{idAnimal}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -153,7 +154,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
-                var response = await _restAPIService.PostResponse<Breeds>(APIType.Client, "Breed", requestJson, authToken);
+                var response = await _restAPIService.PostResponse<Breeds>(APIType.Client, "Data/Breed", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -170,7 +171,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
-                var response = await _restAPIService.PutResponse<Breeds>(APIType.Client, "Breed", id, requestJson, authToken);
+                var response = await _restAPIService.PutResponse<Breeds>(APIType.Client, "Data/Breed", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)
@@ -186,7 +187,7 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.DeleteResponse<Breeds>(APIType.Client, "Breed", id, authToken);
+                var response = await _restAPIService.DeleteResponse<Breeds>(APIType.Client, "Data/Breed", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)

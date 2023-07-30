@@ -4,8 +4,10 @@
     {
         public int OwnersId { get; set; }
         public string OwnersName { get; set; }
+        public string OwnersTitle { get; set; }
         public int PatientsId { get; set; }
         public string PatientsName { get; set; }
+        public string PatientsBreed { get; set; }
         public DateTime Date { get; set; }
         public int? DurationEstimate { get; set; }
         public string? DurationTypeEstimate { get; set; }
