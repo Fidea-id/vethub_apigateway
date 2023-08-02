@@ -10,6 +10,7 @@ using Application.Services.Contracts;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Filters;
 using Domain.Entities.Responses.Clients;
+using Domain.Entities.DTOs;
 
 namespace VetHubAPI.Controllers
 {
@@ -34,8 +35,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Animals>, NameBaseEntityFilter>(APIType.Client, "Data/Animal", authToken, filter);
-                return ResponseUtil.CustomOkList<Animals, IEnumerable<Animals>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<Animals>, NameBaseEntityFilter>(APIType.Client, "Data/Animal", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -120,8 +121,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<BreedAnimalResponse>, NameBaseEntityFilter>(APIType.Client, "Data/Breed", authToken, filter);
-                return ResponseUtil.CustomOkList<BreedAnimalResponse, IEnumerable<BreedAnimalResponse>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<BreedAnimalResponse>, NameBaseEntityFilter>(APIType.Client, "Data/Breed", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -180,7 +181,7 @@ namespace VetHubAPI.Controllers
             }
         }
 
-        [HttpDelete("Breed{id}")]
+        [HttpDelete("Breed/{id}")]
         public async Task<IActionResult> DeleteBreed(int id)
         {
             try
@@ -188,6 +189,92 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.DeleteResponse<Breeds>(APIType.Client, "Data/Breed", id, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        #endregion
+
+        #region Diagnose
+        [HttpGet("Diagnose")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetDiagnose([FromQuery] NameBaseEntityFilter filter)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<Diagnoses>, NameBaseEntityFilter>(APIType.Client, "Data/Diagnose", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("Diagnose/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetDiagnoseById(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<Diagnoses>(APIType.Client, $"Data/Diagnose/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("Diagnose")]
+        public async Task<IActionResult> PostDiagnose([FromBody] DiagnosesRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<Diagnoses>(APIType.Client, "Data/Diagnose", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("Diagnose/{id}")]
+        public async Task<IActionResult> PutDiagnose(int id, [FromBody] DiagnosesRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<Diagnoses>(APIType.Client, "Data/Diagnose", id, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("Diagnose/{id}")]
+        public async Task<IActionResult> DeleteDiagnose(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.DeleteResponse<Diagnoses>(APIType.Client, "Data/Diagnose", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch (Exception ex)

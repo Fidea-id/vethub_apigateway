@@ -1,6 +1,7 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
@@ -34,8 +35,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Products>, ProductsFilter>(APIType.Client, "Products", authToken, filter);
-                return ResponseUtil.CustomOkList<Products, IEnumerable<Products>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<Products>, ProductsFilter>(APIType.Client, "Products", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -155,8 +156,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<ProductCategories>, ProductCategoriesFilter>(APIType.Client, "Products/Category", authToken, filter);
-                return ResponseUtil.CustomOkList<ProductCategories, IEnumerable<ProductCategories>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<ProductCategories>, ProductCategoriesFilter>(APIType.Client, "Products/Category", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -241,7 +242,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<ProductDetailsResponse>>(APIType.Client, "Products/Detail", authToken);
-                return ResponseUtil.CustomOkList<ProductDetailsResponse, IEnumerable<ProductDetailsResponse>>(response, 200);
+                return ResponseUtil.CustomOk(response, 200, response.Count());
             }
             catch (Exception ex)
             {
@@ -275,8 +276,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<ProductDiscountDetailResponse>, ProductDiscountsFilter>(APIType.Client, "Products/Discount", authToken, filter);
-                return ResponseUtil.CustomOkList<ProductDiscountDetailResponse, IEnumerable<ProductDiscountDetailResponse>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<ProductDiscountDetailResponse>, ProductDiscountsFilter>(APIType.Client, "Products/Discount", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {

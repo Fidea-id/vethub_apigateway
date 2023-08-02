@@ -1,14 +1,17 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
+using Domain.Entities.Responses;
 using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -31,8 +34,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Profile>, ProfileFilter>(APIType.Client, "Profile", authToken, filter);
-                return ResponseUtil.CustomOkList<Profile, IEnumerable<Profile>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<Profile>, ProfileFilter>(APIType.Client, "Profile", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -58,6 +61,7 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RequireOwnerRole")]
         public async Task<IActionResult> PostStaff([FromBody] ProfileRequest request)
         {
             try
@@ -79,14 +83,15 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost("ActiveDeactive/{id}")]
+        [Authorize(Policy = "RequireOwnerRole")]
         public async Task<IActionResult> ActiveDeactiveStaff(int id)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-
-                return ResponseUtil.CustomOk("", 200);
+                var response = await _restAPIService.PutResponse<BaseAPIResponse>(APIType.Client, "Staff/Deactive", id, "", authToken);
+                return ResponseUtil.CustomOk(response, 200);
             }
             catch
             {
@@ -95,14 +100,32 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "RequireOwnerRole")]
         public async Task<IActionResult> UpdateStaff(int id, [FromBody] ProfileRequest request)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-
-                return ResponseUtil.CustomOk("", 200);
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<Profile>(APIType.Client, "Profile", id, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "RequireOwnerRole")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.DeleteResponse<Profile>(APIType.Client, $"Profile", id, authToken);
+                return ResponseUtil.CustomOk(response, 200);
             }
             catch
             {

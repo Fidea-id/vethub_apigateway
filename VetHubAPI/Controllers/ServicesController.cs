@@ -1,6 +1,7 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
@@ -30,8 +31,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Services>, ServicesFilter>(APIType.Client, "Services", authToken, filter);
-                return ResponseUtil.CustomOkList<Services, IEnumerable<Services>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<Services>, ServicesFilter>(APIType.Client, "Services", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {

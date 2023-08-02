@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Filters;
+﻿using Domain.Entities.DTOs;
+using Domain.Entities.Filters;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Responses.Clients;
 
@@ -8,6 +9,6 @@ namespace Domain.Interfaces.Clients
     {
         Task<BreedAnimalResponse> GetBreedAnimal(int id, string dbName);
         Task<IEnumerable<BreedAnimalResponse>> GetBreedAnimalListByAnimal(int idAnimal, string dbName);
-        Task<IEnumerable<BreedAnimalResponse>> GetBreedAnimalList(NameBaseEntityFilter filter, string dbName);
+        Task<DataResultDTO<BreedAnimalResponse>> GetBreedAnimalList(NameBaseEntityFilter filter, string dbName);
     }
 }

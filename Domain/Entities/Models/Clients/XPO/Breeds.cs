@@ -8,7 +8,7 @@ namespace Domain.Entities.Models.Clients.XPO
     {
         public BreedsXPO(Session session) : base(session) { }
 
-        [Key]
+        [Key(true)]
         public int Id { get; set; }
         public int AnimalsId { get; set; }
         public string Name { get; set; }

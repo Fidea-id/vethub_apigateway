@@ -13,6 +13,7 @@
         IProductCategoriesRepository ProductCategoriesRepository { get; }
         IProductDiscountsRepository ProductDiscountsRepository { get; }
         IAppointmentRepository AppointmentRepository { get; }
+        IDiagnosesRepository DiagnoseRepository { get; }
         IAnimalRepository AnimalRepository { get; }
         IBreedRepository BreedRepository { get; }
     }

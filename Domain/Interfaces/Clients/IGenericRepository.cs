@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Entities.DTOs;
 
 namespace Domain.Interfaces.Clients
 {
@@ -7,7 +8,7 @@ namespace Domain.Interfaces.Clients
     {
         Task<T> GetById(string dbName, int id);
         Task<IEnumerable<T>> GetAll(string dbName);
-        Task<IEnumerable<T>> GetByFilter(string dbName, TFilter filters);
+        Task<DataResultDTO<T>> GetByFilter(string dbName, TFilter filters);
         Task<IEnumerable<T>> GetAllActive(string dbName);
         Task<IEnumerable<T>> WhereQuery(string dbName, string query);
         Task<bool> AnyQuery(string dbName, string query);

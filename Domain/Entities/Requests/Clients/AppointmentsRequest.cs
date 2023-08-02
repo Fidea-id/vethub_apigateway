@@ -10,4 +10,12 @@
         public int? StatusId { get; set; }
         public string? Notes { get; set; }
     }
+
+    public class AppointmentsRequestChangeStatus
+    {
+        public int? Id { get; set; }
+        public int? StatusId { get; set; }
+        public int? StaffId { get; set; } // updated by staff
+        public string? Notes { get; set; }
+    }
 }

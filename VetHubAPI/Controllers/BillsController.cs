@@ -1,6 +1,7 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Masters;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
@@ -30,8 +31,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments", authToken, filter);
-                return ResponseUtil.CustomOkList<BillPayments, IEnumerable<BillPayments>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -64,8 +65,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments/status", authToken);
-                return ResponseUtil.CustomOkList<BillPayments, IEnumerable<BillPayments>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments/status", authToken);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {

@@ -8,7 +8,7 @@ namespace Domain.Entities.Models.Clients.XPO
     {
         public ProductBundlesXPO(Session session) : base(session) { }
 
-        [Key]
+        [Key(true)]
         public int Id { get; set; }
         public int BundleId { get; set; }
         public int ItemId { get; set; }

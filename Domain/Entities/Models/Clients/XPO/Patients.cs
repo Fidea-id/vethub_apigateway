@@ -9,7 +9,7 @@ namespace Domain.Entities.Models.Clients.XPO
     {
         public PatientsXPO(Session session) : base(session) { }
 
-        [Key]
+        [Key(true)]
         public int Id { get; set; }
         public int OwnersId { get; set; }
         public string Name { get; set; }

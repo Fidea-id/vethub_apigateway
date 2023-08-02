@@ -1,6 +1,7 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
@@ -35,8 +36,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Owners>, OwnersFilter>(APIType.Client, "Owners", authToken, filter);
-                return ResponseUtil.CustomOkList<Owners, IEnumerable<Owners>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<Owners>, OwnersFilter>(APIType.Client, "Owners", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -131,8 +132,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Patients>, PatientsFilter>(APIType.Client, "Patients", authToken, filter);
-                return ResponseUtil.CustomOkList<Patients, IEnumerable<Patients>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<Patients>, PatientsFilter>(APIType.Client, "Patients", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -148,8 +149,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<PatientsListResponse>, PatientsFilter>(APIType.Client, "Patients/List", authToken, filter);
-                return ResponseUtil.CustomOkList<PatientsListResponse, IEnumerable<PatientsListResponse>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<PatientsListResponse>, PatientsFilter>(APIType.Client, "Patients/List", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -183,7 +184,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<Patients>>(APIType.Client, $"Patients/Owner/{id}", authToken);
-                return ResponseUtil.CustomOkList<Patients, IEnumerable<Patients>>(response, 200);
+                return ResponseUtil.CustomOk(response, 200, response.Count());
             }
             catch (Exception ex)
             {

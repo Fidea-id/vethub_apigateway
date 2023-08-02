@@ -1,6 +1,7 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -31,8 +33,8 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Appointments>, AppointmentsFilter>(APIType.Client, "Appointments", authToken, filter);
-                return ResponseUtil.CustomOkList<Appointments, IEnumerable<Appointments>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<Appointments>, AppointmentsFilter>(APIType.Client, "Appointments", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -59,14 +61,14 @@ namespace VetHubAPI.Controllers
 
         [HttpGet("Detail")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetAppointmentDetail()
+        public async Task<IActionResult> GetAppointmentDetail([FromQuery] AppointmentDetailFilter filter)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsDetailResponse>>(APIType.Client, "Appointments/Detail", authToken);
-                return ResponseUtil.CustomOkList<AppointmentsDetailResponse, IEnumerable<AppointmentsDetailResponse>>(response, 200);
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<AppointmentsDetailResponse>, AppointmentDetailFilter>(APIType.Client, "Appointments/Detail", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch (Exception ex)
             {
@@ -100,7 +102,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsDetailResponse>>(APIType.Client, $"Appointments/Today", authToken);
-                return ResponseUtil.CustomOkList<AppointmentsDetailResponse, IEnumerable<AppointmentsDetailResponse>>(response, 200);
+                return ResponseUtil.CustomOk(response, 200, response.Count());
             }
             catch (Exception ex)
             {
@@ -117,7 +119,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsStatus>>(APIType.Client, "Appointments/Status", authToken);
-                return ResponseUtil.CustomOkList<AppointmentsStatus, IEnumerable<AppointmentsStatus>>(response, 200);
+                return ResponseUtil.CustomOk(response, 200, response.Count());
             }
             catch (Exception ex)
             {
@@ -156,6 +158,23 @@ namespace VetHubAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("StatusChange")]
+        public async Task<IActionResult> StatusChange([FromBody] AppointmentsRequestChangeStatus request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<AppointmentsDetailResponse>(APIType.Client, "Appointments/StatusChange", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
             }
         }
     }

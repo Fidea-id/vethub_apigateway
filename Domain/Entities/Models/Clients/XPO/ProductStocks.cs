@@ -8,7 +8,7 @@ namespace Domain.Entities.Models.Clients.XPO
     {
         public ProductStocksXPO(Session session) : base(session) { }
 
-        [Key]
+        [Key(true)]
         public int Id { get; set; }
         public int ProductId { get; set; }
         public double Stock { get; set; }

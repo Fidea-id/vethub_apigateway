@@ -8,7 +8,7 @@ namespace Domain.Entities.Models.Clients.XPO
     {
         public ProductsXPO(Session session) : base(session) { }
 
-        [Key]
+        [Key(true)]
         public int Id { get; set; }
         public string Name { get; set; }
         [DbType("LONGTEXT")]

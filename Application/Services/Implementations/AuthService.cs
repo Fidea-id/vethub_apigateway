@@ -32,7 +32,10 @@ namespace Application.Services.Implementations
                 var requestJson = JsonConvert.SerializeObject(data);
                 var response = await _restAPIService.PostResponse<LoginResponse>(APIType.Master, "Auth/Login", requestJson);
                 //update schema db client
-                var generateDB = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, "Master/CheckSchemeDB", "Bearer " + response.SessionToken);
+                if(response.Roles != "Superadmin")
+                {
+                    var generateDB = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, "Master/CheckSchemeDB", "Bearer " + response.SessionToken);
+                }
                 return response;
             }
             catch (Exception ex)
@@ -53,7 +56,7 @@ namespace Application.Services.Implementations
                 if (response.Roles != "Superadmin")
                 {
                     //create db client
-                    var generateDB = await _restAPIService.GetResponse<string>(APIType.Client, "Master/GenerateInitDB/" + newDBName);
+                    var generateDB = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, "Master/GenerateInitDB/" + newDBName);
                     //insert user profile
                     var newProfile = new Profile
                     {
@@ -67,7 +70,7 @@ namespace Application.Services.Implementations
                     var profileJson = JsonConvert.SerializeObject(newProfile);
                     var userProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{newDBName}", profileJson);
 
-                    var initField = await _restAPIService.PostResponse<string>(APIType.Client, $"Master/GenerateInitDBField/{newDBName}", null);
+                    var initField = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, $"Master/GenerateInitDBField/{newDBName}");
                 }
                 return response;
             }
