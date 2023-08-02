@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -38,9 +37,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<Products>, ProductsFilter>(APIType.Client, "Products", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -55,9 +54,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<Products>(APIType.Client, $"Products/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -72,9 +71,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PostResponse<Products>(APIType.Client, "Products", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -88,9 +87,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PutResponse<BaseAPIResponse>(APIType.Client, "Products/Deactive", id, "", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -105,9 +104,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PutResponse<Products>(APIType.Client, "Products", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -121,9 +120,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.DeleteResponse<Products>(APIType.Client, "Products", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
         #endregion
@@ -140,9 +139,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PostResponse<Products>(APIType.Client, "Products/Bundle", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
         #endregion
@@ -159,9 +158,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<ProductCategories>, ProductCategoriesFilter>(APIType.Client, "Products/Category", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -176,9 +175,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<ProductCategories>(APIType.Client, $"Products/Category/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -193,9 +192,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PostResponse<ProductCategories>(APIType.Client, "Products/Category", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -210,9 +209,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PutResponse<ProductCategories>(APIType.Client, "Products/Category", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -226,9 +225,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.DeleteResponse<ProductCategories>(APIType.Client, "Products/Category", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
         #endregion
@@ -244,9 +243,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<IEnumerable<ProductDetailsResponse>>(APIType.Client, "Products/Detail", authToken);
                 return ResponseUtil.CustomOk(response, 200, response.Count());
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -260,9 +259,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<ProductDetailsResponse>(APIType.Client, "Products/Detail/" + id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
         #endregion
@@ -279,9 +278,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<ProductDiscountDetailResponse>, ProductDiscountsFilter>(APIType.Client, "Products/Discount", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -296,9 +295,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<ProductDiscounts>(APIType.Client, $"Products/Discount/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -313,9 +312,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PostResponse<ProductDiscounts>(APIType.Client, "Products/Discount", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -330,9 +329,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PutResponse<ProductDiscounts>(APIType.Client, "Products/Discount", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -346,9 +345,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.DeleteResponse<ProductDiscounts>(APIType.Client, "Products/Discount", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -362,9 +361,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PutResponse<BaseAPIResponse>(APIType.Client, "Products/Discount/Deactive", id, "", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
         #endregion

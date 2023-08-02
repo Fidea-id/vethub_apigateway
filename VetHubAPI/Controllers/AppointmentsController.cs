@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -36,9 +35,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<Appointments>, AppointmentsFilter>(APIType.Client, "Appointments", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -53,9 +52,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<Appointments>(APIType.Client, $"Appointments/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -70,9 +69,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<AppointmentsDetailResponse>, AppointmentDetailFilter>(APIType.Client, "Appointments/Detail", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -87,9 +86,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<AppointmentsDetailResponse>(APIType.Client, $"Appointments/Detail/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -104,9 +103,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsDetailResponse>>(APIType.Client, $"Appointments/Today", authToken);
                 return ResponseUtil.CustomOk(response, 200, response.Count());
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -121,9 +120,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<IEnumerable<AppointmentsStatus>>(APIType.Client, "Appointments/Status", authToken);
                 return ResponseUtil.CustomOk(response, 200, response.Count());
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -138,9 +137,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<AppointmentsStatus>(APIType.Client, $"Appointments/status/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -155,9 +154,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PostResponse<AppointmentsDetailResponse>(APIType.Client, "Appointments", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 

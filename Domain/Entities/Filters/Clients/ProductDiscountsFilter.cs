@@ -1,6 +1,4 @@
-﻿using Domain.Entities.Models.Clients;
-
-namespace Domain.Entities.Filters.Clients
+﻿namespace Domain.Entities.Filters.Clients
 {
     public class ProductDiscountsFilter : BaseEntityFilter
     {

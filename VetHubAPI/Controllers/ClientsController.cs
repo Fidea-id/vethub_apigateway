@@ -39,9 +39,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<Owners>, OwnersFilter>(APIType.Client, "Owners", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -56,9 +56,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<Owners>(APIType.Client, $"Owners/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -100,9 +100,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PutResponse<Owners>(APIType.Client, "Owners", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -116,9 +116,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.DeleteResponse<Owners>(APIType.Client, "Owners", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
         //Clients Owner History
@@ -135,9 +135,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<Patients>, PatientsFilter>(APIType.Client, "Patients", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -152,9 +152,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<PatientsListResponse>, PatientsFilter>(APIType.Client, "Patients/List", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -169,9 +169,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<Patients>(APIType.Client, $"Patients/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -186,9 +186,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<IEnumerable<Patients>>(APIType.Client, $"Patients/Owner/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200, response.Count());
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -203,9 +203,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PostResponse<Patients>(APIType.Client, "Patients", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -230,9 +230,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PutResponse<Patients>(APIType.Client, "Patients", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -246,9 +246,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.DeleteResponse<Patients>(APIType.Client, "Patients", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 

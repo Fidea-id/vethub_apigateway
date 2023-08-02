@@ -1,7 +1,6 @@
 ﻿using Domain.Entities.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Reflection;
 
 namespace Application.Utils
 {

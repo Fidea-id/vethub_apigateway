@@ -1,5 +1,4 @@
 ﻿using DevExpress.Xpo;
-using Domain.Entities.Attributes;
 
 namespace Domain.Entities.Models.Clients.XPO
 {

@@ -1,5 +1,4 @@
-﻿using Domain.Entities.Models.Clients;
-using Domain.Entities.Responses.Clients;
+﻿using Domain.Entities.Responses.Clients;
 
 namespace Domain.Entities.Responses
 {

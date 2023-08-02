@@ -34,7 +34,7 @@ namespace Application.Services.Implementations
             {
                 await ThrowError(response, $"{type}");
             }
-            _logger.LogInformation("Success Get Response " +type, getUrl.ToString());
+            _logger.LogInformation("Success Get Response " + type, getUrl.ToString());
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
 

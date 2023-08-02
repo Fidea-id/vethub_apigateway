@@ -23,9 +23,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetPlaceResponse<GoAPIResponse>("provinsi");
                 return Ok(response);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -38,9 +38,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetPlaceResponse<GoAPIResponse>("kota", $"provinsi_id={id}");
                 return Ok(response);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
     }

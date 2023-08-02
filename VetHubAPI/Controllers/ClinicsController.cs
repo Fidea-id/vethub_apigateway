@@ -3,7 +3,6 @@ using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Masters;
-using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
 using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -34,9 +33,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<ClientClinicListResponse>, ClinicsFilter>(APIType.Master, "Clinics/List", authToken);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -51,9 +50,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<ClientClinicDetailResponse, ClinicsFilter>(APIType.Master, $"Clinics/detail/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -68,9 +67,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<Clinics>, ClinicsFilter>(APIType.Master, "Clinics", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
 
@@ -85,9 +84,9 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.GetResponse<Clinics>(APIType.Master, $"Clinics/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
         }
     }

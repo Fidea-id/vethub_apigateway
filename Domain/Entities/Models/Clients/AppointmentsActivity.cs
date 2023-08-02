@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Entities.Models.Clients
+﻿namespace Domain.Entities.Models.Clients
 {
-    public class AppointmentsActivity: BaseEntity
+    public class AppointmentsActivity : BaseEntity
     {
         public int AppointmentId { get; set; }
         public int CurrentStatusId { get; set; }

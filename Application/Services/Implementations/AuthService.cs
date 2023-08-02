@@ -32,7 +32,7 @@ namespace Application.Services.Implementations
                 var requestJson = JsonConvert.SerializeObject(data);
                 var response = await _restAPIService.PostResponse<LoginResponse>(APIType.Master, "Auth/Login", requestJson);
                 //update schema db client
-                if(response.Roles != "Superadmin")
+                if (response.Roles != "Superadmin")
                 {
                     var generateDB = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, "Master/CheckSchemeDB", "Bearer " + response.SessionToken);
                 }
