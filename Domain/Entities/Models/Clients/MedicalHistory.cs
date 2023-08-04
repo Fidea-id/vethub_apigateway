@@ -1,6 +1,8 @@
 ﻿namespace Domain.Entities.Models.Clients
 {
-    internal class MedicalHistory
+    public class MedicalHistory: BaseEntity
     {
+        public int AppointmentId { get; set; }
+        public int MyProperty { get; set; }
     }
 }

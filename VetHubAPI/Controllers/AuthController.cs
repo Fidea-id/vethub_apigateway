@@ -9,6 +9,7 @@ using System.Security.Claims;
 namespace VetHubAPI.Controllers
 {
     [ApiController]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
