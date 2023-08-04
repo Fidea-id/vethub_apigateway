@@ -7,6 +7,40 @@ namespace Domain.Utils
 {
     public static class FormatUtil
     {
+        public static string GetTimeAgo(DateTime checkDate)
+        {
+            TimeSpan timeDifference = DateTime.Now - checkDate;
+
+            if (timeDifference.TotalMinutes < 1)
+            {
+                return "Just Now";
+            }
+            else if (timeDifference.TotalMinutes < 60)
+            {
+                int minutes = (int)timeDifference.TotalMinutes;
+                return $"{minutes} {(minutes == 1 ? "Minute" : "Minutes")} Ago";
+            }
+            else if (timeDifference.TotalHours < 24)
+            {
+                int hours = (int)timeDifference.TotalHours;
+                return $"{hours} {(hours == 1 ? "Hour" : "Hours")} Ago";
+            }
+            else if (timeDifference.TotalDays < 30)
+            {
+                int days = (int)timeDifference.TotalDays;
+                return $"{days} {(days == 1 ? "Day" : "Days")} Ago";
+            }
+            else if (timeDifference.TotalDays < 365)
+            {
+                int months = (int)(timeDifference.TotalDays / 30);
+                return $"{months} {(months == 1 ? "Month" : "Months")} Ago";
+            }
+            else
+            {
+                int years = (int)(timeDifference.TotalDays / 365);
+                return $"{years} {(years == 1 ? "Year" : "Years")} Ago";
+            }
+        }
         public static int GetIdEntity(object entity)
         {
             var sourceProperties = entity.GetType().GetProperties();

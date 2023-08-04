@@ -1,10 +1,12 @@
 ﻿using Application.Services.Contracts;
 using Domain.Entities.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace VetHubAPI.Controllers
 {
     [ApiController]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class PlacesController : Controller
     {

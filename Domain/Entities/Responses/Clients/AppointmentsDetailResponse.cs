@@ -2,6 +2,7 @@
 {
     public class AppointmentsDetailResponse
     {
+        public int AppointmentId { get; set; }
         public int OwnersId { get; set; }
         public string OwnersName { get; set; }
         public string OwnersTitle { get; set; }

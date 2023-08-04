@@ -79,7 +79,7 @@ namespace VetHubAPI.Controllers
             }
         }
 
-        [HttpPost("OwnersImage")]
+        [HttpPost("Owners/Image")]
         public async Task<IActionResult> UploadOwnersPicture(IFormFile file)
         {
             //Get the AuthToken
@@ -209,7 +209,7 @@ namespace VetHubAPI.Controllers
             }
         }
 
-        [HttpPost("PatientsImage")]
+        [HttpPost("Patients/Image")]
         public async Task<IActionResult> UploadPatientsPicture(IFormFile file)
         {
             //Get the AuthToken
@@ -244,6 +244,41 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.DeleteResponse<Patients>(APIType.Client, "Patients", id, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        //Clients Patients Statistic
+        [HttpGet("Patients/Statistic/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetPatientLatestStatisticId(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<PatientsStatisticResponse>>(APIType.Client, $"Patients/Statistic/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200, response.Count());
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("Patients/Statistic")]
+        public async Task<IActionResult> PostPatientStatistic([FromBody] PatientsStatisticRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<PatientsStatistic>(APIType.Client, "Patients/Statistic", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch

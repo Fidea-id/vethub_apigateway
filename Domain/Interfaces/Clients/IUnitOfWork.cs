@@ -16,5 +16,6 @@
         IDiagnosesRepository DiagnoseRepository { get; }
         IAnimalRepository AnimalRepository { get; }
         IBreedRepository BreedRepository { get; }
+        IPatientsStatisticRepository PatientsStatisticRepository { get; }
     }
 }
