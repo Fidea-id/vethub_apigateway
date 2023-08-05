@@ -7,7 +7,7 @@
         public int? CategoryId { get; set; }
         public double? Price { get; set; }
         public bool IsBundle { get; set; }
-        public IEnumerable<ProductItemBundle> BundleItem { get; set; }
+        public IEnumerable<ProductItemBundle>? BundleItem { get; set; }
     }
     public class ProductItemBundle
     {

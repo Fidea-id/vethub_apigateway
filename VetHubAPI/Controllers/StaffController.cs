@@ -89,7 +89,7 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.PutResponse<BaseAPIResponse>(APIType.Client, "Staff/Deactive", id, "", authToken);
+                var response = await _restAPIService.PutResponse<BaseAPIResponse>(APIType.Client, "Profile/Deactive", id, "", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch

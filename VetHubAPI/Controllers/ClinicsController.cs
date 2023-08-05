@@ -13,7 +13,7 @@ namespace VetHubAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireSuperadminRole")]
     public class ClinicsController : Controller
     {
         private readonly IRestAPIService _restAPIService;
