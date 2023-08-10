@@ -25,6 +25,59 @@ namespace VetHubAPI.Controllers
             _restAPIService = restAPIAnimal;
         }
 
+        #region Clinics
+        [HttpGet("Clinics")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetClinics([FromQuery] NameBaseEntityFilter filter)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/Clinics", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("Clinics")]
+        public async Task<IActionResult> PostClinics([FromBody] ClinicsRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<Clinics>(APIType.Client, "Data/Clinics", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPut("Clinics/{id}")]
+        public async Task<IActionResult> PutClinics(int id, [FromBody] ClinicsRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<Clinics>(APIType.Client, "Data/Clinics", id, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
+
         #region Animal
         [HttpGet("Animal")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
@@ -274,6 +327,92 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.DeleteResponse<Diagnoses>(APIType.Client, "Data/Diagnose", id, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
+
+        #region PaymentMethod
+        [HttpGet("PaymentMethod")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetPaymentMethod([FromQuery] NameBaseEntityFilter filter)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<PaymentMethod>, NameBaseEntityFilter>(APIType.Client, "Data/PaymentMethod", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("PaymentMethod/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetPaymentMethodById(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<PaymentMethod>(APIType.Client, $"Data/PaymentMethod/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("PaymentMethod")]
+        public async Task<IActionResult> PostPaymentMethod([FromBody] PaymentMethodRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<PaymentMethod>(APIType.Client, "Data/PaymentMethod", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPut("PaymentMethod/{id}")]
+        public async Task<IActionResult> PutPaymentMethod(int id, [FromBody] PaymentMethodRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<PaymentMethod>(APIType.Client, "Data/PaymentMethod", id, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpDelete("PaymentMethod/{id}")]
+        public async Task<IActionResult> DeletePaymentMethod(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.DeleteResponse<PaymentMethod>(APIType.Client, "Data/PaymentMethod", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch

@@ -4,7 +4,7 @@ namespace Domain.Entities.Models.Masters
 {
     public class BillPayments : BaseEntity
     {
-        public int ClinicId { get; set; }
+        public int UserId { get; set; }
         public int SubscriptionId { get; set; }
         [MaxLength(100)]
         public string Period { get; set; }

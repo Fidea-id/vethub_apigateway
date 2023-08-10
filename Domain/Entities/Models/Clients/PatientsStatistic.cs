@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities.Models.Clients
 {
-    public class PatientsStatistic: BaseEntity
+    public class PatientsStatistic : BaseEntity
     {
         public int PatientId { get; set; }
         public int StaffId { get; set; }

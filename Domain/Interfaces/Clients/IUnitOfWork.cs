@@ -17,5 +17,10 @@
         IAnimalRepository AnimalRepository { get; }
         IBreedRepository BreedRepository { get; }
         IPatientsStatisticRepository PatientsStatisticRepository { get; }
+        IOrdersRepository OrdersRepository { get; }
+        IOrdersDetailRepository OrdersDetailRepository { get; }
+        IOrdersPaymentRepository OrdersPaymentRepository { get; }
+        IPaymentMethodRepository PaymentMethodRepository { get; }
+        IClinicRepository ClinicsRepository { get; }
     }
 }

@@ -9,7 +9,7 @@
         Task<int> SaveChanges();
         IUserRepository UserRepository { get; }
         IBillPaymentsRepository BillPaymentsRepository { get; }
-        IClinicsRepository ClinicsRepository { get; }
+        //IClinicsRepository ClinicsRepository { get; }
         IRolesRepository RolesRepository { get; }
         ISubscriptionsRepository SubscriptionsRepository { get; }
     }

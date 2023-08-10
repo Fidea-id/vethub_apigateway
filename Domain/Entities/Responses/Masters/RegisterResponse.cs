@@ -8,6 +8,6 @@
         public string Entity { get; set; }
         public string Roles { get; set; }
         public string ConfirmationToken { get; set; }
-        public int CLinicId { get; set; }
+        //public int CLinicId { get; set; }
     }
 }

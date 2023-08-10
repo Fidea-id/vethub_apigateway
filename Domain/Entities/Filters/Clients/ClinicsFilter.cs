@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities.Filters.Masters
+﻿namespace Domain.Entities.Filters.Clients
 {
     public class ClinicsFilter : BaseEntityFilter
     {

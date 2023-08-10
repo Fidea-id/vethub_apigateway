@@ -68,6 +68,8 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
 
+                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, $"Data/Clinics", authToken);
+                request.ClinicName = responseClinic.Name;
                 //register at master
                 var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register/Staff", JsonConvert.SerializeObject(request), authToken);
                 //register at client
