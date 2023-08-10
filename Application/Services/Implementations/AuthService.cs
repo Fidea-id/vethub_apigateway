@@ -69,8 +69,10 @@ namespace Application.Services.Implementations
                     };
                     var profileJson = JsonConvert.SerializeObject(newProfile);
                     var userProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{newDBName}", profileJson);
-
                     var initField = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, $"Master/GenerateInitDBField/{newDBName}");
+
+                    var clinicRequestJson = JsonConvert.SerializeObject(data.ClinicData);
+                    var userClinic = await _restAPIService.PostResponse<Clinics>(APIType.Client, $"Data/Clinics", clinicRequestJson);
                 }
                 return response;
             }

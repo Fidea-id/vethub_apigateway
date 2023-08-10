@@ -22,39 +22,39 @@ namespace VetHubAPI.Controllers
             _restAPIService = restAPIService;
         }
 
-        [HttpGet("List")]
-        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetClinicList()
-        {
-            try
-            {
-                //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<DataResultDTO<ClientClinicListResponse>, ClinicsFilter>(APIType.Master, "Clinics/List", authToken);
-                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
-            }
-            catch
-            {
-                throw;
-            }
-        }
+        //[HttpGet("List")]
+        //[ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        //public async Task<IActionResult> GetClinicList()
+        //{
+        //    try
+        //    {
+        //        //Get the AuthToken
+        //        string authToken = HttpContext.Request.Headers["Authorization"];
+        //        var response = await _restAPIService.GetResponseFilter<DataResultDTO<ClientClinicListResponse>, ClinicsFilter>(APIType.Master, "Clinics/List", authToken);
+        //        return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+        //    }
+        //    catch
+        //    {
+        //        throw;
+        //    }
+        //}
 
-        [HttpGet("Detail/{id}")]
-        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetClinicDetail(int id)
-        {
-            try
-            {
-                //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<ClientClinicDetailResponse, ClinicsFilter>(APIType.Master, $"Clinics/detail/{id}", authToken);
-                return ResponseUtil.CustomOk(response, 200);
-            }
-            catch
-            {
-                throw;
-            }
-        }
+        //[HttpGet("Detail/{id}")]
+        //[ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        //public async Task<IActionResult> GetClinicDetail(int id)
+        //{
+        //    try
+        //    {
+        //        //Get the AuthToken
+        //        string authToken = HttpContext.Request.Headers["Authorization"];
+        //        var response = await _restAPIService.GetResponseFilter<ClientClinicDetailResponse, ClinicsFilter>(APIType.Master, $"Clinics/detail/{id}", authToken);
+        //        return ResponseUtil.CustomOk(response, 200);
+        //    }
+        //    catch
+        //    {
+        //        throw;
+        //    }
+        //}
 
         //[HttpGet]
         //[ResponseCache(Duration = 60)] // Cache response for 60 seconds
