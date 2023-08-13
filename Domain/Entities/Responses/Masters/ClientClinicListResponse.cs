@@ -42,7 +42,7 @@
         public string State { get; set; }
         public string Description { get; set; }
         public string PhoneNumber { get; set; }
-        public string Entity { get; set; }
+        //public string Entity { get; set; }
         public string WebUrl { get; set; }
         public string MapUrl { get; set; }
     }

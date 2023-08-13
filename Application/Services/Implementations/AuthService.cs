@@ -43,7 +43,7 @@ namespace Application.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<RegisterResponse> RegisterUserAsync(FullRegisterClinicRequest data)
+        public async Task<RegisterResponse> RegisterUserAsync(FullRegisterClinicRequest data, string auth)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace Application.Services.Implementations
                     var initField = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, $"Master/GenerateInitDBField/{newDBName}");
 
                     var clinicRequestJson = JsonConvert.SerializeObject(data.ClinicData);
-                    var userClinic = await _restAPIService.PostResponse<Clinics>(APIType.Client, $"Data/Clinics", clinicRequestJson);
+                    var userClinic = await _restAPIService.PostResponse<Clinics>(APIType.Client, $"Data/ClinicsEntity/" + newDBName, clinicRequestJson, auth);
                 }
                 return response;
             }

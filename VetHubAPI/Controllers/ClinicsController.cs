@@ -1,9 +1,12 @@
 ﻿using Application.Services.Contracts;
+using Application.Services.Implementations;
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Clients;
+using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
+using Domain.Entities.Responses;
 using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -14,47 +17,94 @@ namespace VetHubAPI.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Superadmin")]
-    public class ClinicsController : Controller
+    public class AdminClinicsController : Controller
     {
         private readonly IRestAPIService _restAPIService;
-        public ClinicsController(IRestAPIService restAPIService)
+        private readonly ILogger<AdminClinicsController> _logger;
+        private readonly HttpClient _httpClient;
+
+        public AdminClinicsController(IRestAPIService restAPIService,
+            ILoggerFactory loggerFactory)
         {
             _restAPIService = restAPIService;
+            _logger = loggerFactory.CreateLogger<AdminClinicsController>();
         }
 
-        //[HttpGet("List")]
-        //[ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        //public async Task<IActionResult> GetClinicList()
-        //{
-        //    try
-        //    {
-        //        //Get the AuthToken
-        //        string authToken = HttpContext.Request.Headers["Authorization"];
-        //        var response = await _restAPIService.GetResponseFilter<DataResultDTO<ClientClinicListResponse>, ClinicsFilter>(APIType.Master, "Clinics/List", authToken);
-        //        return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //}
+        [HttpGet("List")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetClinicList()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<UserDataResponse>>(APIType.Master, "Auth/User/Entity", authToken);
+                var dataList = new List<ClientClinicListResponse>();
 
-        //[HttpGet("Detail/{id}")]
-        //[ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        //public async Task<IActionResult> GetClinicDetail(int id)
-        //{
-        //    try
-        //    {
-        //        //Get the AuthToken
-        //        string authToken = HttpContext.Request.Headers["Authorization"];
-        //        var response = await _restAPIService.GetResponseFilter<ClientClinicDetailResponse, ClinicsFilter>(APIType.Master, $"Clinics/detail/{id}", authToken);
-        //        return ResponseUtil.CustomOk(response, 200);
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //}
+                foreach (var item in response)
+                {
+                    try
+                    {
+                        var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/ClinicsEntity/" + item.Entity, authToken);
+
+                        var clinicData = new ClientClinicResponse
+                        {
+                            Id = responseClinic.Id,
+                            Name = responseClinic.Name,
+                            Address = responseClinic.Address,
+                            City = responseClinic.City,
+                            Description = responseClinic.Description,
+                            Email = responseClinic.Email,
+                            Logo = responseClinic.Logo,
+                            MapUrl = responseClinic.MapUrl,
+                            PhoneNumber = responseClinic.PhoneNumber,
+                            State = responseClinic.State,
+                            WebUrl = responseClinic.WebUrl
+                        };
+
+                        var data = new ClientClinicListResponse();
+                        var ownerData = new ClientOwnerResponse
+                        {
+                            Id = item.Id,
+                            Name = item.Name,
+                            Email = item.Email
+                        };
+                        data.OwnerData = ownerData;
+                        data.JoinDate = item.CreatedAt;
+                        data.Id = item.Id;
+                        data.ClinicData = clinicData;
+                        dataList.Add(data);
+                    }
+                    catch
+                    {
+                        _logger.LogInformation("User Clinic of " + item.Email + " not found");
+                    }
+
+                }
+                return ResponseUtil.CustomOk(dataList, 200, dataList.Count());
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("Detail/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetClinicDetail(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponseFilter<ClientClinicDetailResponse, ClinicsFilter>(APIType.Master, $"Clinics/detail/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
         //[HttpGet]
         //[ResponseCache(Duration = 60)] // Cache response for 60 seconds

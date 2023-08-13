@@ -27,9 +27,13 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost("Register")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Register(FullRegisterClinicRequest data)
         {
-            var result = await _authService.RegisterUserAsync(data);
+            //Get the AuthToken
+            string authToken = HttpContext.Request.Headers["Authorization"];
+            var user = User;
+            var result = await _authService.RegisterUserAsync(data, authToken);
             return ResponseUtil.CustomOk(result, 200);
         }
 
