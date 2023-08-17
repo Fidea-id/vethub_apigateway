@@ -6,5 +6,6 @@ namespace Application.Services.Contracts
     {
         Uri GetAPIUri(APIType type, string query = null);
         Uri GetBaseUri(string query = null);
+        Uri GetBaseWebUri(string query = null);
     }
 }

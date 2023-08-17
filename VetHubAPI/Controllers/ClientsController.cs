@@ -83,8 +83,7 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> UploadOwnersPicture(IFormFile file)
         {
             //Get the AuthToken
-            var user = User.FindFirstValue("Id");
-            var upload = await _fileUploadService.UploadImageAsync(file, $"owners/{user}");
+            var upload = await _fileUploadService.UploadImageAsync(file, $"usr/o");
             return Ok(upload);
         }
 
@@ -213,8 +212,7 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> UploadPatientsPicture(IFormFile file)
         {
             //Get the AuthToken
-            var user = User.FindFirstValue("Id");
-            var upload = await _fileUploadService.UploadImageAsync(file, $"patients/{user}");
+            var upload = await _fileUploadService.UploadImageAsync(file, $"usr/p");
             return Ok(upload);
         }
 

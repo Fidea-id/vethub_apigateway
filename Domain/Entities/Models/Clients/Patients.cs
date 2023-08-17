@@ -10,6 +10,8 @@ namespace Domain.Entities.Models.Clients
         public string Photo { get; set; }
         [MaxLength(25)]
         public string Species { get; set; }
+        public string Color { get; set; }
+        public bool IsAlive { get; set; }
         [MaxLength(50)]
         public string Breed { get; set; }
         [MaxLength(10)]

@@ -9,6 +9,8 @@
         public string Species { get; set; }
         public string Breed { get; set; }
         public string Gender { get; set; }
+        public string Color { get; set; }
+        public bool IsAlive { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool Vaccinated { get; set; }
         public bool IsActive { get; set; }

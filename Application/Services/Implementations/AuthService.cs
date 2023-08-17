@@ -159,7 +159,7 @@ namespace Application.Services.Implementations
                 if (responseGlobal != null)
                 {
                     //update profile client
-                    var responseClient = await _restAPIService.PutResponse<UserProfileResponse>(APIType.Client, "Profile", response.Id, obj, auth);
+                    var responseClient = await _restAPIService.PutResponse<UserProfileResponse>(APIType.Client, "Profile/GlobalId", response.Id, obj, auth);
                     //combine profile
                     response = CombineMasterClientProfile(responseGlobal, responseClient);
                 }

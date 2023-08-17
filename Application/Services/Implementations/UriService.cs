@@ -38,5 +38,14 @@ namespace Application.Services.Implementations
             var modifiedUri = stringURI + "" + query;
             return new Uri(modifiedUri);
         }
+        public Uri GetBaseWebUri(string query = null)
+        {
+            var stringURI = _baseUri.APIWEBURI;
+            var uri = new Uri(stringURI);
+            if (query == null) return uri;
+
+            var modifiedUri = stringURI + "" + query;
+            return new Uri(modifiedUri);
+        }
     }
 }

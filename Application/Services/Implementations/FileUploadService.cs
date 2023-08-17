@@ -70,7 +70,7 @@ namespace Application.Services.Implementations
                     throw new Exception("No file provided");
                 }
 
-                var baseUrl = _uriService.GetBaseUri();
+                var baseUrl = _uriService.GetBaseWebUri();
                 var uniqueFileName = FormatUtil.GenerateUniqueFileName(file.FileName);
                 var url = $"{baseUrl}Upload/v/{folder}/{uniqueFileName}";
 

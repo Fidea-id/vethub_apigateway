@@ -1,4 +1,5 @@
 ﻿using Application.Services.Contracts;
+using Application.Services.Implementations;
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -19,10 +21,12 @@ namespace VetHubAPI.Controllers
     public class DataController : Controller
     {
         private readonly IRestAPIService _restAPIService;
+        private readonly IFileUploadService _fileUploadService;
 
-        public DataController(IRestAPIService restAPIAnimal)
+        public DataController(IRestAPIService restAPIAnimal, IFileUploadService fileUploadService)
         {
             _restAPIService = restAPIAnimal;
+            _fileUploadService = fileUploadService;
         }
 
         #region Clinics
@@ -58,6 +62,15 @@ namespace VetHubAPI.Controllers
             {
                 throw;
             }
+        }
+
+        [HttpPost("Clinics/UploadLogo")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> UploadClinicLogo(IFormFile file)
+        {
+            //Get the AuthToken
+            var upload = await _fileUploadService.UploadImageAsync(file, $"clg");
+            return Ok(upload);
         }
 
         [HttpPut("Clinics/{id}")]
