@@ -1,6 +1,6 @@
 ﻿using DevExpress.Xpo;
 
-namespace Domain.Entities.Models.Clients
+namespace Domain.Entities.Models.Clients.XPO
 {
     [MapInheritance(MapInheritanceType.OwnTable)]
     [Persistent("OrdersPayment")]

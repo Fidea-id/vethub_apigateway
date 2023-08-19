@@ -1,5 +1,4 @@
 ﻿using Application.Services.Contracts;
-using Application.Services.Implementations;
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
@@ -11,7 +10,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {

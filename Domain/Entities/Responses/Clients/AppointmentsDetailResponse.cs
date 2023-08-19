@@ -23,5 +23,6 @@
         public int StatusId { get; set; }
         public string StatusName { get; set; }
         public string Notes { get; set; }
+        public double Total { get; set; }
     }
 }

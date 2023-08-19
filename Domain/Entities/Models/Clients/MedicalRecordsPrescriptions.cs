@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Entities.Models.Clients
+﻿namespace Domain.Entities.Models.Clients
 {
-    public class MedicalRecordsPrescriptions: BaseEntity
+    public class MedicalRecordsPrescriptions : BaseEntity
     {
         public int MedicalRecordsId { get; set; }
         public string ProductName { get; set; }

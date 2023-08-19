@@ -3,18 +3,21 @@
 namespace Domain.Entities.Models.Clients.XPO
 {
     [MapInheritance(MapInheritanceType.OwnTable)]
-    [Persistent("Diagnoses")]
-    public class DiagnosesXPO : XPLiteObject
+    [Persistent("MedicalRecordsNotes")]
+    public class MedicalRecordsNotesXPO : XPLiteObject
     {
-        public DiagnosesXPO(Session session) : base(session) { }
+        public MedicalRecordsNotesXPO(Session session) : base(session) { }
 
         [Key(true)]
         public int Id { get; set; }
-        public string Name { get; set; }
         [DbType("LONGTEXT")]
-        public string Description { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        public int MedicalRecordsId { get; set; }
+        public string Type { get; set; }
+        public string Title { get; set; }
+        public string Value { get; set; }
     }
 }
