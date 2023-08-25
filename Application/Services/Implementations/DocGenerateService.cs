@@ -1,14 +1,286 @@
 ﻿using Application.Services.Contracts;
+using Application.Utils;
+using Domain.Entities.DTOs;
+using Domain.Entities;
 using Domain.Entities.DTOs.Clients;
+using Domain.Entities.Filters.Clients;
+using Domain.Entities.Models.Clients;
+using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
+using Domain.Utils;
+using System.Net;
+using System.Text.RegularExpressions;
+using Xceed.Document.NET;
+using Xceed.Words.NET;
 
 namespace Application.Services.Implementations
 {
     public class DocGenerateService : IDocGenerateService
     {
-        public Task<DocGenerateResponse> GenerateSuratKematianAsync(SuratKematianData data)
+        private IUriService _uriService;
+        private IRestAPIService _restAPIService;
+
+        public DocGenerateService(IUriService uriService, IRestAPIService restAPIService)
         {
-            throw new NotImplementedException();
+            _uriService = uriService;
+            _restAPIService = restAPIService;
+        }
+
+        public async Task<DocGenerateResponse> GenerateSuratKematianAsync(string userId, DocsKematianRequest request, string auth)
+        {
+            try
+            {
+                var baseUrl = _uriService.GetBaseUri();
+                //TODO: define the rest dto data
+                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/Clinics", auth);
+                var responseStaff = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/"+ userId, auth);
+                var responseMedicalRecords = await _restAPIService.GetResponse<MedicalRecords>(APIType.Client, "MedicalRecords/" + request.MedicalRecordsId, auth);
+                var responseAppointment = await _restAPIService.GetResponse<Appointments>(APIType.Client, "Appointments/" + responseMedicalRecords.AppointmentId, auth);
+                var responsePatient = await _restAPIService.GetResponse<Patients>(APIType.Client, "Patients/" + responseAppointment.PatientsId, auth);
+                var responsePatientStatistic = await _restAPIService.GetResponse<IEnumerable<PatientsStatisticResponse>>(APIType.Client, "Patients/Statistic/" + responseAppointment.PatientsId, auth);
+                var responseOwner = await _restAPIService.GetResponse<Owners>(APIType.Client, "Owners/" + responseAppointment.OwnersId, auth);
+                var data = new SuratKematianDto();
+                data.RequestData = request;
+                data.ClinicData = responseClinic;
+                data.PatientData = responsePatient;
+                data.OwnerData = responseOwner;
+                data.MedicalData = responseMedicalRecords;
+                data.VetName = responseStaff.Name;
+                data.PatientLatestStatistic = responsePatientStatistic;
+
+                string templatePath = PathHelper.GetTemplatePath(TemplateType.SuratKematian);
+                string outputPath = PathHelper.GetGenerateOutputPath(TemplateType.SuratKematian, userId);
+                string fileName = $"{data.MedicalData.Code}_SuratKematianGenerated.docx";
+                string outputFile = Path.Combine(outputPath, fileName);
+                // Check if the target folder exists
+                if (!Directory.Exists(outputPath))
+                {
+                    // Create the folder if it does not exist
+                    Directory.CreateDirectory(outputPath);
+                }
+
+                var url = $"{baseUrl}Generate/{userId}/{fileName}";
+                //populate data
+                var patientAge = FormatUtil.GetAgeInfo(data.PatientData.DateOfBirth);
+                string diedDateString = data.RequestData.DiedTime.ToString("dd"); // Day of the month
+                string diedMonthString = data.RequestData.DiedTime.ToString("MMMM"); // Full month name
+                string diedYearString = data.RequestData.DiedTime.ToString("yyyy"); // Year
+                string diedTimeString = data.RequestData.DiedTime.ToString("HH:mm"); // Time in "HH:mm" format
+
+                var clinicLogo = data.ClinicData.Logo;
+                if(string.IsNullOrEmpty(clinicLogo))
+                {
+                    clinicLogo = "https://vethub.id/images/vethubsmall.png";
+                }
+
+                Dictionary<string, string> replacementValues = new Dictionary<string, string>
+                {
+                    { "{%clinic_logo1}", "{IMAGE_URL}" + clinicLogo },
+                    { "{%clinic_logo2}", "{IMAGE_URL}" + clinicLogo },
+                    { "{clinic_name}", data.ClinicData.Name },
+                    { "{clinic_address}", data.ClinicData.Address },
+                    { "{clinic_phone}", data.ClinicData.PhoneNumber },
+                    { "{clinic_email}", data.ClinicData.Email },
+                    { "{patient_name}", data.PatientData.Name },
+                    { "{patient_species}", data.PatientData.Species },
+                    { "{patient_color}", data.PatientData.Color },
+                    { "{patient_age}", patientAge },
+                    { "{patient_gender}", data.PatientData.Gender },
+                    { "{patient_breed}", data.PatientData.Breed },
+                    { "{patient_weight}", data.PatientLatestStatistic.Where(x => x.Type == "Weight").Select(x => x.Latest).FirstOrDefault() },
+                    { "{medical_record_id}", data.MedicalData.Code },
+                    { "{owner_name}", data.OwnerData.Name },
+                    { "{owner_address}", data.OwnerData.Address },
+                    { "{owner_phone}", data.OwnerData.PhoneNumber },
+                    { "{died_date}", diedDateString },
+                    { "{died_month}", diedMonthString },
+                    { "{died_year}", diedYearString },
+                    { "{died_time}", diedTimeString },
+                    { "{died_reason}", data.RequestData.DiedReason },
+                    { "{died_burried_info}", data.RequestData.DiedReason },
+                    { "{city}", data.ClinicData.City },
+                    { "{year}", DateTime.Now.ToString("yyyy") },
+                    { "{vet_name}", data.VetName }
+                };
+                //generate file
+                GenerateDocX(templatePath, outputFile, replacementValues);
+
+                //return new response
+                DocGenerateResponse response = new DocGenerateResponse
+                {
+                    Filename = fileName,
+                    Type = "SuratKematian",
+                    Url = url
+                };
+                return response;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        private void GenerateDocX(string templatePath, string outputPath, Dictionary<string, string> replacementValues)
+        {
+            using (DocX templateDoc = DocX.Load(templatePath))
+            {
+                foreach (var keyValue in replacementValues)
+                {
+                    if(keyValue.Value != null)
+                    {
+                        if (keyValue.Value.StartsWith("{IMAGE_URL}"))
+                        {
+                            string imageUrl = keyValue.Value.Substring("{IMAGE_URL}".Length);
+                            using (WebClient webClient = new WebClient())
+                            {
+                                byte[] imageBytes = webClient.DownloadData(imageUrl);
+                                using (MemoryStream imageStream = new MemoryStream(imageBytes))
+                                {
+                                    var picture = templateDoc.AddImage(imageStream);
+                                    Xceed.Document.NET.Picture p = picture.CreatePicture();
+
+                                    // Get the width and height of the original image
+                                    float originalWidth = p.Width;
+                                    float originalHeight = p.Height;
+
+                                    // Calculate the new dimensions (you can customize these values)
+                                    float newWidth = 75; // Set the desired new width
+                                    float aspectRatio = originalWidth / originalHeight;
+                                    float newHeight = newWidth / aspectRatio;
+
+                                    // Resize the picture
+                                    p.Width = newWidth;
+                                    p.Height = newHeight;
+
+                                    // Find the paragraph with the image placeholder and replace it
+                                    foreach (var paragraph in templateDoc.Paragraphs)
+                                    {
+                                        if (paragraph.Text.Contains(keyValue.Key))
+                                        {
+                                            var run = paragraph.InsertPicture(p);
+                                            paragraph.ReplaceText(keyValue.Key, "");
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            templateDoc.ReplaceText(keyValue.Key, keyValue.Value);
+                        }
+                    }
+
+                }
+                templateDoc.SaveAs(outputPath);
+            }
+        }
+        private void GenerateDocXWithTables(string templatePath, string outputPath, Dictionary<string, string> replacementValues, Dictionary<string, List<List<string>>> tableDataDictionary)
+        {
+            using (DocX templateDoc = DocX.Load(templatePath))
+            {
+                foreach (var keyValue in replacementValues)
+                {
+                    if (keyValue.Value.StartsWith("{IMAGE_URL}"))
+                    {
+                        string imageUrl = keyValue.Value.Substring("{IMAGE_URL}".Length);
+                        using (WebClient webClient = new WebClient())
+                        {
+                            byte[] imageBytes = webClient.DownloadData(imageUrl);
+                            using (MemoryStream imageStream = new MemoryStream(imageBytes))
+                            {
+                                var picture = templateDoc.AddImage(imageStream);
+                                Xceed.Document.NET.Picture p = picture.CreatePicture();
+
+                                // Get the width and height of the original image
+                                float originalWidth = p.Width;
+                                float originalHeight = p.Height;
+
+                                // Calculate the new dimensions (you can customize these values)
+                                float newWidth = 75; // Set the desired new width
+                                float aspectRatio = originalWidth / originalHeight;
+                                float newHeight = newWidth / aspectRatio;
+
+                                // Resize the picture
+                                p.Width = newWidth;
+                                p.Height = newHeight;
+
+                                // Find the paragraph with the image placeholder and replace it
+                                foreach (var paragraph in templateDoc.Paragraphs)
+                                {
+                                    if (paragraph.Text.Contains(keyValue.Key))
+                                    {
+                                        var run = paragraph.InsertPicture(p);
+                                        paragraph.ReplaceText(keyValue.Key, "");
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        templateDoc.ReplaceText(keyValue.Key, keyValue.Value);
+                    }
+
+                }
+
+                // Add and populate tables
+                foreach (var tableIdentifier in tableDataDictionary.Keys)
+                {
+                    if (tableIdentifier.StartsWith("{table"))
+                    {
+                        var index = ExtractNumber(tableIdentifier);
+                        // Extract table index from identifier
+                        int tableIndex = int.Parse(index);
+
+                        Table table = templateDoc.Tables[tableIndex];
+                        if (table != null)
+                        {
+                            List<List<string>> tableData = tableDataDictionary[tableIdentifier];
+                            int rowIndex = 1;
+                            foreach (var rowData in tableData)
+                            {
+                                if (rowIndex < table.Rows.Count)
+                                {
+                                    for (int colIndex = 0; colIndex < rowData.Count; colIndex++)
+                                    {
+                                        table.Rows[rowIndex].Cells[colIndex].Paragraphs[0].Append(rowData[colIndex]);
+                                    }
+                                }
+                                else
+                                {
+                                    // Insert new row and populate cells
+                                    Row newRow = table.InsertRow();
+                                    for (int colIndex = 0; colIndex < rowData.Count; colIndex++)
+                                    {
+                                        newRow.Cells[colIndex].Paragraphs[0].Append(rowData[colIndex]);
+                                    }
+                                }
+
+                                rowIndex++;
+                            }
+                        }
+                    }
+                }
+                templateDoc.SaveAs(outputPath);
+            }
+        }
+        private string ExtractNumber(string input)
+        {
+            // Using regular expression to match numbers within curly braces
+            Match match = Regex.Match(input, @"\{table_(\d+)\}");
+
+            if (match.Success)
+            {
+                // Extracting the captured number group
+                string number = match.Groups[1].Value;
+                return number;
+            }
+            else
+            {
+                return "Number not found.";
+            }
         }
     }
 }

@@ -4,12 +4,14 @@ using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.Filters;
 using Domain.Entities.Models.Clients;
+using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -25,6 +27,23 @@ namespace VetHubAPI.Controllers
         {
             _restAPIService = restAPIAnimal;
             _fileUploadService = fileUploadService;
+        }
+
+        [HttpGet("DocsType")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetDocsType()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<DocsType>(APIType.Master, "PublicData/DocsType", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         #region Clinics
@@ -67,7 +86,8 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> UploadClinicLogo(IFormFile file)
         {
             //Get the AuthToken
-            var upload = await _fileUploadService.UploadImageAsync(file, $"clg");
+            var userId = User.FindFirstValue("Id");
+            var upload = await _fileUploadService.UploadImageAsync(file, $"clg/{userId}");
             return Ok(upload);
         }
 

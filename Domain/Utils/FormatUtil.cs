@@ -7,6 +7,53 @@ namespace Domain.Utils
 {
     public static class FormatUtil
     {
+        public static string GenerateMedicalRecordCode(string latest = null)
+        {
+            DateTime currentDate = DateTime.Now;
+            string year = currentDate.Year.ToString().Substring(2);
+            string month = currentDate.Month.ToString("D2");
+
+            int latestYear = 0;
+            int latestMonth = 0;
+            int latestNumber = 0;
+
+            if (latest != null && latest.Length == 12) // Check if the latest code has the correct format
+            {
+                int.TryParse(latest.Substring(3, 2), out latestYear);
+                int.TryParse(latest.Substring(5, 2), out latestMonth);
+                int.TryParse(latest.Substring(10), out latestNumber);
+            }
+
+            if (latestYear != currentDate.Year || latestMonth != currentDate.Month)
+            {
+                latestNumber = 0; // Reset the number if not in the current month and year
+            }
+
+            latestNumber++; // Increment the latest number
+
+            string recordNumber = latestNumber.ToString("D4");
+            string medicalRecordCode = $"MR_{year}{month}{recordNumber}";
+            return medicalRecordCode;
+        }
+        public static string GetAgeInfo(DateTime dateOfBirth)
+        {
+            DateTime currentDate = DateTime.Now;
+            int years = currentDate.Year - dateOfBirth.Year;
+            int months = currentDate.Month - dateOfBirth.Month;
+
+            if (currentDate.Day < dateOfBirth.Day)
+            {
+                months--;
+            }
+
+            if (months < 0)
+            {
+                years--;
+                months += 12;
+            }
+
+            return $"{years} years and {months} months";
+        }
         public static string GetTimeAgo(DateTime checkDate)
         {
             TimeSpan timeDifference = DateTime.Now - checkDate;

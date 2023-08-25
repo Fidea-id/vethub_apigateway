@@ -60,7 +60,8 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> UploadProfilePicture(IFormFile file)
         {
             //Get the AuthToken
-            var check = await _authService.UploadProfilePicture(file, "usr");
+            var userId = User.FindFirstValue("Id");
+            var check = await _authService.UploadProfilePicture(file, userId);
             return Ok(check);
         }
 

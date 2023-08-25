@@ -22,5 +22,10 @@
         IOrdersPaymentRepository OrdersPaymentRepository { get; }
         IPaymentMethodRepository PaymentMethodRepository { get; }
         IClinicRepository ClinicsRepository { get; }
+        IMedicalRecordsRepository MedicalRecordsRepository { get; }
+        IMedicalRecordsDiagnosesRepository MedicalRecordsDiagnosesRepository { get; }
+        IMedicalRecordsNotesRepository MedicalRecordsNotesRepository { get; }
+        IMedicalRecordsPrescriptionsRepository MedicalRecordsPrescriptionsRepository { get; }
+        IPrescriptionFrequentsRepository PrescriptionFrequentsRepository { get; }
     }
 }

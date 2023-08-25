@@ -1,4 +1,5 @@
 ﻿using Application.Services.Contracts;
+using Application.Utils;
 using Domain.Utils;
 using Microsoft.AspNetCore.Http;
 
@@ -27,7 +28,7 @@ namespace Application.Services.Implementations
                 var url = $"{baseUrl}Upload/d/{folder}/{uniqueFileName}";
 
                 // Get the full path to the wwwroot directory
-                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Upload", "d", folder);
+                string folderPath = PathHelper.GetUploadPath(UploadPathType.Images, folder);
                 string filePath = Path.Combine(folderPath, uniqueFileName);
 
 
@@ -75,9 +76,8 @@ namespace Application.Services.Implementations
                 var url = $"{baseUrl}Upload/v/{folder}/{uniqueFileName}";
 
                 // Get the full path to the wwwroot directory
-                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Upload", "v", folder);
+                string folderPath = PathHelper.GetUploadPath(UploadPathType.Images, folder);
                 string filePath = Path.Combine(folderPath, uniqueFileName);
-
 
                 // Check if the target folder exists
                 if (!Directory.Exists(folderPath))

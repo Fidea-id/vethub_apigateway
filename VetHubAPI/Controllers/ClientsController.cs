@@ -4,12 +4,14 @@ using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
+using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -82,7 +84,8 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> UploadOwnersPicture(IFormFile file)
         {
             //Get the AuthToken
-            var upload = await _fileUploadService.UploadImageAsync(file, $"usr/o");
+            var userId = User.FindFirstValue("Id");
+            var upload = await _fileUploadService.UploadImageAsync(file, $"o/{userId}");
             return Ok(upload);
         }
 
@@ -211,7 +214,8 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> UploadPatientsPicture(IFormFile file)
         {
             //Get the AuthToken
-            var upload = await _fileUploadService.UploadImageAsync(file, $"usr/p");
+            var userId = User.FindFirstValue("Id");
+            var upload = await _fileUploadService.UploadImageAsync(file, $"p/{userId}");
             return Ok(upload);
         }
 
