@@ -176,5 +176,22 @@ namespace VetHubAPI.Controllers
                 throw;
             }
         }
+
+        [HttpPost("CheckupDone")]
+        public async Task<IActionResult> MedicalCheckupDone([FromBody] MedicalRecordsDetailRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<AppointmentsDetailResponse>(APIType.Client, "Appointments/StatusChange", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }
