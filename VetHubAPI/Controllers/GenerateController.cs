@@ -46,5 +46,45 @@ namespace VetHubAPI.Controllers
 
             return Ok(postNote);
         }
+
+        [HttpPost("SuratPermintaanPulang")]
+        public async Task<IActionResult> GenerateSuratPermintaanPulang(DocsPermintaanPulangRequest request)
+        {
+            //Get the AuthToken
+            string authToken = HttpContext.Request.Headers["Authorization"];
+            var userId = User.FindFirstValue("Id");
+            var generate = await _generateService.GenerateSuratPermintaanPulangAsync(userId, request, authToken);
+            // post medicalrecordsnote data
+            var noteRequest = new MedicalRecordsNotesRequest
+            {
+                MedicalRecordsId = request.MedicalRecordsId,
+                Title = generate.Filename,
+                Type = generate.Type,
+                Value = generate.Url
+            };
+            var postNote = await _restAPIService.PostResponse<MedicalRecordsNotesResponse>(APIType.Client, "MedicalRecords/Notes", JsonConvert.SerializeObject(noteRequest), authToken);
+
+            return Ok(postNote);
+        }
+
+        [HttpPost("SuratRujukan")]
+        public async Task<IActionResult> GenerateSuratRujukan(DocsRujukanRequest request)
+        {
+            //Get the AuthToken
+            string authToken = HttpContext.Request.Headers["Authorization"];
+            var userId = User.FindFirstValue("Id");
+            var generate = await _generateService.GenerateSuratRujukanAsync(userId, request, authToken);
+            // post medicalrecordsnote data
+            var noteRequest = new MedicalRecordsNotesRequest
+            {
+                MedicalRecordsId = request.MedicalRecordsId,
+                Title = generate.Filename,
+                Type = generate.Type,
+                Value = generate.Url
+            };
+            var postNote = await _restAPIService.PostResponse<MedicalRecordsNotesResponse>(APIType.Client, "MedicalRecords/Notes", JsonConvert.SerializeObject(noteRequest), authToken);
+
+            return Ok(postNote);
+        }
     }
 }

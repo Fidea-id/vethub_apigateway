@@ -12,6 +12,8 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
+using System.Reflection.Metadata;
+using Newtonsoft.Json.Linq;
 
 namespace Application.Services.Implementations
 {
@@ -30,22 +32,22 @@ namespace Application.Services.Implementations
         {
             try
             {
-                var baseUrl = _uriService.GetBaseUri();
+                var baseUrl = _uriService.GetBaseWebUri();
                 //TODO: define the rest dto data
                 var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/Clinics", auth);
-                var responseStaff = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/"+ userId, auth);
                 var responseMedicalRecords = await _restAPIService.GetResponse<MedicalRecords>(APIType.Client, "MedicalRecords/" + request.MedicalRecordsId, auth);
+                var responseVet = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + responseMedicalRecords.StaffId, auth);
                 var responseAppointment = await _restAPIService.GetResponse<Appointments>(APIType.Client, "Appointments/" + responseMedicalRecords.AppointmentId, auth);
                 var responsePatient = await _restAPIService.GetResponse<Patients>(APIType.Client, "Patients/" + responseAppointment.PatientsId, auth);
                 var responsePatientStatistic = await _restAPIService.GetResponse<IEnumerable<PatientsStatisticResponse>>(APIType.Client, "Patients/Statistic/" + responseAppointment.PatientsId, auth);
                 var responseOwner = await _restAPIService.GetResponse<Owners>(APIType.Client, "Owners/" + responseAppointment.OwnersId, auth);
-                var data = new SuratKematianDto();
+                var data = new DataSuratDto<DocsKematianRequest>();
                 data.RequestData = request;
                 data.ClinicData = responseClinic;
                 data.PatientData = responsePatient;
                 data.OwnerData = responseOwner;
                 data.MedicalData = responseMedicalRecords;
-                data.VetName = responseStaff.Name;
+                data.VetName = responseVet.Name;
                 data.PatientLatestStatistic = responsePatientStatistic;
 
                 string templatePath = PathHelper.GetTemplatePath(TemplateType.SuratKematian);
@@ -59,7 +61,7 @@ namespace Application.Services.Implementations
                     Directory.CreateDirectory(outputPath);
                 }
 
-                var url = $"{baseUrl}Generate/{userId}/{fileName}";
+                var url = $"{baseUrl}Generate/{userId}/SuratKematian/{fileName}";
                 //populate data
                 var patientAge = FormatUtil.GetAgeInfo(data.PatientData.DateOfBirth);
                 string diedDateString = data.RequestData.DiedTime.ToString("dd"); // Day of the month
@@ -114,67 +116,273 @@ namespace Application.Services.Implementations
                 };
                 return response;
             }
-            catch (Exception e)
+            catch
             {
-                throw new Exception(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<DocGenerateResponse> GenerateSuratPermintaanPulangAsync(string userId, DocsPermintaanPulangRequest request, string auth)
+        {
+            try
+            {
+                var baseUrl = _uriService.GetBaseWebUri();
+                //TODO: define the rest dto data
+                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/Clinics", auth);
+                var responseStaff = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + userId, auth);
+                var responseMedicalRecords = await _restAPIService.GetResponse<MedicalRecords>(APIType.Client, "MedicalRecords/" + request.MedicalRecordsId, auth);
+                var responseVet = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + responseMedicalRecords.StaffId, auth);
+                var responseAppointment = await _restAPIService.GetResponse<Appointments>(APIType.Client, "Appointments/" + responseMedicalRecords.AppointmentId, auth);
+                var responsePatient = await _restAPIService.GetResponse<Patients>(APIType.Client, "Patients/" + responseAppointment.PatientsId, auth);
+                var responsePatientStatistic = await _restAPIService.GetResponse<IEnumerable<PatientsStatisticResponse>>(APIType.Client, "Patients/Statistic/" + responseAppointment.PatientsId, auth);
+                var responseOwner = await _restAPIService.GetResponse<Owners>(APIType.Client, "Owners/" + responseAppointment.OwnersId, auth);
+                var data = new DataSuratDto<DocsPermintaanPulangRequest>();
+                data.RequestData = request;
+                data.ClinicData = responseClinic;
+                data.PatientData = responsePatient;
+                data.OwnerData = responseOwner;
+                data.MedicalData = responseMedicalRecords;
+                data.VetName = responseVet.Name;
+                data.StaffName = responseStaff.Name;
+                data.PatientLatestStatistic = responsePatientStatistic;
+
+                string templatePath = PathHelper.GetTemplatePath(TemplateType.SuratTidakSetuju);
+                string outputPath = PathHelper.GetGenerateOutputPath(TemplateType.SuratTidakSetuju, userId);
+                string fileName = $"{data.MedicalData.Code}_SuratPermintaanPulangAtauTidakSetujuGenerated.docx";
+                string outputFile = Path.Combine(outputPath, fileName);
+                // Check if the target folder exists
+                if (!Directory.Exists(outputPath))
+                {
+                    // Create the folder if it does not exist
+                    Directory.CreateDirectory(outputPath);
+                }
+
+                var url = $"{baseUrl}Generate/{userId}/SuratPermintaanPulangAtauTidakSetuju/{fileName}";
+                //populate data
+                var patientAge = FormatUtil.GetAgeInfo(data.PatientData.DateOfBirth);
+                string dateString = data.MedicalData.StartDate.ToString("dd MMMM yyyy"); // Year
+
+                var clinicLogo = data.ClinicData.Logo;
+                if (string.IsNullOrEmpty(clinicLogo))
+                {
+                    clinicLogo = "https://vethub.id/images/vethubsmall.png";
+                }
+
+                Dictionary<string, string> replacementValues = new Dictionary<string, string>
+                {
+                    { "{%clinic_logo}", "{IMAGE_URL}" + clinicLogo },
+                    { "{clinic_name}", data.ClinicData.Name },
+                    { "{clinic_address}", data.ClinicData.Address },
+                    { "{clinic_phone}", data.ClinicData.PhoneNumber },
+                    { "{clinic_email}", data.ClinicData.Email },
+                    { "{owner_name}", data.OwnerData.Name },
+                    { "{owner_address}", data.OwnerData.Address },
+                    { "{owner_phone}", data.OwnerData.PhoneNumber },
+                    { "{owner_number_id}", data.RequestData.OwnerIdNumber },
+                    { "{patient_name}", data.PatientData.Name },
+                    { "{patient_species}", data.PatientData.Species },
+                    { "{patient_color}", data.PatientData.Color },
+                    { "{patient_age}", patientAge },
+                    { "{patient_gender}", data.PatientData.Gender },
+                    { "{patient_breed}", data.PatientData.Breed },
+                    { "{date}", dateString },
+                    { "{city}", data.ClinicData.City },
+                    { "{year}", DateTime.Now.ToString("yyyy") },
+                    { "{staff_name}", data.StaffName },
+                    { "{vet_name}", data.VetName }
+                };
+                //generate file
+                GenerateDocX(templatePath, outputFile, replacementValues);
+
+                //return new response
+                DocGenerateResponse response = new DocGenerateResponse
+                {
+                    Filename = fileName,
+                    Type = "SuratPermintaanPulangAtauTidakSetuju",
+                    Url = url
+                };
+                return response;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<DocGenerateResponse> GenerateSuratRujukanAsync(string userId, DocsRujukanRequest request, string auth)
+        {
+            try
+            {
+                var baseUrl = _uriService.GetBaseWebUri();
+                //TODO: define the rest dto data
+                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/Clinics", auth);
+                var responseStaff = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + userId, auth);
+                var responseMedicalRecords = await _restAPIService.GetResponse<MedicalRecords>(APIType.Client, "MedicalRecords/" + request.MedicalRecordsId, auth);
+                var responseVet = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + responseMedicalRecords.StaffId, auth);
+                var responseAppointment = await _restAPIService.GetResponse<Appointments>(APIType.Client, "Appointments/" + responseMedicalRecords.AppointmentId, auth);
+                var responsePatient = await _restAPIService.GetResponse<Patients>(APIType.Client, "Patients/" + responseAppointment.PatientsId, auth);
+                var responsePatientStatistic = await _restAPIService.GetResponse<IEnumerable<PatientsStatisticResponse>>(APIType.Client, "Patients/Statistic/" + responseAppointment.PatientsId, auth);
+                var responseOwner = await _restAPIService.GetResponse<Owners>(APIType.Client, "Owners/" + responseAppointment.OwnersId, auth);
+                var data = new DataSuratDto<DocsRujukanRequest>();
+                data.RequestData = request;
+                data.ClinicData = responseClinic;
+                data.PatientData = responsePatient;
+                data.OwnerData = responseOwner;
+                data.MedicalData = responseMedicalRecords;
+                data.VetName = responseVet.Name;
+                data.StaffName = responseStaff.Name;
+                data.PatientLatestStatistic = responsePatientStatistic;
+
+                string templatePath = PathHelper.GetTemplatePath(TemplateType.SuratRujukan);
+                string outputPath = PathHelper.GetGenerateOutputPath(TemplateType.SuratRujukan, userId);
+                string fileName = $"{data.MedicalData.Code}_SuratRujukanGenerated.docx";
+                string outputFile = Path.Combine(outputPath, fileName);
+                // Check if the target folder exists
+                if (!Directory.Exists(outputPath))
+                {
+                    // Create the folder if it does not exist
+                    Directory.CreateDirectory(outputPath);
+                }
+
+                var url = $"{baseUrl}Generate/{userId}/SuratRujukan/{fileName}";
+                //populate data
+                var patientAge = FormatUtil.GetAgeInfo(data.PatientData.DateOfBirth);
+
+                var clinicLogo = data.ClinicData.Logo;
+                if (string.IsNullOrEmpty(clinicLogo))
+                {
+                    clinicLogo = "https://vethub.id/images/vethubsmall.png";
+                }
+
+                Dictionary<string, string> replacementValues = new Dictionary<string, string>
+                {
+                    { "{%clinic_logo}", "{IMAGE_URL}" + clinicLogo },
+                    { "{clinic_name}", data.ClinicData.Name },
+                    { "{clinic_address}", data.ClinicData.Address },
+                    { "{clinic_phone}", data.ClinicData.PhoneNumber },
+                    { "{clinic_email}", data.ClinicData.Email },
+                    { "{clinic_refferal_name}", data.RequestData.ClinicRefferalName },
+                    { "{owner_name}", data.OwnerData.Name },
+                    { "{owner_address}", data.OwnerData.Address },
+                    { "{owner_phone}", data.OwnerData.PhoneNumber },
+                    { "{patient_name}", data.PatientData.Name },
+                    { "{patient_species}", data.PatientData.Species },
+                    { "{patient_age}", patientAge },
+                    { "{patient_gender}", data.PatientData.Gender },
+                    { "{patient_breed}", data.PatientData.Breed },
+                    { "{patient_statistic_temperature}", data.PatientLatestStatistic.Where(x => x.Type == "Temperature").Select(x => x.Latest).FirstOrDefault() },
+                    { "{patient_statistic_weight}", data.PatientLatestStatistic.Where(x => x.Type == "Weight").Select(x => x.Latest).FirstOrDefault() },
+                    { "{BULLET_action}", string.Join("\n", data.RequestData.MedicalAction) },
+                    { "{city}", data.ClinicData.City },
+                    { "{year}", DateTime.Now.ToString("yyyy") },
+                    { "{vet_name}", data.VetName }
+                };
+                //generate file
+                GenerateDocX(templatePath, outputFile, replacementValues);
+
+                //return new response
+                DocGenerateResponse response = new DocGenerateResponse
+                {
+                    Filename = fileName,
+                    Type = "SuratRujukan",
+                    Url = url
+                };
+                return response;
+            }
+            catch
+            {
+                throw;
             }
         }
 
         private void GenerateDocX(string templatePath, string outputPath, Dictionary<string, string> replacementValues)
         {
-            using (DocX templateDoc = DocX.Load(templatePath))
+            try
             {
-                foreach (var keyValue in replacementValues)
+                using (DocX templateDoc = DocX.Load(templatePath))
                 {
-                    if(keyValue.Value != null)
+                    foreach (var keyValue in replacementValues)
                     {
-                        if (keyValue.Value.StartsWith("{IMAGE_URL}"))
+                        if(keyValue.Value != null)
                         {
-                            string imageUrl = keyValue.Value.Substring("{IMAGE_URL}".Length);
-                            using (WebClient webClient = new WebClient())
+                            if (keyValue.Value.StartsWith("{IMAGE_URL}"))
                             {
-                                byte[] imageBytes = webClient.DownloadData(imageUrl);
-                                using (MemoryStream imageStream = new MemoryStream(imageBytes))
+                                string imageUrl = keyValue.Value.Substring("{IMAGE_URL}".Length);
+                                using (WebClient webClient = new WebClient())
                                 {
-                                    var picture = templateDoc.AddImage(imageStream);
-                                    Xceed.Document.NET.Picture p = picture.CreatePicture();
-
-                                    // Get the width and height of the original image
-                                    float originalWidth = p.Width;
-                                    float originalHeight = p.Height;
-
-                                    // Calculate the new dimensions (you can customize these values)
-                                    float newWidth = 75; // Set the desired new width
-                                    float aspectRatio = originalWidth / originalHeight;
-                                    float newHeight = newWidth / aspectRatio;
-
-                                    // Resize the picture
-                                    p.Width = newWidth;
-                                    p.Height = newHeight;
-
-                                    // Find the paragraph with the image placeholder and replace it
-                                    foreach (var paragraph in templateDoc.Paragraphs)
+                                    byte[] imageBytes = webClient.DownloadData(imageUrl);
+                                    using (MemoryStream imageStream = new MemoryStream(imageBytes))
                                     {
-                                        if (paragraph.Text.Contains(keyValue.Key))
+                                        var picture = templateDoc.AddImage(imageStream);
+                                        Xceed.Document.NET.Picture p = picture.CreatePicture();
+
+                                        // Get the width and height of the original image
+                                        float originalWidth = p.Width;
+                                        float originalHeight = p.Height;
+
+                                        // Calculate the new dimensions (you can customize these values)
+                                        float newWidth = 75; // Set the desired new width
+                                        float aspectRatio = originalWidth / originalHeight;
+                                        float newHeight = newWidth / aspectRatio;
+
+                                        // Resize the picture
+                                        p.Width = newWidth;
+                                        p.Height = newHeight;
+
+                                        // Find the paragraph with the image placeholder and replace it
+                                        foreach (var paragraph in templateDoc.Paragraphs)
                                         {
-                                            var run = paragraph.InsertPicture(p);
-                                            paragraph.ReplaceText(keyValue.Key, "");
-                                            break;
+                                            if (paragraph.Text.Contains(keyValue.Key))
+                                            {
+                                                var run = paragraph.InsertPicture(p);
+                                                paragraph.ReplaceText(keyValue.Key, "");
+                                                break;
+                                            }
                                         }
                                     }
                                 }
                             }
+                            else if (keyValue.Key.StartsWith("{BULLET"))
+                            {
+                                var values = keyValue.Value.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                                // Find the paragraph with the bullet placeholder
+                                var bulletParagraph = templateDoc.Paragraphs.FirstOrDefault(p => p.Text.Contains(keyValue.Key));
+                                if (bulletParagraph != null)
+                                {
+                                    // Create a bulleted list with its first item
+                                    var bulletedList = templateDoc.AddList(values[0], 0, ListItemType.Bulleted);
+
+                                    // Add sub-items to the preceding ListItem
+                                    for (int i = 1; i < values.Length; i++)
+                                    {
+                                        templateDoc.AddListItem(bulletedList, values[i], 0);
+                                    }
+
+                                    // Insert the list into the paragraph
+                                    bulletParagraph.InsertListAfterSelf(bulletedList);
+
+                                    templateDoc.ReplaceText(keyValue.Key, "");
+                                }
+                            }
+                            else
+                            {
+                                templateDoc.ReplaceText(keyValue.Key, keyValue.Value);
+                            }
                         }
                         else
                         {
-                            templateDoc.ReplaceText(keyValue.Key, keyValue.Value);
+                            templateDoc.ReplaceText(keyValue.Key, "");
                         }
                     }
-
+                    templateDoc.SaveAs(outputPath);
                 }
-                templateDoc.SaveAs(outputPath);
+            }
+            catch
+            {
+                throw;
             }
         }
+
         private void GenerateDocXWithTables(string templatePath, string outputPath, Dictionary<string, string> replacementValues, Dictionary<string, List<List<string>>> tableDataDictionary)
         {
             using (DocX templateDoc = DocX.Load(templatePath))

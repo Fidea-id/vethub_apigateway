@@ -4,7 +4,7 @@ using Domain.Entities.Responses.Clients;
 
 namespace Domain.Entities.DTOs.Clients
 {
-    public class SuratKematianDto
+    public class DataSuratDto<T>
     {
         public Clinics ClinicData { get; set; }
         public Patients PatientData { get; set; }
@@ -12,6 +12,7 @@ namespace Domain.Entities.DTOs.Clients
         public Owners OwnerData { get; set; }
         public MedicalRecords MedicalData { get; set; }
         public string VetName { get; set; }
-        public DocsKematianRequest RequestData { get; set; }
+        public string StaffName { get; set; }
+        public T RequestData { get; set; }
     }
 }
