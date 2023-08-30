@@ -28,7 +28,7 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost("SuratKematian")]
-        public async Task<IActionResult> GenerateSuratKematian(DocsKematianRequest request)
+        public async Task<IActionResult> GenerateSuratKematian(DocsRequest request)
         {
             //Get the AuthToken
             string authToken = HttpContext.Request.Headers["Authorization"];
@@ -54,6 +54,26 @@ namespace VetHubAPI.Controllers
             string authToken = HttpContext.Request.Headers["Authorization"];
             var userId = User.FindFirstValue("Id");
             var generate = await _generateService.GenerateSuratPermintaanPulangAsync(userId, request, authToken);
+            // post medicalrecordsnote data
+            var noteRequest = new MedicalRecordsNotesRequest
+            {
+                MedicalRecordsId = request.MedicalRecordsId,
+                Title = generate.Filename,
+                Type = generate.Type,
+                Value = generate.Url
+            };
+            var postNote = await _restAPIService.PostResponse<MedicalRecordsNotesResponse>(APIType.Client, "MedicalRecords/Notes", JsonConvert.SerializeObject(noteRequest), authToken);
+
+            return Ok(postNote);
+        }
+
+        [HttpPost("SuratTindakan")]
+        public async Task<IActionResult> GenerateSuratTindakan(DocsTindakanRequest request)
+        {
+            //Get the AuthToken
+            string authToken = HttpContext.Request.Headers["Authorization"];
+            var userId = User.FindFirstValue("Id");
+            var generate = await _generateService.GenerateSuratTindakanAsync(userId, request, authToken);
             // post medicalrecordsnote data
             var noteRequest = new MedicalRecordsNotesRequest
             {

@@ -33,22 +33,16 @@ namespace Application.Services.Implementations
             try
             {
                 var baseUrl = _uriService.GetBaseWebUri();
-                //TODO: define the rest dto data
-                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/Clinics", auth);
-                var responseMedicalRecords = await _restAPIService.GetResponse<MedicalRecords>(APIType.Client, "MedicalRecords/" + request.MedicalRecordsId, auth);
-                var responseVet = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + responseMedicalRecords.StaffId, auth);
-                var responseAppointment = await _restAPIService.GetResponse<Appointments>(APIType.Client, "Appointments/" + responseMedicalRecords.AppointmentId, auth);
-                var responsePatient = await _restAPIService.GetResponse<Patients>(APIType.Client, "Patients/" + responseAppointment.PatientsId, auth);
-                var responsePatientStatistic = await _restAPIService.GetResponse<IEnumerable<PatientsStatisticResponse>>(APIType.Client, "Patients/Statistic/" + responseAppointment.PatientsId, auth);
-                var responseOwner = await _restAPIService.GetResponse<Owners>(APIType.Client, "Owners/" + responseAppointment.OwnersId, auth);
+                var responseData = await _restAPIService.GetResponse<MedicalDocsRequirementResponse>(APIType.Client, "MedicalRecords/RequirementData/" + request.MedicalRecordsId, auth);
+
                 var data = new DataSuratDto<DocsKematianRequest>();
                 data.RequestData = request;
-                data.ClinicData = responseClinic;
-                data.PatientData = responsePatient;
-                data.OwnerData = responseOwner;
-                data.MedicalData = responseMedicalRecords;
-                data.VetName = responseVet.Name;
-                data.PatientLatestStatistic = responsePatientStatistic;
+                data.ClinicData = responseData.ClinicData;
+                data.PatientData = responseData.PatientData;
+                data.OwnerData = responseData.OwnerData;
+                data.MedicalData = responseData.MedicalData;
+                data.VetName = responseData.VetName;
+                data.PatientLatestStatistic = responseData.PatientLatestStatistic;
 
                 string templatePath = PathHelper.GetTemplatePath(TemplateType.SuratKematian);
                 string outputPath = PathHelper.GetGenerateOutputPath(TemplateType.SuratKematian, userId);
@@ -127,24 +121,18 @@ namespace Application.Services.Implementations
             try
             {
                 var baseUrl = _uriService.GetBaseWebUri();
-                //TODO: define the rest dto data
-                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/Clinics", auth);
+                var responseData = await _restAPIService.GetResponse<MedicalDocsRequirementResponse>(APIType.Client, "MedicalRecords/RequirementData/" + request.MedicalRecordsId, auth);
                 var responseStaff = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + userId, auth);
-                var responseMedicalRecords = await _restAPIService.GetResponse<MedicalRecords>(APIType.Client, "MedicalRecords/" + request.MedicalRecordsId, auth);
-                var responseVet = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + responseMedicalRecords.StaffId, auth);
-                var responseAppointment = await _restAPIService.GetResponse<Appointments>(APIType.Client, "Appointments/" + responseMedicalRecords.AppointmentId, auth);
-                var responsePatient = await _restAPIService.GetResponse<Patients>(APIType.Client, "Patients/" + responseAppointment.PatientsId, auth);
-                var responsePatientStatistic = await _restAPIService.GetResponse<IEnumerable<PatientsStatisticResponse>>(APIType.Client, "Patients/Statistic/" + responseAppointment.PatientsId, auth);
-                var responseOwner = await _restAPIService.GetResponse<Owners>(APIType.Client, "Owners/" + responseAppointment.OwnersId, auth);
+                
                 var data = new DataSuratDto<DocsPermintaanPulangRequest>();
                 data.RequestData = request;
-                data.ClinicData = responseClinic;
-                data.PatientData = responsePatient;
-                data.OwnerData = responseOwner;
-                data.MedicalData = responseMedicalRecords;
-                data.VetName = responseVet.Name;
+                data.ClinicData = responseData.ClinicData;
+                data.PatientData = responseData.PatientData;
+                data.OwnerData = responseData.OwnerData;
+                data.MedicalData = responseData.MedicalData;
+                data.VetName = responseData.VetName;
+                data.PatientLatestStatistic = responseData.PatientLatestStatistic;
                 data.StaffName = responseStaff.Name;
-                data.PatientLatestStatistic = responsePatientStatistic;
 
                 string templatePath = PathHelper.GetTemplatePath(TemplateType.SuratTidakSetuju);
                 string outputPath = PathHelper.GetGenerateOutputPath(TemplateType.SuratTidakSetuju, userId);
@@ -209,29 +197,104 @@ namespace Application.Services.Implementations
             }
         }
 
+
+        //TODO: test table format
+        public async Task<DocGenerateResponse> GenerateSuratTindakanAsync(string userId, DocsTindakanRequest request, string auth)
+        {
+            try
+            {
+                var baseUrl = _uriService.GetBaseWebUri();
+                var responseStaff = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + userId, auth);
+                var responseData = await _restAPIService.GetResponse<MedicalDocsRequirementResponse>(APIType.Client, "MedicalRecords/RequirementData/" + request.MedicalRecordsId, auth);
+
+                var data = new DataSuratDto<DocsTindakanRequest>();
+                data.RequestData = request;
+                data.ClinicData = responseData.ClinicData;
+                data.PatientData = responseData.PatientData;
+                data.OwnerData = responseData.OwnerData;
+                data.MedicalData = responseData.MedicalData;
+                data.VetName = responseData.VetName;
+                data.PatientLatestStatistic = responseData.PatientLatestStatistic;
+                data.StaffName = responseStaff.Name;
+
+                string templatePath = PathHelper.GetTemplatePath(TemplateType.SuratPersetujuanTindakan);
+                string outputPath = PathHelper.GetGenerateOutputPath(TemplateType.SuratPersetujuanTindakan, userId);
+                string fileName = $"{data.MedicalData.Code}_SuratTindakanGenerated.docx";
+                string outputFile = Path.Combine(outputPath, fileName);
+                // Check if the target folder exists
+                if (!Directory.Exists(outputPath))
+                {
+                    // Create the folder if it does not exist
+                    Directory.CreateDirectory(outputPath);
+                }
+
+                var url = $"{baseUrl}Generate/{userId}/SuratPersetujuanTindakan/{fileName}";
+                //populate data
+                var patientAge = FormatUtil.GetAgeInfo(data.PatientData.DateOfBirth);
+                string dateString = data.MedicalData.StartDate.ToString("dd MMMM yyyy"); // Year
+
+                var clinicLogo = data.ClinicData.Logo;
+                if (string.IsNullOrEmpty(clinicLogo))
+                {
+                    clinicLogo = "https://vethub.id/images/vethubsmall.png";
+                }
+
+                Dictionary<string, string> replacementValues = new Dictionary<string, string>
+                {
+                    { "{%clinic_logo}", "{IMAGE_URL}" + clinicLogo },
+                    { "{clinic_name}", data.ClinicData.Name },
+                    { "{clinic_address}", data.ClinicData.Address },
+                    { "{clinic_phone}", data.ClinicData.PhoneNumber },
+                    { "{clinic_email}", data.ClinicData.Email },
+                    { "{owner_name}", data.OwnerData.Name },
+                    { "{owner_address}", data.OwnerData.Address },
+                    { "{owner_phone}", data.OwnerData.PhoneNumber },
+                    { "{patient_name}", data.PatientData.Name },
+                    { "{patient_species}", data.PatientData.Species },
+                    { "{patient_color}", data.PatientData.Color },
+                    { "{patient_age}", patientAge },
+                    { "{patient_gender}", data.PatientData.Gender },
+                    { "{patient_breed}", data.PatientData.Breed },
+                    { "{date}", dateString },
+                    { "{city}", data.ClinicData.City },
+                    { "{year}", DateTime.Now.ToString("yyyy") },
+                    { "{staff_name}", data.StaffName },
+                };
+                //generate file
+                GenerateDocX(templatePath, outputFile, replacementValues);
+
+                //return new response
+                DocGenerateResponse response = new DocGenerateResponse
+                {
+                    Filename = fileName,
+                    Type = "SuratPersetujuanTindakan",
+                    Url = url
+                };
+                return response;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<DocGenerateResponse> GenerateSuratRujukanAsync(string userId, DocsRujukanRequest request, string auth)
         {
             try
             {
                 var baseUrl = _uriService.GetBaseWebUri();
-                //TODO: define the rest dto data
-                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/Clinics", auth);
                 var responseStaff = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + userId, auth);
-                var responseMedicalRecords = await _restAPIService.GetResponse<MedicalRecords>(APIType.Client, "MedicalRecords/" + request.MedicalRecordsId, auth);
-                var responseVet = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + responseMedicalRecords.StaffId, auth);
-                var responseAppointment = await _restAPIService.GetResponse<Appointments>(APIType.Client, "Appointments/" + responseMedicalRecords.AppointmentId, auth);
-                var responsePatient = await _restAPIService.GetResponse<Patients>(APIType.Client, "Patients/" + responseAppointment.PatientsId, auth);
-                var responsePatientStatistic = await _restAPIService.GetResponse<IEnumerable<PatientsStatisticResponse>>(APIType.Client, "Patients/Statistic/" + responseAppointment.PatientsId, auth);
-                var responseOwner = await _restAPIService.GetResponse<Owners>(APIType.Client, "Owners/" + responseAppointment.OwnersId, auth);
+                var responseData = await _restAPIService.GetResponse<MedicalDocsRequirementResponse>(APIType.Client, "MedicalRecords/RequirementData/" + request.MedicalRecordsId, auth);
+
                 var data = new DataSuratDto<DocsRujukanRequest>();
                 data.RequestData = request;
-                data.ClinicData = responseClinic;
-                data.PatientData = responsePatient;
-                data.OwnerData = responseOwner;
-                data.MedicalData = responseMedicalRecords;
-                data.VetName = responseVet.Name;
+                data.ClinicData = responseData.ClinicData;
+                data.PatientData = responseData.PatientData;
+                data.OwnerData = responseData.OwnerData;
+                data.MedicalData = responseData.MedicalData;
+                data.VetName = responseData.VetName;
+                data.PatientLatestStatistic = responseData.PatientLatestStatistic;
                 data.StaffName = responseStaff.Name;
-                data.PatientLatestStatistic = responsePatientStatistic;
 
                 string templatePath = PathHelper.GetTemplatePath(TemplateType.SuratRujukan);
                 string outputPath = PathHelper.GetGenerateOutputPath(TemplateType.SuratRujukan, userId);

@@ -8,6 +8,7 @@ namespace Application.Services.Contracts
     {
         Task<DocGenerateResponse> GenerateSuratKematianAsync(string userId, DocsKematianRequest request, string auth);
         Task<DocGenerateResponse> GenerateSuratPermintaanPulangAsync(string userId, DocsPermintaanPulangRequest request, string auth);
+        Task<DocGenerateResponse> GenerateSuratTindakanAsync(string userId, DocsTindakanRequest request, string auth);
         Task<DocGenerateResponse> GenerateSuratRujukanAsync(string userId, DocsRujukanRequest request, string auth);
     }
 }
