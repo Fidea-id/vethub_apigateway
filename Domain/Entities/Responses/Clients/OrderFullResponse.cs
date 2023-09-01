@@ -13,10 +13,8 @@ namespace Domain.Entities.Responses.Clients
         public string ClientName { get; set; }
         public int StaffId { get; set; }
         public string StaffName { get; set; }
-        public int Quantity { get; set; }
-        public int? Discount { get; set; }
+        public int TotalQuantity { get; set; }
         public string Status { get; set; }
-        public string? DiscountType { get; set; }
         public double TotalPrice { get; set; }
         public double TotalDiscountedPrice { get; set; }
         public IEnumerable<OrdersDetailResponse>? OrderProducts { get; set; }
@@ -29,7 +27,7 @@ namespace Domain.Entities.Responses.Clients
         public string ProductName { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; }
-        public int? Discount { get; set; }
+        public double? Discount { get; set; }
         public string? DiscountType { get; set; }
         public double TotalPrice { get; set; }
     }
