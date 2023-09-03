@@ -28,7 +28,7 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost("SuratKematian")]
-        public async Task<IActionResult> GenerateSuratKematian(DocsRequest request)
+        public async Task<IActionResult> GenerateSuratKematian(DocsKematianRequest request)
         {
             //Get the AuthToken
             string authToken = HttpContext.Request.Headers["Authorization"];

@@ -12,18 +12,8 @@
         public int Id { get; set; } // clinics id
         public ClientClinicResponse ClinicData { get; set; }
         public ClientOwnerResponse OwnerData { get; set; }
-        public IEnumerable<ClientBillResponse> BillData { get; set; }
+        public UserBillResponse LatestBillData { get; set; }
         public DateTime JoinDate { get; set; }
-    }
-    public class ClientBillResponse
-    {
-        public string SubscriptionName { get; set; }
-        public string Period { get; set; }
-        public string Status { get; set; }
-        public int MaxUser { get; set; }
-        public double Price { get; set; }
-        public double? Discount { get; set; }
-        public double Total { get; set; }
     }
     public class ClientOwnerResponse
     {

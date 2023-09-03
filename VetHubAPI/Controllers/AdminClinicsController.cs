@@ -93,8 +93,39 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<ClientClinicDetailResponse, ClinicsFilter>(APIType.Master, $"Clinics/detail/{id}", authToken);
-                return ResponseUtil.CustomOk(response, 200);
+                var response = await _restAPIService.GetResponse<UserDataResponse>(APIType.Master, "Auth/User/Entity/" + id, authToken);
+                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/ClinicsEntity/" + response.Entity, authToken);
+                var responseLatestBill = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/Latest/" + id, authToken);
+
+                var clinicData = new ClientClinicResponse
+                {
+                    Id = responseClinic.Id,
+                    Name = responseClinic.Name,
+                    Address = responseClinic.Address,
+                    City = responseClinic.City,
+                    Description = responseClinic.Description,
+                    Email = responseClinic.Email,
+                    Logo = responseClinic.Logo,
+                    MapUrl = responseClinic.MapUrl,
+                    PhoneNumber = responseClinic.PhoneNumber,
+                    State = responseClinic.State,
+                    WebUrl = responseClinic.WebUrl
+                };
+
+                var data = new ClientClinicDetailResponse();
+                var ownerData = new ClientOwnerResponse
+                {
+                    Id = response.Id,
+                    Name = response.Name,
+                    Email = response.Email
+                };
+                data.OwnerData = ownerData;
+                data.JoinDate = response.CreatedAt;
+                data.Id = response.Id;
+                data.ClinicData = clinicData;
+                data.LatestBillData = responseLatestBill;
+
+                return ResponseUtil.CustomOk(data, 200);
             }
             catch
             {
