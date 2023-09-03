@@ -7,6 +7,7 @@ using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Xceed.Document.NET;
 
 namespace VetHubAPI.Controllers
 {
@@ -65,10 +66,19 @@ namespace VetHubAPI.Controllers
                             Name = item.Name,
                             Email = item.Email
                         };
+
+                        var responseLatestBill = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/Latest/" + item.Id, authToken);
+                        string statusBill = "On Going";
+                        if(responseLatestBill.EndDate < DateTime.Now)
+                        {
+                            statusBill = "Expired";
+                        }
                         data.OwnerData = ownerData;
                         data.JoinDate = item.CreatedAt;
                         data.Id = item.Id;
                         data.ClinicData = clinicData;
+                        data.Status = statusBill;
+                        data.EndDate = responseLatestBill.EndDate;
                         dataList.Add(data);
                     }
                     catch
