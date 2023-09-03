@@ -177,6 +177,22 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpGet("MedicalNotes/{medicalRecordId}")]
+        public async Task<IActionResult> MedicalCheckupNoteGet(int medicalRecordId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<MedicalRecordsNotes>>(APIType.Client, "MedicalRecords/Notes/" + medicalRecordId, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpDelete("MedicalNotes/{id}")]
         public async Task<IActionResult> MedicalCheckupNoteDelete(int id)
         {
