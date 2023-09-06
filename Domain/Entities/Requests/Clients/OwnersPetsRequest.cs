@@ -21,6 +21,7 @@ namespace Domain.Entities.Requests.Clients
         public string Species { get; set; }
         public string Breed { get; set; }
         public string Gender { get; set; }
+        public string Color { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public bool Vaccinated { get; set; }
     }
