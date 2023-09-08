@@ -7,6 +7,34 @@ namespace Domain.Utils
 {
     public static class FormatUtil
     {
+        public static string GenerateOrdersNumber(string latest = null)
+        {
+            DateTime currentDate = DateTime.Now;
+            string year = currentDate.Year.ToString().Substring(2);
+            string month = currentDate.Month.ToString("D2");
+
+            int latestYear = 0;
+            int latestMonth = 0;
+            int latestNumber = 0;
+
+            if (latest != null && latest.Length == 12) // Check if the latest code has the correct format
+            {
+                int.TryParse(latest.Substring(3, 2), out latestYear);
+                int.TryParse(latest.Substring(5, 2), out latestMonth);
+                int.TryParse(latest.Substring(10), out latestNumber);
+            }
+
+            if (latestYear != currentDate.Year || latestMonth != currentDate.Month)
+            {
+                latestNumber = 0; // Reset the number if not in the current month and year
+            }
+
+            latestNumber++; // Increment the latest number
+
+            string recordNumber = latestNumber.ToString("D4");
+            string orderNumber = $"OR_{year}{month}{recordNumber}";
+            return orderNumber;
+        }
         public static string GenerateMedicalRecordCode(string latest = null)
         {
             DateTime currentDate = DateTime.Now;

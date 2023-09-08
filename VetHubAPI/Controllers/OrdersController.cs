@@ -2,10 +2,12 @@
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
+using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace VetHubAPI.Controllers
 {
@@ -30,6 +32,24 @@ namespace VetHubAPI.Controllers
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<DataResultDTO<OrderFullResponse>>(APIType.Client, "Orders/Full", authToken);
                 return ResponseUtil.CustomOk(response, 200, response.TotalData);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("Full")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> PostOrderFull([FromBody] OrderFullRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<OrderFullResponse>(APIType.Client, "Orders/Full", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
             }
             catch
             {

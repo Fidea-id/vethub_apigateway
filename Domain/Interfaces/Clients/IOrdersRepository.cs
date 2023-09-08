@@ -7,6 +7,7 @@ namespace Domain.Interfaces.Clients
 {
     public interface IOrdersRepository : IGenericRepository<Orders, OrdersFilter>
     {
+        Task<string> GetLatestCode(string dbName);
         Task<DataResultDTO<OrdersResponse>> GetOrdersList(string dbName, OrdersFilter filter);
         Task<IEnumerable<OrderFullResponse>> GetListOrderFull(string dbName);
         Task<OrderFullResponse> GetOrderFull(string dbName, int id);
