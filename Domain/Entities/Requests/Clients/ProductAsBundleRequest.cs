@@ -4,7 +4,9 @@
     {
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
+        public int Stock { get; set; }
+        public string Volume { get; set; }
         public double? Price { get; set; }
         public bool IsBundle { get; set; }
         public IEnumerable<ProductItemBundle>? BundleItem { get; set; }

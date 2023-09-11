@@ -25,6 +25,30 @@ namespace VetHubAPI.Controllers
             _restAPIService = restAPIService;
         }
 
+        [HttpPost("Full")]
+        public async Task<IActionResult> PostProductFull([FromBody] ProductAsBundleRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                if (request.IsBundle)
+                {
+                    var response = await _restAPIService.PostResponse<Products>(APIType.Client, "Products/Bundle", requestJson, authToken);
+                    return ResponseUtil.CustomOk(response, 200);
+                }
+                else
+                {
+                    var response = await _restAPIService.PostResponse<Products>(APIType.Client, "Products", requestJson, authToken);
+                    return ResponseUtil.CustomOk(response, 200);
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
         #region Product
         [HttpGet]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds

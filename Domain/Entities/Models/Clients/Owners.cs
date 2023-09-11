@@ -4,6 +4,13 @@ namespace Domain.Entities.Models.Clients
 {
     public class Owners : BaseEntity
     {
+        public Owners() 
+        {
+        }
+        public Owners(string name) 
+        {
+            Name = name;
+        }
         [MaxLength(100)]
         public string Name { get; set; }
         public string Photo { get; set; }
