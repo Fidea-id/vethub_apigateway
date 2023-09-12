@@ -17,18 +17,17 @@ namespace Domain.Utils
             int latestMonth = 0;
             int latestNumber = 0;
 
-            if (latest != null && latest.Length == 12) // Check if the latest code has the correct format
+            if (latest != null && latest.Length == 11) // Check if the latest code has the correct format
             {
-                int.TryParse(latest.Substring(3, 2), out latestYear);
+                int.TryParse("20" + latest.Substring(3, 2), out latestYear);
                 int.TryParse(latest.Substring(5, 2), out latestMonth);
-                int.TryParse(latest.Substring(10), out latestNumber);
+                int.TryParse(latest.Substring(latest.Length - 4), out latestNumber);
             }
 
             if (latestYear != currentDate.Year || latestMonth != currentDate.Month)
             {
                 latestNumber = 0; // Reset the number if not in the current month and year
             }
-
             latestNumber++; // Increment the latest number
 
             string recordNumber = latestNumber.ToString("D4");
@@ -45,23 +44,22 @@ namespace Domain.Utils
             int latestMonth = 0;
             int latestNumber = 0;
 
-            if (latest != null && latest.Length == 12) // Check if the latest code has the correct format
+            if (latest != null && latest.Length == 11) // Check if the latest code has the correct format
             {
-                int.TryParse(latest.Substring(3, 2), out latestYear);
+                int.TryParse("20" + latest.Substring(3, 2), out latestYear);
                 int.TryParse(latest.Substring(5, 2), out latestMonth);
-                int.TryParse(latest.Substring(10), out latestNumber);
+                int.TryParse(latest.Substring(latest.Length - 4), out latestNumber);
             }
 
             if (latestYear != currentDate.Year || latestMonth != currentDate.Month)
             {
                 latestNumber = 0; // Reset the number if not in the current month and year
             }
-
             latestNumber++; // Increment the latest number
 
             string recordNumber = latestNumber.ToString("D4");
-            string medicalRecordCode = $"MR_{year}{month}{recordNumber}";
-            return medicalRecordCode;
+            string orderNumber = $"MR_{year}{month}{recordNumber}";
+            return orderNumber;
         }
         public static string GetAgeInfo(DateTime dateOfBirth)
         {

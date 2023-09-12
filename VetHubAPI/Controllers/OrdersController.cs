@@ -2,6 +2,7 @@
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
+using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -74,5 +75,22 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpPost("Payment")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> PostOrderPayment([FromBody] OrdersPaymentRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<OrdersPaymentResponse>(APIType.Client, "Orders/Payment", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

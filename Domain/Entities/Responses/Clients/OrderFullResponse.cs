@@ -13,6 +13,7 @@ namespace Domain.Entities.Responses.Clients
         public string ClientName { get; set; }
         public int StaffId { get; set; }
         public string StaffName { get; set; }
+        public string Type { get; set; }
         public int TotalQuantity { get; set; }
         public string Status { get; set; }
         public double TotalPrice { get; set; }
@@ -34,8 +35,10 @@ namespace Domain.Entities.Responses.Clients
     public class OrdersPaymentResponse
     {
         public int PaymentMethodId { get; set; }
+        public int OrderId { get; set; }
         public string Name { get; set; }
         public DateTime Date { get; set; }
+        public double LessTotal { get; set; }
         public double Total { get; set; }
         public string Status { get; set; }
     }
