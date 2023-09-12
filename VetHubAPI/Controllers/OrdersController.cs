@@ -23,6 +23,23 @@ namespace VetHubAPI.Controllers
             _restAPIService = restAPIService;
         }
 
+        [HttpGet("Dashboard")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetOrderDashboard()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<DashboardOrderResponse>(APIType.Client, "Orders/Dashboard", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpGet("Full")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetOrderFull()
@@ -31,8 +48,25 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<DataResultDTO<OrderFullResponse>>(APIType.Client, "Orders/Full", authToken);
-                return ResponseUtil.CustomOk(response, 200, response.TotalData);
+                var response = await _restAPIService.GetResponse<IEnumerable<OrderFullResponse>>(APIType.Client, "Orders/Full", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("Full/Month")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetOrderFullMonth()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<OrderFullResponse>>(APIType.Client, "Orders/FullMonth", authToken);
+                return ResponseUtil.CustomOk(response, 200);
             }
             catch
             {
