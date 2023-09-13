@@ -5,5 +5,6 @@ namespace Domain.Interfaces.Clients
 {
     public interface IAnimalRepository : IGenericRepository<Animals, NameBaseEntityFilter>
     {
+        Task<Animals> GetByName(string dbName, string name);
     }
 }
