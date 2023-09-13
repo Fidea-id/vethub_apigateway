@@ -8,5 +8,6 @@ namespace Domain.Entities.Responses.Clients
 {
     public class MedicalRecordsDetailResponse
     {
+        public int Id { get; set; }
     }
 }

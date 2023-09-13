@@ -193,6 +193,38 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpPost("MedicalNotes")]
+        public async Task<IActionResult> MedicalCheckupNotePost([FromBody] MedicalRecordsNotesRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.PostResponse<MedicalRecordsNotesResponse>(APIType.Client, "MedicalRecords/Notes/", JsonConvert.SerializeObject(request), authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPut("MedicalNotes/{id}")]
+        public async Task<IActionResult> MedicalCheckupNotePut(int id, [FromBody] MedicalRecordsNotesRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.PutResponse<MedicalRecordsNotesResponse>(APIType.Client, "MedicalRecords/Notes/", id, JsonConvert.SerializeObject(request), authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpDelete("MedicalNotes/{id}")]
         public async Task<IActionResult> MedicalCheckupNoteDelete(int id)
         {
@@ -209,7 +241,6 @@ namespace VetHubAPI.Controllers
             }
         }
 
-        //TODO: need update
         [HttpPost("CheckupDone")]
         public async Task<IActionResult> MedicalCheckupDone([FromBody] MedicalRecordsDetailRequest request)
         {
@@ -218,7 +249,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
-                var response = await _restAPIService.PostResponse<AppointmentsDetailResponse>(APIType.Client, "Appointments/StatusChange", requestJson, authToken);
+                var response = await _restAPIService.PostResponse<MedicalRecordsDetailResponse>(APIType.Client, "MedicalRecords/Detail", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch

@@ -15,5 +15,7 @@ namespace Domain.Entities.Models.Clients.XPO
         public DateTime UpdatedAt { get; set; }
         public int MedicalRecordsId { get; set; }
         public string Diagnose { get; set; }
+        public string Action { get; set; }
+        public double TotalPrice { get; set; }
     }
 }
