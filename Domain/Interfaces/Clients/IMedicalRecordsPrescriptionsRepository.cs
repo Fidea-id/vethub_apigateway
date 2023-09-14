@@ -5,5 +5,6 @@ namespace Domain.Interfaces.Clients
 {
     public interface IMedicalRecordsPrescriptionsRepository : IGenericRepository<MedicalRecordsPrescriptions, MedicalRecordsPrescriptionsFilter>
     {
+        Task<IEnumerable<MedicalRecordsPrescriptions>> GetByMedicalRecordId(string dbName, int medicalRecordsId);
     }
 }
