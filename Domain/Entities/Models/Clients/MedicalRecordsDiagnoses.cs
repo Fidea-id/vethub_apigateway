@@ -4,5 +4,7 @@
     {
         public int MedicalRecordsId { get; set; }
         public string Diagnose { get; set; }
+        public string Action { get; set; }
+        public double TotalPrice { get; set; }
     }
 }
