@@ -28,5 +28,6 @@
         IMedicalRecordsNotesRepository MedicalRecordsNotesRepository { get; }
         IMedicalRecordsPrescriptionsRepository MedicalRecordsPrescriptionsRepository { get; }
         IPrescriptionFrequentsRepository PrescriptionFrequentsRepository { get; }
+        INotificationsRepository NotificationsRepository { get; }
     }
 }

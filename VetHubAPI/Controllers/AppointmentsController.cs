@@ -75,6 +75,40 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpGet("Detail/Owner/{ownerId}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetAppointmentDetailOwner(int ownerId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<DataResultDTO<BookingHistoryResponse>>(APIType.Client, "MedicalRecords/Detail/Owner/" + ownerId, authToken);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("Detail/Patient/{patientId}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetAppointmentDetailPatient(int patientId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<DataResultDTO<BookingHistoryResponse>>(APIType.Client, "MedicalRecords/Detail/Patient/"+ patientId, authToken);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpGet("Detail/{id}")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetAppointmentDetailById(int id)

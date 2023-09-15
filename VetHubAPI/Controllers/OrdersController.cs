@@ -1,8 +1,6 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
-using Domain.Entities.DTOs;
-using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

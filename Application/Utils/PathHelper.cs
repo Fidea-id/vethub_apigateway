@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Utils
+﻿namespace Application.Utils
 {
     public enum UploadPathType
     {
@@ -24,7 +18,7 @@ namespace Application.Utils
         public static string GetUploadPath(UploadPathType typeUpload, string pathFolder)
         {
             var type = "";
-            if(typeUpload == UploadPathType.Files)
+            if (typeUpload == UploadPathType.Files)
             {
                 type = "d";
             }

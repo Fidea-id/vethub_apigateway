@@ -4,10 +4,10 @@ namespace Domain.Entities.Models.Clients
 {
     public class Owners : BaseEntity
     {
-        public Owners() 
+        public Owners()
         {
         }
-        public Owners(string name) 
+        public Owners(string name)
         {
             Name = name;
         }

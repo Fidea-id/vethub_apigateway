@@ -8,6 +8,8 @@ namespace Domain.Interfaces.Clients
     public interface IAppointmentRepository : IGenericRepository<Appointments, AppointmentsFilter>
     {
         //Task<IEnumerable<PatientsListResponse>> GetPatientsList(string dbName, AppointmentsFilter filter);
+        Task<IEnumerable<BookingHistoryResponse>> GetBookingHistoryOwner(string dbName, int ownerId);
+        Task<IEnumerable<BookingHistoryResponse>> GetBookingHistoryPatient(string dbName, int patientId);
         Task AddStatusRange(IEnumerable<AppointmentsStatus> entities, string dbName);
         Task<int> AddActivity(AppointmentsActivity entities, string dbName);
         Task<IEnumerable<AppointmentsStatus>> GetAllStatus(string dbName);

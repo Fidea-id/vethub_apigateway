@@ -1,9 +1,7 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
-using Domain.Entities.DTOs;
 using Domain.Entities;
 using Domain.Entities.DTOs.Clients;
-using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
@@ -12,8 +10,6 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
-using System.Reflection.Metadata;
-using Newtonsoft.Json.Linq;
 
 namespace Application.Services.Implementations
 {
@@ -64,7 +60,7 @@ namespace Application.Services.Implementations
                 string diedTimeString = data.RequestData.DiedTime.ToString("HH:mm"); // Time in "HH:mm" format
 
                 var clinicLogo = data.ClinicData.Logo;
-                if(string.IsNullOrEmpty(clinicLogo))
+                if (string.IsNullOrEmpty(clinicLogo))
                 {
                     clinicLogo = "https://vethub.id/images/vethubsmall.png";
                 }
@@ -123,7 +119,7 @@ namespace Application.Services.Implementations
                 var baseUrl = _uriService.GetBaseWebUri();
                 var responseData = await _restAPIService.GetResponse<MedicalDocsRequirementResponse>(APIType.Client, "MedicalRecords/RequirementData/" + request.MedicalRecordsId, auth);
                 var responseStaff = await _restAPIService.GetResponse<Profile>(APIType.Client, "Profile/User/" + userId, auth);
-                
+
                 var data = new DataSuratDto<DocsPermintaanPulangRequest>();
                 data.RequestData = request;
                 data.ClinicData = responseData.ClinicData;
@@ -366,7 +362,7 @@ namespace Application.Services.Implementations
                 {
                     foreach (var keyValue in replacementValues)
                     {
-                        if(keyValue.Value != null)
+                        if (keyValue.Value != null)
                         {
                             if (keyValue.Value.StartsWith("{IMAGE_URL}"))
                             {

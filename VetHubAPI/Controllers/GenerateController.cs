@@ -1,8 +1,5 @@
 ﻿using Application.Services.Contracts;
 using Domain.Entities;
-using Domain.Entities.DTOs.Clients;
-using Domain.Entities.Models.Clients;
-using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,7 +16,7 @@ namespace VetHubAPI.Controllers
     public class GenerateController : Controller
     {
         private readonly IRestAPIService _restAPIService;
-        private readonly IDocGenerateService _generateService; 
+        private readonly IDocGenerateService _generateService;
 
         public GenerateController(IRestAPIService restAPIService, IDocGenerateService generateService)
         {

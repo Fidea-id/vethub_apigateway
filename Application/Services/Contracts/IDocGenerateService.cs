@@ -1,5 +1,4 @@
-﻿using Domain.Entities.DTOs.Clients;
-using Domain.Entities.Requests.Clients;
+﻿using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
 
 namespace Application.Services.Contracts
