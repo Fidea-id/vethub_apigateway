@@ -19,5 +19,6 @@ namespace Domain.Entities.Models.Clients.XPO
         public DateTime Date { get; set; }
         public double Total { get; set; }
         public string Status { get; set; }
+        public string Type { get; set; }
     }
 }

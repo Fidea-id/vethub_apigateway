@@ -14,6 +14,7 @@ namespace Domain.Entities.Responses.Clients
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public double TotalPrice { get; set; }
+        public double TotalPaid { get; set; }
         public IEnumerable<MedicalRecordsNotes>? Notes { get; set; }
         public IEnumerable<MedicalRecordsPrescriptions>? Prescriptions { get; set; }
         public IEnumerable<MedicalRecordsDiagnoses>? Diagnoses { get; set; }

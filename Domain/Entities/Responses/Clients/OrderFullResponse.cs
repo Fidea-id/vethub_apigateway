@@ -41,5 +41,6 @@ namespace Domain.Entities.Responses.Clients
         public double LessTotal { get; set; }
         public double Total { get; set; }
         public string Status { get; set; }
+        public string Type { get; set; }
     }
 }

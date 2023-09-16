@@ -3,7 +3,7 @@
     public class MedicalRecordsPrescriptionsFilter : BaseEntityFilter
     {
         public int? MedicalRecordsId { get; set; }
-        public string? ProductName { get; set; }
+        public int? ProductId { get; set; }
         public string? PrescriptionFrequency { get; set; }
         public double? PrescriptionAmount { get; set; }
         public double? Price { get; set; }

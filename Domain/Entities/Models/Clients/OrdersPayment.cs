@@ -6,6 +6,7 @@
         public int PaymentMethodId { get; set; }
         public DateTime Date { get; set; }
         public double Total { get; set; }
+        public string Type { get; set; }
         public string Status { get; set; }
     }
 }

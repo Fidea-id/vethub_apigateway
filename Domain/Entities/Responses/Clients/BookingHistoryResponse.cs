@@ -28,5 +28,6 @@ namespace Domain.Entities.Responses.Clients
         public double TotalPrice { get; set; }
         public IEnumerable<MedicalRecordsDiagnoses>? Diagnoses { get; set; }
         public string StatusName { get; set; }
+        public string StatusPayment { get; set; }
     }
 }

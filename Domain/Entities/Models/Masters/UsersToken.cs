@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.Models.Masters
 {
-    internal class UsersToken
+    public class UsersToken : BaseEntity
     {
+        public int UserId { get; set; }
+        public string FCMToken { get; set; }
     }
 }
