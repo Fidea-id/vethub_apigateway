@@ -210,15 +210,15 @@ namespace VetHubAPI.Controllers
             }
         }
 
-        [HttpPost("Payment/{id}")]
-        public async Task<IActionResult> PostAppointmentPayment(int id, [FromBody] OrdersPaymentRequest request)
+        [HttpPost("Payment")]
+        public async Task<IActionResult> PostAppointmentPayment([FromBody] OrdersPaymentRequest request)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
-                var response = await _restAPIService.PostResponse<OrdersPaymentResponse>(APIType.Client, "MedicalRecords/Payment/" + id, requestJson, authToken);
+                var response = await _restAPIService.PostResponse<OrdersPaymentResponse>(APIType.Client, "MedicalRecords/Payment", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch
