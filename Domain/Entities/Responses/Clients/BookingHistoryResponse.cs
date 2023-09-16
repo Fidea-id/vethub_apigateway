@@ -23,6 +23,7 @@ namespace Domain.Entities.Responses.Clients
         public string ServiceName { get; set; }
         public int StaffId { get; set; }
         public string StaffName { get; set; }
+        public DateTime DateAppointment { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public double TotalPrice { get; set; }
