@@ -141,6 +141,38 @@ namespace VetHubAPI.Controllers
                 throw;
             }
         }
+        [HttpGet("MedicalRecords/Invoice/{medicalId}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetMedicalRecordDetailInvoice(int medicalId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<InvoiceResponse>(APIType.Client, $"Appointments/Invoice/{medicalId}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpGet("MedicalRecords/Payment/{medicalId}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetMedicalRecordPayment(int medicalId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<OrdersPayment>>(APIType.Client, $"MedicalRecords/Payment/{medicalId}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
         [HttpGet("today")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds

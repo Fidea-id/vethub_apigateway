@@ -60,7 +60,7 @@ namespace Application.Services.Implementations
                 string diedTimeString = data.RequestData.DiedTime.ToString("HH:mm"); // Time in "HH:mm" format
 
                 var clinicLogo = data.ClinicData.Logo;
-                if (string.IsNullOrEmpty(clinicLogo))
+                if (string.IsNullOrEmpty(clinicLogo) || !clinicLogo.Contains("http"))
                 {
                     clinicLogo = "https://vethub.id/images/vethubsmall.png";
                 }
@@ -89,7 +89,7 @@ namespace Application.Services.Implementations
                     { "{died_year}", diedYearString },
                     { "{died_time}", diedTimeString },
                     { "{died_reason}", data.RequestData.DiedReason },
-                    { "{died_burried_info}", data.RequestData.DiedReason },
+                    { "{died_burried_info}", data.RequestData.DiedBuriedInfo },
                     { "{city}", data.ClinicData.City },
                     { "{year}", DateTime.Now.ToString("yyyy") },
                     { "{vet_name}", data.VetName }
