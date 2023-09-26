@@ -2,10 +2,12 @@
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
+using Domain.Entities.DTOs.Clients;
 using Domain.Entities.Filters;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
+using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +29,53 @@ namespace VetHubAPI.Controllers
         {
             _restAPIService = restAPIAnimal;
             _fileUploadService = fileUploadService;
+        }
+
+        [HttpGet("PrescriptionItem")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetPrescriptionItem()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var responseProduct = await _restAPIService.GetResponse<IEnumerable<ProductDetailsResponse>>(APIType.Client, "Products/Detail", authToken);
+                var responseService = await _restAPIService.GetResponse<DataResultDTO<Services>>(APIType.Client, "Services", authToken);
+                var response = new List<PrescriptionsItemDTO>();
+                foreach (var item in responseProduct)
+                {
+                    var data = new PrescriptionsItemDTO
+                    {
+                        Id = item.Id,
+                        Type = "Product",
+                        Name = item.Name,
+                        Price = item.Price,
+                        Description = item.Description,
+                        Stock = item.Stock,
+                        Volume = item.Volume
+                    };
+                    response.Add(data);
+                }
+                foreach (var item in responseService.Data)
+                {
+                    var data = new PrescriptionsItemDTO
+                    {
+                        Id = item.Id,
+                        Type = "Service",
+                        Name = item.Name,
+                        Price = item.Price,
+                        Description = item.Duration + " " + item.DurationType,
+                        Stock = 0,
+                        Volume = "service"
+                    };
+                    response.Add(data);
+                }
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         [HttpGet("DocsType")]
