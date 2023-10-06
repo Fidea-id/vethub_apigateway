@@ -43,6 +43,19 @@ namespace Application.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<BaseAPIResponse> DemoAsync(UserDemoRequest data)
+        {
+            try
+            {
+                var requestJson = JsonConvert.SerializeObject(data);
+                var response = await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/Demo", requestJson);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public async Task<RegisterResponse> RegisterUserAsync(FullRegisterClinicRequest data, string auth)
         {
             try

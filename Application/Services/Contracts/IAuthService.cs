@@ -9,6 +9,7 @@ namespace Application.Services.Contracts
     public interface IAuthService
     {
         public Task<LoginResponse> LoginAsync(UserLoginRequest data);
+        public Task<BaseAPIResponse> DemoAsync(UserDemoRequest data);
         public Task<RegisterResponse> RegisterUserAsync(FullRegisterClinicRequest data, string auth);
         public Task<UserProfileResponse> GetByNameOrEmailAsync(string value, string auth);
         public Task<UserProfileResponse> GetUserProfileByIdAsync(int id, string auth);

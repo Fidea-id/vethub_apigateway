@@ -12,7 +12,7 @@ namespace Domain.Constants
         {
         }
         public const string SUPERADMIN = "Superadmin";
-        public const string OWNERS = "Owners";
+        public const string OWNERS = "Owner";
         public const string ADMIN = "Admin";
         public const string DOCTOR = "Doctor";
     }

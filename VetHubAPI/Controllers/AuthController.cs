@@ -25,6 +25,12 @@ namespace VetHubAPI.Controllers
             var result = await _authService.LoginAsync(data);
             return ResponseUtil.CustomOk(result, 200);
         }
+        [HttpPost("Demo")]
+        public async Task<IActionResult> Demo(UserDemoRequest data)
+        {
+            var result = await _authService.DemoAsync(data);
+            return ResponseUtil.CustomOk(result, 200);
+        }
 
         [HttpPost("Register")]
         [Authorize(AuthenticationSchemes = "Bearer")]

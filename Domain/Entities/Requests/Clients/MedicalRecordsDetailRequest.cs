@@ -10,7 +10,7 @@
     public class MedicalRecordsDiagnosesRequest
     {
         public string Diagnose { get; set; }
-        public string Action { get; set; }
-        public double TotalPrice { get; set; }
+        public string Prognose { get; set; }
+        //public double TotalPrice { get; set; }
     }
 }

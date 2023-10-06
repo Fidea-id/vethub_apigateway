@@ -12,5 +12,6 @@
         IDocsTypeRepository DocsTypeRepository { get; }
         IRolesRepository RolesRepository { get; }
         ISubscriptionsRepository SubscriptionsRepository { get; }
+        IUserDemoRepository UserDemoRepository { get; }
     }
 }
