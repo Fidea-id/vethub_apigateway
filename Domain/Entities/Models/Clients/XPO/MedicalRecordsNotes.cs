@@ -1,4 +1,5 @@
 ﻿using DevExpress.Xpo;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.Models.Clients.XPO
 {
@@ -18,6 +19,7 @@ namespace Domain.Entities.Models.Clients.XPO
         public int StaffId { get; set; }
         public string Type { get; set; }
         public string Title { get; set; }
+        [Column(TypeName = "LONGTEXT")]
         public string Value { get; set; }
     }
 }

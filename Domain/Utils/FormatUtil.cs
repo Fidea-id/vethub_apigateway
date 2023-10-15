@@ -7,6 +7,16 @@ namespace Domain.Utils
 {
     public static class FormatUtil
     {
+        public static double CountPercentageMonth(int month, int all)
+        {
+            if (all == 0)
+            {
+                throw new InvalidOperationException("CountAllData cannot be zero to calculate percentage increase.");
+            }
+
+            double increasePercentage = ((double)month / all) * 100; 
+            return increasePercentage;
+        }
         public static string GenerateOrdersNumber(string latest = null)
         {
             DateTime currentDate = DateTime.Now;

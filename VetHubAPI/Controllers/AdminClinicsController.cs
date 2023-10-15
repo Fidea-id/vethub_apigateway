@@ -141,6 +141,23 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpGet("HistoryBills/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetUserHistoryBill(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<UserBillResponse>>(APIType.Master, "BillPayments/UserHistory?clientId=" + id, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         //[HttpGet]
         //[ResponseCache(Duration = 60)] // Cache response for 60 seconds
         //public async Task<IActionResult> GetClinic([FromQuery] ClinicsFilter filter)

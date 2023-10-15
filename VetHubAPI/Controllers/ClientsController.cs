@@ -122,6 +122,22 @@ namespace VetHubAPI.Controllers
             }
         }
         //Clients Owner History
+        [HttpGet("Owners/Statistic")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetOwnerStatistic([FromQuery] int ownerId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<OwnerStatistic>(APIType.Client, "Owners/Statistic/"+ ownerId, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
         //Clients Patients
         [HttpGet("Patients")]
@@ -288,5 +304,20 @@ namespace VetHubAPI.Controllers
         }
 
         //Clients Patients History
+        [HttpGet("Patients/Diagnose/{patientId}")]
+        public async Task<IActionResult> GetPatientDiagnose(int patientId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<PatientDiagnosesResponse>>(APIType.Client, $"MedicalRecords/PatientDiagnose/{patientId}", authToken);
+                return ResponseUtil.CustomOk(response, 200, response.Count());
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

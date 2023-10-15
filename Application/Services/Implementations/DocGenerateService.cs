@@ -132,7 +132,7 @@ namespace Application.Services.Implementations
 
                 string templatePath = PathHelper.GetTemplatePath(TemplateType.SuratTidakSetuju);
                 string outputPath = PathHelper.GetGenerateOutputPath(TemplateType.SuratTidakSetuju, userId);
-                string fileName = $"{data.MedicalData.Code}_SuratPermintaanPulangAtauTidakSetujuGenerated.docx";
+                string fileName = $"{data.MedicalData.Code}_SuratPulangTidakSetujuGenerated.docx";
                 string outputFile = Path.Combine(outputPath, fileName);
                 // Check if the target folder exists
                 if (!Directory.Exists(outputPath))
@@ -147,7 +147,7 @@ namespace Application.Services.Implementations
                 string dateString = data.MedicalData.StartDate.ToString("dd MMMM yyyy"); // Year
 
                 var clinicLogo = data.ClinicData.Logo;
-                if (string.IsNullOrEmpty(clinicLogo))
+                if (string.IsNullOrEmpty(clinicLogo) || !clinicLogo.Contains("http"))
                 {
                     clinicLogo = "https://vethub.id/images/vethubsmall.png";
                 }
@@ -230,7 +230,7 @@ namespace Application.Services.Implementations
                 string dateString = data.MedicalData.StartDate.ToString("dd MMMM yyyy"); // Year
 
                 var clinicLogo = data.ClinicData.Logo;
-                if (string.IsNullOrEmpty(clinicLogo))
+                if (string.IsNullOrEmpty(clinicLogo) || !clinicLogo.Contains("http"))
                 {
                     clinicLogo = "https://vethub.id/images/vethubsmall.png";
                 }
@@ -308,7 +308,7 @@ namespace Application.Services.Implementations
                 var patientAge = FormatUtil.GetAgeInfo(data.PatientData.DateOfBirth);
 
                 var clinicLogo = data.ClinicData.Logo;
-                if (string.IsNullOrEmpty(clinicLogo))
+                if (string.IsNullOrEmpty(clinicLogo) || !clinicLogo.Contains("http"))
                 {
                     clinicLogo = "https://vethub.id/images/vethubsmall.png";
                 }

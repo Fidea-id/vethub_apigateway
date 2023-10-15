@@ -19,5 +19,9 @@ namespace Domain.Interfaces.Clients
         Task UpdateRange(string dbName, IEnumerable<T> entity);
         Task RemoveRange(string dbName, IEnumerable<T> entity);
         Task<int> CountWithFilter(string dbName, TFilter filter);
+        Task<int> Count(string dbName);
+        Task<int> CountWithQuery(string dbName, string query);
+        Task<int> Sum(string dbName, string columnName);
+        Task<int> SumWithQuery(string dbName, string columnName, string query);
     }
 }

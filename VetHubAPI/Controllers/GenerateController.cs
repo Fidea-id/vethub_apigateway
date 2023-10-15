@@ -1,4 +1,5 @@
 ﻿using Application.Services.Contracts;
+using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
@@ -41,7 +42,7 @@ namespace VetHubAPI.Controllers
             };
             var postNote = await _restAPIService.PostResponse<MedicalRecordsNotesResponse>(APIType.Client, "MedicalRecords/Notes", JsonConvert.SerializeObject(noteRequest), authToken);
 
-            return Ok(postNote);
+            return ResponseUtil.CustomOk(postNote, 200); 
         }
 
         [HttpPost("SuratPermintaanPulang")]
@@ -61,7 +62,7 @@ namespace VetHubAPI.Controllers
             };
             var postNote = await _restAPIService.PostResponse<MedicalRecordsNotesResponse>(APIType.Client, "MedicalRecords/Notes", JsonConvert.SerializeObject(noteRequest), authToken);
 
-            return Ok(postNote);
+            return ResponseUtil.CustomOk(postNote, 200);
         }
 
         [HttpPost("SuratTindakan")]
@@ -81,7 +82,7 @@ namespace VetHubAPI.Controllers
             };
             var postNote = await _restAPIService.PostResponse<MedicalRecordsNotesResponse>(APIType.Client, "MedicalRecords/Notes", JsonConvert.SerializeObject(noteRequest), authToken);
 
-            return Ok(postNote);
+            return ResponseUtil.CustomOk(postNote, 200);
         }
 
         [HttpPost("SuratRujukan")]
@@ -101,7 +102,7 @@ namespace VetHubAPI.Controllers
             };
             var postNote = await _restAPIService.PostResponse<MedicalRecordsNotesResponse>(APIType.Client, "MedicalRecords/Notes", JsonConvert.SerializeObject(noteRequest), authToken);
 
-            return Ok(postNote);
+            return ResponseUtil.CustomOk(postNote, 200);
         }
     }
 }
