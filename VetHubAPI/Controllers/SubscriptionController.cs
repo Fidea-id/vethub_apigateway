@@ -13,6 +13,7 @@ using System.Security.Claims;
 using Application.Utils;
 using Domain.Entities.Filters.Masters;
 using Domain.Entities.DTOs;
+using Domain.Entities.Responses.Masters;
 
 namespace VetHubAPI.Controllers
 {
@@ -32,6 +33,7 @@ namespace VetHubAPI.Controllers
             _logger = loggerFactory.CreateLogger<SubscriptionController>();
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> Get([FromQuery] SubscriptionsFilter filter)
@@ -40,7 +42,7 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<IEnumerable<Subscriptions>, SubscriptionsFilter>(APIType.Master, "Subscriptions", authToken, filter);
+                var response = await _restAPIService.GetResponseFilter<IEnumerable<SubscriptionResponse>, SubscriptionsFilter>(APIType.Master, "Subscriptions", authToken, filter);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch
