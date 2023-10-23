@@ -67,7 +67,7 @@ namespace VetHubAPI.Controllers
 
                         var responseLatestBill = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/Latest/" + item.Id, authToken);
                         string statusBill = "On Going";
-                        if (responseLatestBill.EndDate < DateTime.Now)
+                        if (responseLatestBill.EndDate < DateTime.Now || responseLatestBill.Status == "Expired")
                         {
                             statusBill = "Expired";
                         }
