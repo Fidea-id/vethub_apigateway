@@ -19,7 +19,6 @@ namespace VetHubAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Superadmin")]
     public class SubscriptionController : Controller
     {
         private readonly IRestAPIService _restAPIService;
@@ -33,8 +32,8 @@ namespace VetHubAPI.Controllers
             _logger = loggerFactory.CreateLogger<SubscriptionController>();
         }
 
-        [AllowAnonymous]
         [HttpGet]
+        [AllowAnonymous]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> Get([FromQuery] SubscriptionsFilter filter)
         {
@@ -52,6 +51,7 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Superadmin")]
         public async Task<IActionResult> Post([FromBody] Subscriptions request)
         {
             try
@@ -69,6 +69,7 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Superadmin")]
         public async Task<IActionResult> Put(int id, [FromBody] Subscriptions request)
         {
             try
@@ -86,6 +87,7 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Superadmin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

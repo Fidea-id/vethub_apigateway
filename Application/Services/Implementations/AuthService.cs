@@ -105,10 +105,14 @@ namespace Application.Services.Implementations
             try
             {
                 var response = await _restAPIService.GetResponse<UserProfileResponse>(APIType.Master, "Auth/User/" + id, auth);
-                //get profile client data
-                var responseClient = await _restAPIService.GetResponse<UserProfileResponse>(APIType.Client, "Profile/User/" + response.Id, auth);
-                //return combine profile
-                return CombineMasterClientProfile(response, responseClient);
+                if(response.Roles != "Superadmin")
+                {
+                    //get profile client data
+                    var responseClient = await _restAPIService.GetResponse<UserProfileResponse>(APIType.Client, "Profile/User/" + response.Id, auth);
+                    //return combine profile
+                    return CombineMasterClientProfile(response, responseClient);
+                }
+                return CombineMasterClientProfile(response);
             }
             catch (Exception ex)
             {
@@ -116,13 +120,15 @@ namespace Application.Services.Implementations
             }
         }
 
-        private UserProfileResponse CombineMasterClientProfile(UserProfileResponse master, UserProfileResponse client)
+        private UserProfileResponse CombineMasterClientProfile(UserProfileResponse master, UserProfileResponse client = null)
         {
-
             //client profile data to global profile
             master.GlobalId = master.Id;
-            master.Id = client.Id;
-            master.Photo = client.Photo;
+            if(client != null)
+            {
+                master.Id = client.Id;
+                master.Photo = client.Photo;
+            }
             return master;
         }
 

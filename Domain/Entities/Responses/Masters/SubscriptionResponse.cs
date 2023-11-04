@@ -8,6 +8,7 @@ namespace Domain.Entities.Responses.Masters
 {
     public class SubscriptionResponse
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public int TotalMonth { get; set; }
         public double Price { get; set; }

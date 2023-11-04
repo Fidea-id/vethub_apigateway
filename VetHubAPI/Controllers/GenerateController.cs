@@ -6,6 +6,7 @@ using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Security.Claims;
 
@@ -18,11 +19,14 @@ namespace VetHubAPI.Controllers
     {
         private readonly IRestAPIService _restAPIService;
         private readonly IDocGenerateService _generateService;
+        private readonly ILogger<GenerateController> _logger;
 
-        public GenerateController(IRestAPIService restAPIService, IDocGenerateService generateService)
+        public GenerateController(IRestAPIService restAPIService, IDocGenerateService generateService,
+            ILoggerFactory loggerFactory)
         {
             _restAPIService = restAPIService;
             _generateService = generateService;
+            _logger = loggerFactory.CreateLogger<GenerateController>();
         }
 
         [HttpPost("SuratKematian")]
@@ -32,6 +36,7 @@ namespace VetHubAPI.Controllers
             string authToken = HttpContext.Request.Headers["Authorization"];
             var userId = User.FindFirstValue("Id");
             var generate = await _generateService.GenerateSuratKematianAsync(userId, request, authToken);
+            _logger.LogInformation("Generate data : " + JsonConvert.SerializeObject(generate));
             // post medicalrecordsnote data
             var noteRequest = new MedicalRecordsNotesRequest
             {
@@ -52,6 +57,8 @@ namespace VetHubAPI.Controllers
             string authToken = HttpContext.Request.Headers["Authorization"];
             var userId = User.FindFirstValue("Id");
             var generate = await _generateService.GenerateSuratPermintaanPulangAsync(userId, request, authToken);
+
+            _logger.LogInformation("Generate data : " + JsonConvert.SerializeObject(generate));
             // post medicalrecordsnote data
             var noteRequest = new MedicalRecordsNotesRequest
             {
@@ -72,6 +79,7 @@ namespace VetHubAPI.Controllers
             string authToken = HttpContext.Request.Headers["Authorization"];
             var userId = User.FindFirstValue("Id");
             var generate = await _generateService.GenerateSuratTindakanAsync(userId, request, authToken);
+            _logger.LogInformation("Generate data : " + JsonConvert.SerializeObject(generate));
             // post medicalrecordsnote data
             var noteRequest = new MedicalRecordsNotesRequest
             {
@@ -92,6 +100,7 @@ namespace VetHubAPI.Controllers
             string authToken = HttpContext.Request.Headers["Authorization"];
             var userId = User.FindFirstValue("Id");
             var generate = await _generateService.GenerateSuratRujukanAsync(userId, request, authToken);
+            _logger.LogInformation("Generate data : " + JsonConvert.SerializeObject(generate));
             // post medicalrecordsnote data
             var noteRequest = new MedicalRecordsNotesRequest
             {

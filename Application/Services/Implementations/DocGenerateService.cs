@@ -6,10 +6,12 @@ using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
 using Domain.Utils;
+using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Services.Implementations
 {
@@ -145,7 +147,7 @@ namespace Application.Services.Implementations
                 //populate data
                 var patientAge = FormatUtil.GetAgeInfo(data.PatientData.DateOfBirth);
                 string dateString = data.MedicalData.StartDate.ToString("dd MMMM yyyy"); // Year
-
+                string duration = GetDuration(data.MedicalData.EndDate.Value, data.MedicalData.StartDate);
                 var clinicLogo = data.ClinicData.Logo;
                 if (string.IsNullOrEmpty(clinicLogo) || !clinicLogo.Contains("http"))
                 {
@@ -163,6 +165,7 @@ namespace Application.Services.Implementations
                     { "{owner_address}", data.OwnerData.Address },
                     { "{owner_phone}", data.OwnerData.PhoneNumber },
                     { "{owner_number_id}", data.RequestData.OwnerIdNumber },
+                    { "{duration}", duration },
                     { "{patient_name}", data.PatientData.Name },
                     { "{patient_species}", data.PatientData.Species },
                     { "{patient_color}", data.PatientData.Color },
@@ -234,6 +237,8 @@ namespace Application.Services.Implementations
                 {
                     clinicLogo = "https://vethub.id/images/vethubsmall.png";
                 }
+                var patientTemp = data.PatientLatestStatistic.Where(x => x.Type == "Temperature").Select(x => x.Latest).FirstOrDefault();
+                var patientWeight = data.PatientLatestStatistic.Where(x => x.Type == "Weight").Select(x => x.Latest).FirstOrDefault();
 
                 Dictionary<string, string> replacementValues = new Dictionary<string, string>
                 {
@@ -244,20 +249,29 @@ namespace Application.Services.Implementations
                     { "{clinic_email}", data.ClinicData.Email },
                     { "{owner_name}", data.OwnerData.Name },
                     { "{owner_address}", data.OwnerData.Address },
+                    { "{owner_id_number}", data.RequestData.OwnerIdNumber },
+                    { "{vet_note}", data.RequestData.VetNote },
+                    { "{total_amount}", "Rp " + data.RequestData.DepositAmount.ToString("##,0.00", new CultureInfo("id-ID")) },
+                    { "{BULLET_action}", string.Join("\n", data.RequestData.MedicalAction) },
+                    { "{BULLET_diagnose}", string.Join("\n", data.RequestData.MedicalDiagnose) },
                     { "{owner_phone}", data.OwnerData.PhoneNumber },
-                    { "{patient_name}", data.PatientData.Name },
-                    { "{patient_species}", data.PatientData.Species },
-                    { "{patient_color}", data.PatientData.Color },
-                    { "{patient_age}", patientAge },
-                    { "{patient_gender}", data.PatientData.Gender },
-                    { "{patient_breed}", data.PatientData.Breed },
                     { "{date}", dateString },
                     { "{city}", data.ClinicData.City },
                     { "{year}", DateTime.Now.ToString("yyyy") },
                     { "{staff_name}", data.StaffName },
                 };
+                Dictionary<string, List<List<string>>> tableDataDictionary = new Dictionary<string, List<List<string>>>
+                {
+                    {
+                        "{table_0}", new List<List<string>>
+                        {
+                            new List<string> { data.PatientData.Name, data.PatientData.Species, data.PatientData.Breed, $"{patientAge}, {data.PatientData.Color}", patientWeight, patientTemp },
+                            // Add more rows as needed
+                        }
+                    }
+                };
                 //generate file
-                GenerateDocX(templatePath, outputFile, replacementValues);
+                GenerateDocXWithTables(templatePath, outputFile, replacementValues, tableDataDictionary);
 
                 //return new response
                 DocGenerateResponse response = new DocGenerateResponse
@@ -289,6 +303,7 @@ namespace Application.Services.Implementations
                 data.OwnerData = responseData.OwnerData;
                 data.MedicalData = responseData.MedicalData;
                 data.VetName = responseData.VetName;
+                data.MedicalDiagnoses = responseData.MedicalDiagnoses;
                 data.PatientLatestStatistic = responseData.PatientLatestStatistic;
                 data.StaffName = responseStaff.Name;
 
@@ -312,6 +327,12 @@ namespace Application.Services.Implementations
                 {
                     clinicLogo = "https://vethub.id/images/vethubsmall.png";
                 }
+                string diagnoses = "";
+                if(data.MedicalDiagnoses != null)
+                {
+                    var dd = data.MedicalDiagnoses.Select(x => x.Diagnose);
+                    diagnoses = string.Join(", ", dd);
+                }
 
                 Dictionary<string, string> replacementValues = new Dictionary<string, string>
                 {
@@ -325,6 +346,7 @@ namespace Application.Services.Implementations
                     { "{owner_address}", data.OwnerData.Address },
                     { "{owner_phone}", data.OwnerData.PhoneNumber },
                     { "{patient_name}", data.PatientData.Name },
+                    { "{diagnose}", diagnoses },
                     { "{patient_species}", data.PatientData.Species },
                     { "{patient_age}", patientAge },
                     { "{patient_gender}", data.PatientData.Gender },
@@ -485,6 +507,28 @@ namespace Application.Services.Implementations
                             }
                         }
                     }
+                    else if (keyValue.Key.StartsWith("{BULLET"))
+                    {
+                        var values = keyValue.Value.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                        // Find the paragraph with the bullet placeholder
+                        var bulletParagraph = templateDoc.Paragraphs.FirstOrDefault(p => p.Text.Contains(keyValue.Key));
+                        if (bulletParagraph != null)
+                        {
+                            // Create a bulleted list with its first item
+                            var bulletedList = templateDoc.AddList(values[0], 0, ListItemType.Bulleted);
+
+                            // Add sub-items to the preceding ListItem
+                            for (int i = 1; i < values.Length; i++)
+                            {
+                                templateDoc.AddListItem(bulletedList, values[i], 0);
+                            }
+
+                            // Insert the list into the paragraph
+                            bulletParagraph.InsertListAfterSelf(bulletedList);
+
+                            templateDoc.ReplaceText(keyValue.Key, "");
+                        }
+                    }
                     else
                     {
                         templateDoc.ReplaceText(keyValue.Key, keyValue.Value);
@@ -548,6 +592,31 @@ namespace Application.Services.Implementations
             {
                 return "Number not found.";
             }
+        }
+        private string GetDuration(DateTime endDate, DateTime startDate)
+        {
+            TimeSpan duration = endDate - startDate;
+            string result = "";
+
+            if (duration.TotalDays >= 1)
+            {
+                // If the duration is equal to or more than 1 day
+                int days = (int)duration.TotalDays;
+                result = $"{days} days";
+            }
+            else if (duration.TotalHours >= 1)
+            {
+                // If the duration is equal to or more than 1 hour
+                int hours = (int)duration.TotalHours;
+                result = $"{hours} hours";
+            }
+            else
+            {
+                // If the duration is in minutes
+                int minutes = (int)duration.TotalMinutes;
+                result = $"{minutes} minutes";
+            }
+            return result;
         }
     }
 }

@@ -26,8 +26,8 @@
         public int MedicalRecordsId { get; set; }
         public string VetNote { get; set; }
         public double DepositAmount { get; set; }
+        public string OwnerIdNumber { get; set; }
         public IEnumerable<string> MedicalDiagnose { get; set; }
         public IEnumerable<string> MedicalAction { get; set; }
     }
-
 }

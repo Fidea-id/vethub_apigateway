@@ -9,6 +9,7 @@ namespace Domain.Entities.Responses.Clients
         public IEnumerable<PatientsStatisticResponse> PatientLatestStatistic { get; set; }
         public Owners OwnerData { get; set; }
         public MedicalRecords MedicalData { get; set; }
+        public IEnumerable<MedicalRecordsDiagnoses>? MedicalDiagnoses { get; set; }
         public string VetName { get; set; }
     }
 }
