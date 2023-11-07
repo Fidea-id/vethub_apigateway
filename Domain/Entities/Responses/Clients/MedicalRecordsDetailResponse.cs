@@ -18,5 +18,6 @@ namespace Domain.Entities.Responses.Clients
         public IEnumerable<MedicalRecordsNotes>? Notes { get; set; }
         public IEnumerable<MedicalRecordsPrescriptions>? Prescriptions { get; set; }
         public IEnumerable<MedicalRecordsDiagnoses>? Diagnoses { get; set; }
+        public string StatusPayment { get; set; }
     }
 }
