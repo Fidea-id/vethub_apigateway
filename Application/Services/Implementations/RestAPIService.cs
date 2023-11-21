@@ -143,8 +143,8 @@ namespace Application.Services.Implementations
 
         public async Task<T> GetPlaceResponse<T>(string url, string query) where T : class
         {
-            var api_key = "ke97ccNgULm0FwJXGscDIE5LCRZqAf";
-            var base_url = $"https://api.goapi.id/v1/regional/{url}?api_key={api_key}&{query}";
+            var api_key = "4ecb32b3-4fd0-58bf-09bf-a557aabb";
+            var base_url = $"https://api.goapi.io/regional/{url}?api_key={api_key}&{query}";
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, base_url);
             HttpResponseMessage response = await _httpClient.SendAsync(request);

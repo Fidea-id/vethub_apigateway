@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities.Requests.Clients
+﻿namespace Domain.Entities.Filters.Clients
 {
     public class PrescriptionFrequentsFilter : BaseEntityFilter
     {

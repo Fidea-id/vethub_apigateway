@@ -20,6 +20,7 @@ namespace Domain.Entities.Models.Clients.XPO
         public string Type { get; set; }
         public string Title { get; set; }
         [Column(TypeName = "LONGTEXT")]
+        [Size(SizeAttribute.Unlimited)]
         public string Value { get; set; }
     }
 }

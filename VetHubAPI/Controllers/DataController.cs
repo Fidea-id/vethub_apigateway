@@ -94,6 +94,23 @@ namespace VetHubAPI.Controllers
                 throw;
             }
         }
+        [HttpGet("DashboardDataAdmin")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetDashboardDataAdmin()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<DashboardAdminResponse>(APIType.Master, "Data/DashboardData", authToken);
+                
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
         [HttpGet("DocsType")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds

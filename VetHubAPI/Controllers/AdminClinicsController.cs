@@ -2,6 +2,8 @@
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.Models.Clients;
+using Domain.Entities.Models.Masters;
+using Domain.Entities.Responses.Clients;
 using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +25,42 @@ namespace VetHubAPI.Controllers
         {
             _restAPIService = restAPIService;
             _logger = loggerFactory.CreateLogger<AdminClinicsController>();
+        }
+
+        [HttpGet("DashboardAdminData")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetDashboardAdminData()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<DashboardAdminResponse>(APIType.Master, "Data/DashboardData", authToken);
+
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("UserDemo")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetUserDemo()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<UserDemo>>(APIType.Master, "Subscriptions/UserDemo", authToken);
+
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         [HttpGet("List")]

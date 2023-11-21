@@ -17,6 +17,16 @@ namespace Domain.Entities.Responses.Clients
         public List<ChartDataSeries> ChartClients { get; set; }
 
     }
+
+    public class DashboardAdminResponse
+    {
+        public CardDashboard PracticeClients { get; set; }
+        public CardDashboard ClinicClients { get; set; }
+        public CardDashboard TotalUsers { get; set; }
+        public CardDashboard TotalRevenue { get; set; }
+        public List<ChartDataSeries> ChartClients { get; set; }
+
+    }
     public class CardDashboard
     {
         public int Total { get; set; }

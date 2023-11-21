@@ -11,7 +11,8 @@ namespace Domain.Utils
         {
             if (all == 0)
             {
-                throw new InvalidOperationException("CountAllData cannot be zero to calculate percentage increase.");
+                return 0;
+                //throw new InvalidOperationException("CountAllData cannot be zero to calculate percentage increase.");
             }
 
             double increasePercentage = ((double)month / all) * 100; 

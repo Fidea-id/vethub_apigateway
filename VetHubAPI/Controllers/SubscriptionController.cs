@@ -50,6 +50,23 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<SubscriptionResponse>(APIType.Master, $"Subscriptions/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Superadmin")]
         public async Task<IActionResult> Post([FromBody] Subscriptions request)

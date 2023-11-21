@@ -7,6 +7,7 @@ namespace Domain.Interfaces.Clients
     {
         Task<Profile> GetByGlobalId(string dbName, int id);
         Task<Profile> GetByEmail(string dbName, string email);
+        Task<Profile> GetOwner(string dbName);
     }
 }
 
