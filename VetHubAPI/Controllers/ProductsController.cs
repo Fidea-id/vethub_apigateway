@@ -2,6 +2,7 @@
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
+using Domain.Entities.DTOs.Clients;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
@@ -25,6 +26,39 @@ namespace VetHubAPI.Controllers
             _restAPIService = restAPIService;
         }
 
+        [HttpPost("Full/Edit/{id}")]
+        public async Task<IActionResult> PostProductFullEdit(int id, [FromBody] ProductAsBundleRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<Products>(APIType.Client, "Products/Bundle", id, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpPost("bulk")]
+        public async Task<IActionResult> BulkGroup(BulkProducts data)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(data);
+                var response = await _restAPIService.PostResponse<ResponseUploadBulk>(APIType.Client, "products/bulk", requestJson, authToken);
+
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
         [HttpPost("Full")]
         public async Task<IActionResult> PostProductFull([FromBody] ProductAsBundleRequest request)
         {
@@ -43,6 +77,22 @@ namespace VetHubAPI.Controllers
                     var response = await _restAPIService.PostResponse<Products>(APIType.Client, "Products", requestJson, authToken);
                     return ResponseUtil.CustomOk(response, 200);
                 }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpGet("ProductStockHistorical")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetProductStockHistorical()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<ProductStockHistoricalResponse>>(APIType.Client, "Products/ProductStockHistorical", authToken);
+                return ResponseUtil.CustomOk(response, 200);
             }
             catch
             {

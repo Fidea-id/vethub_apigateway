@@ -10,6 +10,8 @@ namespace Domain.Entities.Models.Masters
         public int TotalMonth { get; set; }
         public double Price { get; set; }
         public double InitialDiscount { get; set; }
+        public double DiscountedPrice { get; set; }
+        public int PatientQuota { get; set; }
         public bool IsClinic { get; set; }
     }
 }

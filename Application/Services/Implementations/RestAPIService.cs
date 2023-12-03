@@ -120,7 +120,7 @@ namespace Application.Services.Implementations
             {
                 await ThrowError(response, $"{type}");
             }
-            _logger.LogInformation("Success Put Response " + type, getUrl.ToString());
+            _logger.LogInformation("Success Put Response " + type + "-" + $"{getUrl + url}/{id}");
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
 

@@ -29,5 +29,6 @@
         IMedicalRecordsPrescriptionsRepository MedicalRecordsPrescriptionsRepository { get; }
         IPrescriptionFrequentsRepository PrescriptionFrequentsRepository { get; }
         INotificationsRepository NotificationsRepository { get; }
+        IProductStockHistoricalRepository ProductStockHistoricalRepository { get; }
     }
 }

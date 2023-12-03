@@ -52,7 +52,8 @@ namespace VetHubAPI.Controllers
                         Price = item.Price,
                         Description = item.Description,
                         Stock = item.Stock,
-                        Volume = item.Volume
+                        Volume = item.Volume,
+                        VolumeUnit = item.VolumeUnit
                     };
                     response.Add(data);
                 }
@@ -65,8 +66,7 @@ namespace VetHubAPI.Controllers
                         Name = item.Name,
                         Price = item.Price,
                         Description = item.Duration + " " + item.DurationType,
-                        Stock = 0,
-                        Volume = "service"
+                        Stock = 0
                     };
                     response.Add(data);
                 }

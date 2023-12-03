@@ -8,7 +8,9 @@ namespace Domain.Entities.Responses
         public string Name { get; set; }
         public string Description { get; set; }
         public double Stock { get; set; }
-        public string Volume { get; set; }
+        public double Volume { get; set; }
+        public double VolumeRemaining { get; set; }
+        public string VolumeUnit { get; set; }
         public int CategoryId { get; set; }
         public string Category { get; set; }
         public bool IsBundle { get; set; }

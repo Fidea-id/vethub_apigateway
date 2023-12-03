@@ -11,6 +11,7 @@ namespace Domain.Interfaces.Clients
         Task<DataResultDTO<T>> GetByFilter(string dbName, TFilter filters);
         Task<IEnumerable<T>> GetAllActive(string dbName);
         Task<IEnumerable<T>> WhereQuery(string dbName, string query);
+        Task<T> WhereFirstQuery(string dbName, string query);
         Task<bool> AnyQuery(string dbName, string query);
         Task<int> Add(string dbName, T entity);
         Task AddRange(string dbName, IEnumerable<T> entity);

@@ -11,6 +11,7 @@ namespace Domain.Entities.Responses.Masters
         public int Id { get; set; }
         public string Name { get; set; }
         public int TotalMonth { get; set; }
+        public int PatientQuota { get; set; }
         public double Price { get; set; }
         public double InitialDiscount { get; set; }
         public double DiscountedPrice { get; set; }

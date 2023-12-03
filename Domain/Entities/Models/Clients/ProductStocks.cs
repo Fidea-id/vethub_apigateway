@@ -4,6 +4,8 @@
     {
         public int ProductId { get; set; }
         public double Stock { get; set; }
-        public string Volume { get; set; }
+        public double Volume { get; set; }
+        public string VolumeUnit { get; set; }
+        public double VolumeRemaining { get; set; }
     }
 }
