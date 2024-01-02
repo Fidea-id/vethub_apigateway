@@ -250,6 +250,7 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
+                request.StatusId = 1;//make it open
                 var response = await _restAPIService.PutResponse<Appointments>(APIType.Client, "Appointments", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
