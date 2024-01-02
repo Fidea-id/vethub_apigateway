@@ -135,6 +135,8 @@ namespace Application.Services.Implementations
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
+                var mssg = await response.Content.ReadAsStringAsync();
+                _logger.LogError($"{mssg}-{getUrl + url}/{id}");
                 await ThrowError(response, $"{type}");
             }
             _logger.LogInformation("Success Delete Response " + type, getUrl.ToString());

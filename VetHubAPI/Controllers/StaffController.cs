@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
+using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Masters;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -67,9 +69,15 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
+                var userId = User.FindFirstValue("Id");
 
-                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, $"Data/Clinics", authToken);
+                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, $"Data/Clinics", authToken); 
+                var responseProfile = await _restAPIService.GetResponse<DataResultDTO<Profile>>(APIType.Client, $"Profile", authToken); 
                 request.ClinicName = responseClinic.Name;
+                var currentStaff = responseProfile.Data.Count();
+                var responseBills = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, $"BillPayments/latest/{userId}", authToken);
+                if (responseBills.MaxUser < (currentStaff + 1))
+                    throw new Exception("Cannot add more than limit user clinic!");
                 //register at master
                 var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register/Staff", JsonConvert.SerializeObject(request), authToken);
                 //register at client
@@ -126,6 +134,11 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.DeleteResponse<Profile>(APIType.Client, $"Profile", id, authToken);
+
+                if(response.GlobalId != 0)
+                {
+                    var responseMaster = await _restAPIService.DeleteResponse<UserProfileResponse>(APIType.Master, "Auth/Staff", response.GlobalId, authToken);
+                }
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch
