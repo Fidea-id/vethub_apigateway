@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities.Responses.Clients
+﻿using Domain.Entities.Models.Clients;
+
+namespace Domain.Entities.Responses.Clients
 {
     public class DashboardOrderResponse
     {
@@ -8,5 +10,6 @@
         public double ExpensesAmount { get; set; }
         public string IncomesAmountText { get; set; }
         public string ExpensesAmountText { get; set; }
+        public IEnumerable<PaymentMethod> PaymentMethod { get; set; }
     }
 }

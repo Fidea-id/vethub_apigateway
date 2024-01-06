@@ -2,6 +2,7 @@
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.Requests.Clients;
+using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -99,6 +100,22 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<OrderFullResponse>(APIType.Client, $"Orders/Full/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrderById(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.DeleteResponse<BaseAPIResponse>(APIType.Client, $"Orders", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch
