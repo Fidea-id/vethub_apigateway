@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Entities.DTOs;
+using Domain.Entities.Responses.Clients;
 
 namespace Domain.Interfaces.Clients
 {
@@ -22,6 +23,7 @@ namespace Domain.Interfaces.Clients
         Task<int> CountWithFilter(string dbName, TFilter filter);
         Task<int> Count(string dbName);
         Task<int> CountWithQuery(string dbName, string query);
+        Task<CardDashboard> CountToCard(string dbName, string date, string query);
         Task<int> Sum(string dbName, string columnName);
         Task<int> SumWithQuery(string dbName, string columnName, string query);
     }

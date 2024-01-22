@@ -29,6 +29,7 @@ namespace Domain.Entities.Responses.Clients
     }
     public class CardDashboard
     {
+        public int TotalAll { get; set; }
         public int Total { get; set; }
         public double Percentage { get; set; }
     }

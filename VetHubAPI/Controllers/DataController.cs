@@ -79,13 +79,18 @@ namespace VetHubAPI.Controllers
         }
         [HttpGet("DashboardData")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetDashboardData()
+        public async Task<IActionResult> GetDashboardData(string? date)
         {
             try
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<DashboardResponse>(APIType.Client, "Data/DashboardData", authToken);
+                var endpoint = "Data/DashboardData";
+                if (!string.IsNullOrEmpty(date))
+                {
+                    endpoint = "Data/DashboardData?date=" + date;
+                }
+                var response = await _restAPIService.GetResponse<DashboardResponse>(APIType.Client, endpoint, authToken);
                 
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -535,5 +540,23 @@ namespace VetHubAPI.Controllers
             }
         }
         #endregion
+
+
+        [HttpGet("RevenueLogs")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetRevenueLogs()
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<List<RevenueResponse>>(APIType.Client, "Orders/RevenueLogs", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }
