@@ -14,4 +14,10 @@
         public string? WebUrl { get; set; }
         public string? MapUrl { get; set; }
     }
+    public class StaffRequest
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
+    }
 }

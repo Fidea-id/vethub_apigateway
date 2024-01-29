@@ -84,6 +84,24 @@ namespace Application.Services.Implementations
                     var userProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{newDBName}", profileJson);
                     var initField = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, $"Master/GenerateInitDBField/{newDBName}");
 
+                    if (data.StaffData.Count() > 0)
+                    {
+                        foreach (var staff in data.StaffData)
+                        {
+                            var newStaff = new Profile
+                            {
+                                Email = staff.Email,
+                                Entity = newDBName,
+                                GlobalId = response.Id,
+                                Name = staff.Name,
+                                Photo = data.OwnerData.Photo,
+                                Roles = staff.Role
+                            };
+                            var staffJson = JsonConvert.SerializeObject(newStaff);
+                            var staffProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{newDBName}", profileJson);
+                        }
+                    }
+
                     var clinicRequestJson = JsonConvert.SerializeObject(data.ClinicData);
                     var userClinic = await _restAPIService.PostResponse<Clinics>(APIType.Client, $"Data/ClinicsEntity/" + newDBName, clinicRequestJson, auth);
                 }

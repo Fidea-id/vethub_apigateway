@@ -16,5 +16,6 @@ namespace Domain.Entities.Requests.Masters
         public int SubscriptionId { get; set; }
         public int MaxUsers { get; set; }
         public OwnerRequest OwnerData { get; set; }
+        public IEnumerable<StaffRequest>? StaffData { get; set; }
     }
 }
