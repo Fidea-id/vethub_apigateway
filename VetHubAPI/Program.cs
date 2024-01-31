@@ -1,5 +1,7 @@
 using Application;
 using Application.Utils;
+using Hangfire;
+using HangfireBasicAuthenticationFilter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
@@ -72,6 +74,19 @@ builder.Services.AddSwaggerGen(c =>
 services.AddSingleton<HttpClient>();
 
 var app = builder.Build();
+
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    DashboardTitle = "Vethub Dasboards",
+    Authorization = new[] {
+        new HangfireCustomBasicAuthenticationFilter {
+            User = "vethub",
+            Pass = "123.Qwer"
+        }
+    }
+});
+app.MapHangfireDashboard();
+
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())

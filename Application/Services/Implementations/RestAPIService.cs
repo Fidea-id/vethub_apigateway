@@ -3,7 +3,9 @@ using Domain.Entities;
 using Domain.Entities.Responses;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Web;
 
 namespace Application.Services.Implementations
@@ -30,6 +32,7 @@ namespace Application.Services.Implementations
                 request.Headers.Add("Authorization", auth);
             }
             HttpResponseMessage response = await _httpClient.SendAsync(request);
+
             if (!response.IsSuccessStatusCode)
             {
                 await ThrowError(response, $"{type}");
@@ -37,7 +40,34 @@ namespace Application.Services.Implementations
             _logger.LogInformation("Success Get Response " + type, getUrl.ToString());
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
         }
-
+        public async Task<T> GetResponseWithCTS<T>(APIType type, string url, string auth = null, TimeSpan? timeout = null) where T : class
+        {
+            using (var cts = timeout.HasValue ? new CancellationTokenSource(timeout.Value) : new CancellationTokenSource())
+            {
+                try
+                {
+                    Uri getUrl = _uriService.GetAPIUri(type);
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, getUrl + url);
+                    if (auth != null)
+                    {
+                        request.Headers.Add("Authorization", auth);
+                    }
+                    HttpResponseMessage response = await _httpClient.SendAsync(request, cts.Token).ConfigureAwait(false);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        await ThrowError(response, $"{type}");
+                    }
+                    _logger.LogInformation("Success Get Response " + type, getUrl.ToString());
+                    return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
+                }
+                catch (TaskCanceledException ex)
+                {
+                    // Handle timeout exception
+                    _logger.LogError($"Request timed out: {ex.Message}");
+                    throw;
+                }
+            }
+        }
         public async Task<T> GetResponseFilter<T, TFilter>(APIType type, string url, string auth = null, TFilter queryParams = null) where T : class where TFilter : BaseEntityFilter
         {
             Uri getUrl = _uriService.GetAPIUri(type);
@@ -89,21 +119,67 @@ namespace Application.Services.Implementations
             Uri getUrl = _uriService.GetAPIUri(type);
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, getUrl + url);
+
             if (!string.IsNullOrEmpty(obj))
             {
                 request.Content = new StringContent(obj, Encoding.UTF8, "application/json");
             }
+
             if (auth != null)
             {
                 request.Headers.Add("Authorization", auth);
             }
+
             HttpResponseMessage response = await _httpClient.SendAsync(request);
+
             if (!response.IsSuccessStatusCode)
             {
                 await ThrowError(response, $"{type}");
             }
+
             _logger.LogInformation("Success Post Response " + type, getUrl.ToString());
+
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
+        }
+        
+        public async Task<T> PostResponseWithCTS<T>(APIType type, string url, string obj, string auth = null, TimeSpan? timeout = null) where T : class
+        {
+            Uri getUrl = _uriService.GetAPIUri(type);
+
+            using (var cts = timeout.HasValue ? new CancellationTokenSource(timeout.Value) : new CancellationTokenSource())
+            {
+                try
+                {
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, getUrl + url);
+
+                    if (!string.IsNullOrEmpty(obj))
+                    {
+                        request.Content = new StringContent(obj, Encoding.UTF8, "application/json");
+                    }
+
+                    if (auth != null)
+                    {
+                        request.Headers.Add("Authorization", auth);
+                    }
+
+                    HttpResponseMessage response = await _httpClient.SendAsync(request, cts.Token).ConfigureAwait(false);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        await ThrowError(response, $"{type}");
+                    }
+
+                    _logger.LogInformation("Success Post Response " + type, getUrl.ToString());
+
+                    return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
+                }
+                catch (TaskCanceledException ex)
+                {
+                    // Handle timeout exception
+                    _logger.LogError($"Request timed out: {ex.Message}");
+                    throw;
+                }
+            }
         }
 
         public async Task<T> PutResponse<T>(APIType type, string url, int id, string obj, string auth = null) where T : class

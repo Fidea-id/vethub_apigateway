@@ -15,6 +15,7 @@
         public ClientClinicResponse ClinicData { get; set; }
         public ClientOwnerResponse OwnerData { get; set; }
         public UserBillResponse LatestBillData { get; set; }
+        public ClientClinicStatisticResponse ClinicStatisticData { get; set; }
         public DateTime JoinDate { get; set; }
     }
     public class ClientOwnerResponse
@@ -22,6 +23,12 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+    }
+    public class ClientClinicStatisticResponse
+    {
+        public int Id { get; set; }
+        public int ClientsTotal { get; set; }
+        public int ClientsLimit { get; set; }
     }
     public class ClientClinicResponse
     {

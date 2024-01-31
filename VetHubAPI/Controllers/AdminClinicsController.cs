@@ -3,6 +3,7 @@ using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
+using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
 using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -141,7 +142,9 @@ namespace VetHubAPI.Controllers
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<UserDataResponse>(APIType.Master, "Auth/User/Entity/" + id, authToken);
                 var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/ClinicsEntity/" + response.Entity, authToken);
+                var responseClinicPatients = await _restAPIService.GetResponse<BaseAPIResponse<int>>(APIType.Client, "Patients/CountActive/" + response.Entity, authToken);
                 var responseLatestBill = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/Latest/" + id, authToken);
+                var responseSubscriptions = await _restAPIService.GetResponse<SubscriptionResponse>(APIType.Master, "Subscriptions/" + responseLatestBill.SubscriptionId, authToken);
 
                 var clinicData = new ClientClinicResponse
                 {
@@ -158,6 +161,13 @@ namespace VetHubAPI.Controllers
                     WebUrl = responseClinic.WebUrl
                 };
 
+                var clinicStatistic = new ClientClinicStatisticResponse
+                {
+                    Id = responseClinic.Id,
+                    ClientsTotal = responseClinicPatients.Data,
+                    ClientsLimit = responseSubscriptions.PatientQuota
+                };
+
                 var data = new ClientClinicDetailResponse();
                 var ownerData = new ClientOwnerResponse
                 {
@@ -170,6 +180,7 @@ namespace VetHubAPI.Controllers
                 data.Id = response.Id;
                 data.ClinicData = clinicData;
                 data.LatestBillData = responseLatestBill;
+                data.ClinicStatisticData = clinicStatistic;
 
                 return ResponseUtil.CustomOk(data, 200);
             }

@@ -10,7 +10,12 @@ namespace Application.Services.Contracts
     {
         public Task<LoginResponse> LoginAsync(UserLoginRequest data);
         public Task<BaseAPIResponse> DemoAsync(UserDemoRequest data);
+        
         public Task<RegisterResponse> RegisterUserAsync(FullRegisterClinicRequest data, string auth);
+        public Task<bool> RegisterProfiles(FullRegisterClinicRequest data, RegisterResponse response, string newDBName, string auth);
+        public Task<bool> GenerateDBField(RegisterResponse response, string newDBName);
+        public Task<bool> GenerateDB(RegisterResponse response, string dbName);
+
         public Task<UserProfileResponse> GetByNameOrEmailAsync(string value, string auth);
         public Task<UserProfileResponse> GetUserProfileByIdAsync(int id, string auth);
         public Task<BaseAPIResponse> CheckUserActivationAsync(ActivationRequest request);

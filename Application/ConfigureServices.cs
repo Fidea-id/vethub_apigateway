@@ -2,6 +2,8 @@
 using Application.Services.Implementations;
 using Application.Utils;
 using Domain.Entities;
+using Hangfire;
+using Hangfire.MySql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,42 @@ namespace Application
             services.AddScoped<IRestAPIService, RestAPIService>();
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IDocGenerateService, DocGenerateService>();
+
+            var connectionString = "";
+
+            var environment = configuration["MyAppSettings:Environment"];
+            if (environment == "LOCAL")
+            {
+                // Local connection string
+                connectionString = "server=localhost;database=VethubMaster;uid=root;Pooling=false;Allow User Variables=true;";
+            }
+            else if (environment == "STAGING")
+            {
+                // Staging connection string
+                connectionString = "server=localhost;database=vethubmaster;uid=adminmaster;password=S@k2lu87COAlYOcNOfApuB1nu26o1a;Pooling=false;Allow User Variables=true;";
+            }
+            else
+            {
+                // Production connection string
+                connectionString = "server=localhost;database=vethubmaster;uid=adminmaster;password=SAl@k2lu87CO6oNOfApuB1nu21YOca;Pooling=false;Allow User Variables=true;";
+            }
+
+            // Add Hangfire services.
+            var hangFireWorkerCount = 3;
+            var hangFireJobExpirationTimeOut = 1;
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseStorage(new MySqlStorage(connectionString, new MySqlStorageOptions
+                {
+                    TablesPrefix = "Hangfire_"
+                }))
+                .WithJobExpirationTimeout(TimeSpan.FromHours(hangFireJobExpirationTimeOut)));
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer(options => options.WorkerCount = hangFireWorkerCount);
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {

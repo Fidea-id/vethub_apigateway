@@ -11,6 +11,7 @@
         public double? Discount { get; set; }
         public double Total { get; set; }
         public int MaxUser { get; set; }
+        public int ClienLimit { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }

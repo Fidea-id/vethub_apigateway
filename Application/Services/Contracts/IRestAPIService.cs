@@ -8,10 +8,14 @@ namespace Application.Services.Contracts
             where T : class;
         Task<T> GetResponse<T>(APIType type, string url, string auth = null)
             where T : class;
+        Task<T> GetResponseWithCTS<T>(APIType type, string url, string auth = null, TimeSpan? timeout = null)
+            where T : class;
         Task<T> GetResponseFilter<T, TFilter>(APIType type, string url, string auth = null, TFilter queryParams = null)
             where T : class
             where TFilter : BaseEntityFilter;
         Task<T> PostResponse<T>(APIType type, string url, string obj, string auth = null)
+            where T : class;
+        Task<T> PostResponseWithCTS<T>(APIType type, string url, string obj, string auth = null, TimeSpan? timeout = null)
             where T : class;
         Task<T> PutResponse<T>(APIType type, string url, int id, string obj, string auth = null)
             where T : class;
