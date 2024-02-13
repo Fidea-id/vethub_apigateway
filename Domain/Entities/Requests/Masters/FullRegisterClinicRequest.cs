@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Requests.Clients;
+﻿using Domain.Entities.Models.Clients;
+using Domain.Entities.Requests.Clients;
 
 namespace Domain.Entities.Requests.Masters
 {
@@ -17,5 +18,10 @@ namespace Domain.Entities.Requests.Masters
         public int MaxUsers { get; set; }
         public OwnerRequest OwnerData { get; set; }
         public IEnumerable<StaffRequest>? StaffData { get; set; }
+    }
+    public class RegisterClinicProfileRequest
+    {
+        public ClinicsRequest ClinicData { get; set; }
+        public IEnumerable<Profile>? ProfileData { get; set; }
     }
 }

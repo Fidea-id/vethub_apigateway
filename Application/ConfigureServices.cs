@@ -5,9 +5,11 @@ using Domain.Entities;
 using Hangfire;
 using Hangfire.MySql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using RestSharp;
 using System.Text;
 
 namespace Application
@@ -42,7 +44,7 @@ namespace Application
 
             // Add Hangfire services.
             var hangFireWorkerCount = 3;
-            var hangFireJobExpirationTimeOut = 1;
+            var hangFireJobExpirationTimeOut = 30;
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -51,11 +53,17 @@ namespace Application
                 {
                     TablesPrefix = "Hangfire_"
                 }))
-                .WithJobExpirationTimeout(TimeSpan.FromHours(hangFireJobExpirationTimeOut)));
+                .WithJobExpirationTimeout(TimeSpan.FromDays(hangFireJobExpirationTimeOut)));
 
             // Add the processing server as IHostedService
             services.AddHangfireServer(options => options.WorkerCount = hangFireWorkerCount);
 
+            services.AddSingleton<RestClient>();
+
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(5); // Set server-side timeout
+            });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {

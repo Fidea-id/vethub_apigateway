@@ -9,6 +9,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 
 namespace Application.Services.Implementations
 {
@@ -58,134 +59,87 @@ namespace Application.Services.Implementations
             }
         }
 
-        public async Task<bool> GenerateDB(RegisterResponse response, string dbName)
+        public async Task ProccessAddProfile(IEnumerable<RegisterResponse> response, ClinicsRequest data, string newDBName, string auth, TimeSpan timespan)
         {
-            if (response.Roles != "Superadmin")
+            try
             {
-                //create db client
-                var generateDB = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, "Master/GenerateInitDB/" + dbName);
-                return true;
-            }
-            return false;
-        }
-        
-
-        public async Task<bool> GenerateDBField(RegisterResponse response, string newDBName)
-        {
-            if (response.Roles != "Superadmin")
-            {
-                //create db client
-                var initField = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, $"Master/GenerateInitDBField/{newDBName}");
-                return true;
-            }
-            return false;
-        }
-
-        public async Task<bool> RegisterProfiles(FullRegisterClinicRequest data, RegisterResponse response, string newDBName, string auth)
-        {
-            if (response.Roles != "Superadmin")
-            {
-                //insert user profile
+                _logger.LogInformation("Background job start");
+                var listProfile = new List<Profile>();
+                _logger.LogInformation($"Define profile data");
+                foreach (var item in response)
+                {
+                    //insert user profile
                     var newProfile = new Profile
                     {
-                        Email = data.OwnerData.Email,
+                        Email = item.Email,
                         Entity = newDBName,
-                        GlobalId = response.Id,
-                        Name = data.OwnerData.Name,
-                        Photo = data.OwnerData.Photo,
-                        Roles = "Owner"
+                        GlobalId = item.Id,
+                        Name = item.Name,
+                        Photo = null,
+                        Roles = item.Roles
                     };
-                var profileJson = JsonConvert.SerializeObject(newProfile);
-                var userProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{newDBName}", profileJson);
-
-                if (data.StaffData.Count() > 0)
-                {
-                    foreach (var staff in data.StaffData)
-                    {
-                        var newStaff = new Profile
-                        {
-                            Email = staff.Email,
-                            Entity = newDBName,
-                            GlobalId = response.Id,
-                            Name = staff.Name,
-                            Photo = data.OwnerData.Photo,
-                            Roles = staff.Role
-                        };
-                        var staffJson = JsonConvert.SerializeObject(newStaff);
-                        var staffProfile = await _restAPIService.PostResponse<UserProfileResponse>(APIType.Client, $"Profile/public/{newDBName}", profileJson);
-                    }
+                    listProfile.Add(newProfile);
                 }
+                var newCLinicProfile = new RegisterClinicProfileRequest
+                {
+                    ClinicData = data,
+                    ProfileData = listProfile
+                };
 
-                var clinicRequestJson = JsonConvert.SerializeObject(data.ClinicData);
-                var userClinic = await _restAPIService.PostResponse<Clinics>(APIType.Client, $"Data/ClinicsEntity/" + newDBName, clinicRequestJson, auth);
-                return true;
+                var clinicRequestJson = JsonConvert.SerializeObject(newCLinicProfile);
+                _logger.LogInformation($"Star create clinic data," + clinicRequestJson);
+                var userClinic = await _restAPIService.PostResponseWithCTS<Clinics>(APIType.Client, $"Data/InitClinicsProfile/" + newDBName, clinicRequestJson, auth, timespan);
+                _logger.LogInformation($"Done create clinic data");
+
+                _logger.LogInformation("Background job done");
             }
-            return false;
+            catch
+            {
+                throw;
+            }
         }
-        public async Task ProcessAdditionalLogic(RegisterResponse response, FullRegisterClinicRequest data, string auth, string newDBName)
+        public async Task ProccessInitFieldDB(string newDBName, TimeSpan timespan)
+        {
+            _logger.LogInformation($"Start init db field");
+            var initField = await _restAPIService.GetResponseWithCTS<BaseAPIResponse>(APIType.Client, $"Master/GenerateInitDBField/{newDBName}", null, timespan);
+            _logger.LogInformation($"Done init db field");
+        }
+
+        public async Task ProcessAdditionalLogic(IEnumerable<RegisterResponse> response, FullRegisterClinicRequest data, string auth, string newDBName)
         {
             try
             {
                 var timespan = TimeSpan.FromMinutes(10);
-                if (response.Roles != "Superadmin")
+                if (response.Any(x => x.Roles != "Superadmin"))
                 {
                     _logger.LogInformation("Background job start");
-                    _logger.LogInformation($"Start init db with name: {newDBName}");
-                    //create db client
-                    var generateDB = await _restAPIService.GetResponseWithCTS<BaseAPIResponse>(APIType.Client, "Master/GenerateInitDB/" + newDBName, null, timespan);
-                    _logger.LogInformation($"Done init db with name: {newDBName}");
 
-                    _logger.LogInformation($"Start init db field");
-                    var initField = await _restAPIService.GetResponseWithCTS<BaseAPIResponse>(APIType.Client, $"Master/GenerateInitDBField/{newDBName}", null, timespan);
-                    _logger.LogInformation($"Done init db field");
-
-                    _logger.LogInformation($"Start create owner data");
-                    //insert user profile
-                    var newProfile = new Profile
+                    var listProfile = new List<Profile>();
+                    _logger.LogInformation($"Define profile data");
+                    foreach (var item in response)
                     {
-                        Email = data.OwnerData.Email,
-                        Entity = newDBName,
-                        GlobalId = response.Id,
-                        Name = data.OwnerData.Name,
-                        Photo = data.OwnerData.Photo,
-                        Roles = "Owner"
-                    };
-                    var profileJson = JsonConvert.SerializeObject(newProfile);
-                    var userProfile = await _restAPIService.PostResponseWithCTS<UserProfileResponse>(APIType.Client, $"Profile/public/{newDBName}", profileJson, null, timespan);
-                    _logger.LogInformation($"Done create owner data");
-
-                    _logger.LogInformation($"Start create staff data");
-                    if (data.StaffData.Count() > 0)
-                    {
-                        foreach (var staff in data.StaffData)
+                        //insert user profile
+                        var newProfile = new Profile
                         {
-                            var newStaffRequest = new ProfileRequest
-                            {
-                                Email = staff.Email,
-                                Name = staff.Name,
-                                Photo = null,
-                                Roles = staff.Role
-                            };
-
-                            var responseStaff = await _restAPIService.PostResponseWithCTS<RegisterResponse>(APIType.Master, "Auth/Register/Public/Staff/" + newDBName, JsonConvert.SerializeObject(newStaffRequest), null, timespan);
-
-                            var newStaff = new Profile
-                            {
-                                Email = staff.Email,
-                                Entity = newDBName,
-                                GlobalId = responseStaff.Id,
-                                Name = staff.Name,
-                                Photo = null,
-                                Roles = staff.Role
-                            };
-                            var staffJson = JsonConvert.SerializeObject(newStaff);
-                            var staffProfile = await _restAPIService.PostResponseWithCTS<UserProfileResponse>(APIType.Client, $"Profile/public/{newDBName}", staffJson, null, timespan);
-                        }
+                            Email = item.Email,
+                            Entity = newDBName,
+                            GlobalId = item.Id,
+                            Name = item.Name,
+                            Photo = "https://app.vethub.id/images/users/default/ManA.png",
+                            Roles = item.Roles
+                        };
+                        listProfile.Add(newProfile);
                     }
+                    var newCLinicProfile = new RegisterClinicProfileRequest
+                    {
+                        ClinicData = data.ClinicData,
+                        ProfileData = listProfile
+                    };
 
-                    var clinicRequestJson = JsonConvert.SerializeObject(data.ClinicData);
-                    var userClinic = await _restAPIService.PostResponseWithCTS<Clinics>(APIType.Client, $"Data/ClinicsEntity/" + newDBName, clinicRequestJson, auth, timespan);
-                    _logger.LogInformation($"Done create staff data");
+                    var clinicRequestJson = JsonConvert.SerializeObject(newCLinicProfile);
+                    _logger.LogInformation($"Start create clinic data," + clinicRequestJson);
+                    var generateDB = await _restAPIService.PostResponseWithCTS<BaseAPIResponse>(APIType.Client, "Master/GenerateInitDBClient/" + newDBName, clinicRequestJson, auth, timespan);
+                    _logger.LogInformation($"Done init db with name: {newDBName}");
 
                     _logger.LogInformation("Background job done");
                 }
@@ -197,7 +151,7 @@ namespace Application.Services.Implementations
             }
         }
 
-        public async Task<RegisterResponse> RegisterUserAsync(FullRegisterClinicRequest data, string auth)
+        public async Task<IEnumerable<RegisterResponse>> RegisterUserAsync(FullRegisterClinicRequest data, string auth)
         {
             try
             {
@@ -205,9 +159,9 @@ namespace Application.Services.Implementations
                 data.ClinicData.Entity = newDBName;
                 var registerRequestJson = JsonConvert.SerializeObject(data);
 
+                _logger.LogInformation("Try Register with data:" + registerRequestJson);
                 //register
-                var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register", registerRequestJson);
-
+                var response = await _restAPIService.PostResponse<IEnumerable<RegisterResponse>>(APIType.Master, "Auth/Register", registerRequestJson);
                 // Enqueue a background job to process the additional logic
                 BackgroundJob.Enqueue(() => ProcessAdditionalLogic(response, data, auth, newDBName));
 
