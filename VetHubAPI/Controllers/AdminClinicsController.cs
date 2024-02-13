@@ -101,7 +101,8 @@ namespace VetHubAPI.Controllers
                         {
                             Id = item.Id,
                             Name = item.Name,
-                            Email = item.Email
+                            Email = item.Email,
+                            IsVerified = item.IsVerified
                         };
 
                         var responseLatestBill = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/Latest/" + item.Id, authToken);
@@ -215,7 +216,7 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<IEnumerable<Users>>(APIType.Master, "Auth/UserEntity/" + id, authToken);
+                var response = await _restAPIService.GetResponse<IEnumerable<UserDataResponse>>(APIType.Master, "Auth/UserEntity/" + id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch

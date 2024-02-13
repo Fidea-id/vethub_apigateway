@@ -1,6 +1,7 @@
 ﻿using Application.Services.Contracts;
 using Domain.Entities;
 using Domain.Entities.Models.Clients;
+using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Requests.Masters;
 using Domain.Entities.Responses;
@@ -87,7 +88,7 @@ namespace Application.Services.Implementations
                 };
 
                 var clinicRequestJson = JsonConvert.SerializeObject(newCLinicProfile);
-                _logger.LogInformation($"Star create clinic data," + clinicRequestJson);
+                _logger.LogInformation($"Start create clinic data," + clinicRequestJson);
                 var userClinic = await _restAPIService.PostResponseWithCTS<Clinics>(APIType.Client, $"Data/InitClinicsProfile/" + newDBName, clinicRequestJson, auth, timespan);
                 _logger.LogInformation($"Done create clinic data");
 
@@ -176,6 +177,29 @@ namespace Application.Services.Implementations
         public Task<UserProfileResponse> GetByNameOrEmailAsync(string value, string auth)
         {
             throw new NotImplementedException();
+        }
+        
+        public async Task<BaseAPIResponse> ResendEmailVerif(int id, string auth)
+        {
+            try
+            {
+                var users = await _restAPIService.GetResponse<Users>(APIType.Master, "Auth/UsersData/" + id, auth);
+                var clinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/ClinicsEntity/" + users.Entity, auth);
+                var request = new ResendEmailVerifRequest()
+                {
+                    UserData = users,
+                    ClinicName = clinic.Name
+                };
+
+                var response = await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/ResendEmailVerificaiton/", JsonConvert.SerializeObject(request), auth);
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error while send email verification : " + e.Message);
+                throw;
+            }
         }
 
         public async Task<UserProfileResponse> GetUserProfileByIdAsync(int id, string auth)

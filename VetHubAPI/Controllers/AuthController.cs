@@ -47,6 +47,17 @@ namespace VetHubAPI.Controllers
             return ResponseUtil.CustomOk(result, 200);
         }
 
+
+        [HttpGet("ResendEmailVerification/{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> ResendEmailVerification(int id)
+        {
+            //Get the AuthToken
+            string authToken = HttpContext.Request.Headers["Authorization"];
+            var result = await _authService.ResendEmailVerif(id, authToken);
+            return ResponseUtil.CustomOk(result, 200);
+        }
+
         [HttpGet("User")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> GetUser()

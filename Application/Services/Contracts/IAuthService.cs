@@ -14,6 +14,7 @@ namespace Application.Services.Contracts
         public Task<IEnumerable<RegisterResponse>> RegisterUserAsync(FullRegisterClinicRequest data, string auth);
 
         public Task<UserProfileResponse> GetByNameOrEmailAsync(string value, string auth);
+        public Task<BaseAPIResponse> ResendEmailVerif(int id, string auth);
         public Task<UserProfileResponse> GetUserProfileByIdAsync(int id, string auth);
         public Task<BaseAPIResponse> CheckUserActivationAsync(ActivationRequest request);
         public Task<BaseAPIResponse> UserActivationAsync(ActivationRequest request);
