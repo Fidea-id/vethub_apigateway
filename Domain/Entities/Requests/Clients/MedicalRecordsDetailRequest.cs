@@ -5,7 +5,7 @@
         public int MedicalRecordsId { get; set; }
         public MedicalRecordsNotesRequest? Notes { get; set; }
         public IEnumerable<MedicalRecordsDiagnosesRequest> Diagnoses { get; set; }
-        public IEnumerable<MedicalRecordsPrescriptionsRequest> Prescriptions { get; set; }
+        public IEnumerable<MedicalRecordsPrescriptionsRequest>? Prescriptions { get; set; }
     }
     public class MedicalRecordsDiagnosesRequest
     {
