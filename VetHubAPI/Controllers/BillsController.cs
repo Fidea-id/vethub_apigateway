@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Masters;
 using Domain.Entities.Models.Masters;
+using Domain.Entities.Responses;
 using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +32,38 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/UpdateBills/" +userId, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("StopBills/{userId}")]
+        public async Task<IActionResult> StopBills(int userId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/StopBills/" + userId, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("DeleteClinics/{userId}")]
+        public async Task<IActionResult> DeleteClinics(int userId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Master, "BillPayments/DeleteClinics/" + userId, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch
