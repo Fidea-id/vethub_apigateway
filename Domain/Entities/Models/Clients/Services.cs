@@ -8,6 +8,6 @@ namespace Domain.Entities.Models.Clients
         public int Duration { get; set; }
         [MaxLength(20)]
         public string DurationType { get; set; }
-        public double Price { get; set; }
+        //public double Price { get; set; }
     }
 }
