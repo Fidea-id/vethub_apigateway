@@ -26,9 +26,9 @@
   <ItemGroup>
     <Reference Include="DevExpress.Xpo.v23.1">
 		<!--MAS ANDHIKA-->
-		<!--<HintPath>E:\.nuget\devexpress.xpo\23.1.4\lib\netstandard2.0\DevExpress.Xpo.v23.1.dll</HintPath>-->
+		<HintPath>E:\.nuget\devexpress.xpo\23.1.4\lib\netstandard2.0\DevExpress.Xpo.v23.1.dll</HintPath>
 		<!--RAFFLI-->
-		<HintPath>D:\VETHUB\devextreme\23.1.4\lib\netstandard2.0\DevExpress.Xpo.v23.1.dll</HintPath>
+		<!--<HintPath>D:\VETHUB\devextreme\23.1.4\lib\netstandard2.0\DevExpress.Xpo.v23.1.dll</HintPath>-->
     </Reference>
   </ItemGroup>
 </Project>

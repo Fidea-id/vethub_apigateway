@@ -4,6 +4,7 @@ using Hangfire;
 using HangfireBasicAuthenticationFilter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
@@ -73,6 +74,20 @@ builder.Services.AddSwaggerGen(c =>
 // Register HttpClient as a singleton in your startup.cs
 services.AddSingleton<HttpClient>();
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+            policy =>
+            {
+                policy.WithOrigins("https://app.vethub.id")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
+});
+
 var app = builder.Build();
 
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
@@ -96,9 +111,20 @@ app.UseSwaggerUI();
 //}
 
 app.UseCustomExceptionHandler();
-app.UseStaticFiles();
+//app.UseStaticFiles();
+app.UseCors(MyAllowSpecificOrigins);
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "https://app.vethub.id");
+        ctx.Context.Response.Headers.Append("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    }
+});
 
 app.UseHttpsRedirection();
+
 
 app.UseAuthorization();
 app.UseAuthentication();
