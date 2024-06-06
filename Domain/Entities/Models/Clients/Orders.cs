@@ -14,5 +14,6 @@
         public string Status { get; set; }
         public double TotalPrice { get; set; }
         public double TotalDiscountedPrice { get; set; }
+        public double TotalDiscount { get; set; }
     }
 }

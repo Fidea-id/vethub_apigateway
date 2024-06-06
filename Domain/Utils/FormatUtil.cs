@@ -18,6 +18,17 @@ namespace Domain.Utils
             double increasePercentage = ((double)month / all) * 100; 
             return increasePercentage;
         }
+        public static double CountDoublePercentageMonth(double month, double all)
+        {
+            if (all == 0)
+            {
+                return 0;
+                //throw new InvalidOperationException("CountAllData cannot be zero to calculate percentage increase.");
+            }
+
+            double increasePercentage = ((double)month / all) * 100; 
+            return increasePercentage;
+        }
         public static string GenerateOrdersNumber(string latest = null)
         {
             DateTime currentDate = DateTime.Now;

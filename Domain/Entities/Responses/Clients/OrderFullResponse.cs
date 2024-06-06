@@ -18,6 +18,7 @@ namespace Domain.Entities.Responses.Clients
         public string Status { get; set; }
         public double TotalPrice { get; set; }
         public double TotalDiscountedPrice { get; set; }
+        public double TotalDiscount { get; set; }
         public IEnumerable<OrdersDetailResponse>? OrderProducts { get; set; }
         public IEnumerable<OrdersPaymentResponse>? OrderPayments { get; set; }
         public ClientClinicResponse? ClinicData { get; set; }

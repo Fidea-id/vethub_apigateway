@@ -1,10 +1,12 @@
 ﻿using Application.Services.Contracts;
 using Domain.Entities;
+using Domain.Entities.Models.Masters;
 using Domain.Entities.Responses;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Text;
 using System.Web;
 
@@ -263,6 +265,7 @@ namespace Application.Services.Implementations
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, getUrl + url);
             if (auth != null)
             {
+                await CheckSchemeVersion(auth); // always check scheme version
                 request.Headers.Add("Authorization", auth);
             }
             HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -294,6 +297,7 @@ namespace Application.Services.Implementations
                     HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, getUrl + url);
                     if (auth != null)
                     {
+                        await CheckSchemeVersion(auth); // always check scheme version
                         request.Headers.Add("Authorization", auth);
                     }
                     HttpResponseMessage response = await client.SendAsync(request);
@@ -346,6 +350,7 @@ namespace Application.Services.Implementations
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             if (auth != null)
             {
+                await CheckSchemeVersion(auth); // always check scheme version
                 request.Headers.Add("Authorization", auth);
             }
 
@@ -371,6 +376,7 @@ namespace Application.Services.Implementations
 
             if (auth != null)
             {
+                await CheckSchemeVersion(auth); // always check scheme version
                 request.Headers.Add("Authorization", auth);
             }
 
@@ -413,6 +419,7 @@ namespace Application.Services.Implementations
 
                     if (auth != null)
                     {
+                        await CheckSchemeVersion(auth); // always check scheme version
                         request.Headers.Add("Authorization", auth);
                     }
 
@@ -442,6 +449,7 @@ namespace Application.Services.Implementations
             request.Content = new StringContent(obj, Encoding.UTF8, "application/json");
             if (auth != null)
             {
+                await CheckSchemeVersion(auth); // always check scheme version
                 request.Headers.Add("Authorization", auth);
             }
             HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -459,6 +467,7 @@ namespace Application.Services.Implementations
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, $"{getUrl + url}/{id}");
             if (auth != null)
             {
+                await CheckSchemeVersion(auth); // always check scheme version
                 request.Headers.Add("Authorization", auth);
             }
             HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -484,6 +493,29 @@ namespace Application.Services.Implementations
                 await ThrowError(response, "Go");
             }
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
+        }
+
+        private async Task CheckSchemeVersion(string auth)
+        {
+            try
+            {
+                Uri getMasterUrl = _uriService.GetAPIUri(APIType.Master);
+                HttpRequestMessage requestMaster = new HttpRequestMessage(HttpMethod.Get, getMasterUrl + "Data/AppConfig/ClientVersionScheme");
+                requestMaster.Headers.Add("Authorization", auth);
+                HttpResponseMessage responseMaster = await _httpClient.SendAsync(requestMaster);
+                var masterVersion = await responseMaster.Content.ReadAsStringAsync();
+
+
+                Uri getClientUrl = _uriService.GetAPIUri(APIType.Client);
+                HttpRequestMessage requestClient = new HttpRequestMessage(HttpMethod.Get, getClientUrl + "Master/CheckSchemeDB/" + int.Parse(masterVersion));
+                requestClient.Headers.Add("Authorization", auth);
+                HttpResponseMessage responseClient = await _httpClient.SendAsync(requestClient);
+                var responseClientValue = await responseClient.Content.ReadAsStringAsync();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogInformation("Error for CheckSchemeVersion: " + ex.Message);
+            }
         }
 
         private async Task ThrowError(HttpResponseMessage response, string type)

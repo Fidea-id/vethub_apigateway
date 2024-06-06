@@ -134,6 +134,24 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpGet("AppConfig/{key}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetAppConfig(string key)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<string>(APIType.Master, "Data/AppConfig/"+key, authToken);
+
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         #region Clinics
         [HttpGet("Clinics")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds

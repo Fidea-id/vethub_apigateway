@@ -15,6 +15,10 @@ namespace Domain.Entities.Responses.Clients
         public DateTime EndDate { get; set; }
         public double TotalPrice { get; set; }
         public double TotalPaid { get; set; }
+        public string? DiscountMethod { get; set; }
+        public double? DiscountValue { get; set; }
+        public double? DiscountTotal { get; set; }
+        public double? TotalDiscounted { get; set; }
         public IEnumerable<MedicalRecordsNotes>? Notes { get; set; }
         public IEnumerable<MedicalRecordsPrescriptions>? Prescriptions { get; set; }
         public IEnumerable<MedicalRecordsDiagnoses>? Diagnoses { get; set; }

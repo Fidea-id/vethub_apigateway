@@ -11,7 +11,7 @@ namespace Domain.Entities.Responses.Clients
         public CardDashboard Clients { get; set; }
         public CardDashboard Pets { get; set; }
         public CardDashboard Appointments { get; set; }
-        public CardDashboard Revenues { get; set; }
+        public DoubleCardDashboard Revenues { get; set; }
 
         public List<ActivityDashboard> Activities { get; set; }
         public List<ChartDataSeries> ChartClients { get; set; }
@@ -27,6 +27,13 @@ namespace Domain.Entities.Responses.Clients
         public List<ChartDataSeries> ChartClients { get; set; }
 
     }
+    public class DoubleCardDashboard
+    {
+        public double TotalAll { get; set; }
+        public double Total { get; set; }
+        public double Percentage { get; set; }
+    }
+    
     public class CardDashboard
     {
         public int TotalAll { get; set; }

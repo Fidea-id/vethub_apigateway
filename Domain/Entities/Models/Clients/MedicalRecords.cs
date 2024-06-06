@@ -9,6 +9,10 @@
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string PaymentStatus { get; set; }
+        public string? DiscountMethod { get; set; }
+        public double? DiscountValue { get; set; }
+        public double? DiscountTotal { get; set; }
+        public double? TotalDiscounted { get; set; }
         public double Total { get; set; }
     }
 }

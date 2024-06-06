@@ -7,6 +7,9 @@
         public DateTime Date { get; set; }
         public double Total { get; set; }
         public string Status { get; set; }
+        public string? DiscountMethod { get; set; }
+        public double? DiscountValue { get; set; }
+        public double? DiscountTotal { get; set; }
         public string? Type { get; set; }
     }
 }

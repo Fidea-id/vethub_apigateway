@@ -67,6 +67,26 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<AppointmentsDetailResponse>, AppointmentDetailFilter>(APIType.Client, "Appointments/Detail", authToken, filter);
+                var result = response.Data;
+                if (result.Count() > 0)
+                {
+                    foreach (var item in result)
+                    {
+                        if(item.MedicalRecordId != null || item.MedicalRecordId != 0)
+                        {
+                            try
+                            {
+                                var responseDetail = await _restAPIService.GetResponse<MedicalRecordsDetailResponse>(APIType.Client, $"MedicalRecords/Detail/{item.MedicalRecordId}?flag=no_notes", authToken);
+                                item.MedicalRecord = responseDetail;
+                            }
+                            catch
+                            {
+                                item.MedicalRecord = null;
+                            }
+                        }
+                    }
+                }
+
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch
@@ -366,6 +386,23 @@ namespace VetHubAPI.Controllers
                 string authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
                 var response = await _restAPIService.PostResponse<MedicalRecordsDetailResponse>(APIType.Client, "MedicalRecords/Detail", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPut("Prescription/{id}")]
+        public async Task<IActionResult> EditPrescription(int id, [FromBody] IEnumerable<MedicalRecordsPrescriptionsRequest> request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<IEnumerable<MedicalRecordsDetailResponse>>(APIType.Client, "MedicalRecords/Prescription", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch
