@@ -4,7 +4,6 @@ using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
-using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Masters;
@@ -34,7 +33,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<Profile>, ProfileFilter>(APIType.Client, "Profile", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
@@ -51,7 +50,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<Profile>(APIType.Client, $"Profile/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -68,11 +67,11 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var userId = User.FindFirstValue("Id");
 
-                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, $"Data/Clinics", authToken); 
-                var responseProfile = await _restAPIService.GetResponse<DataResultDTO<Profile>>(APIType.Client, $"Profile", authToken); 
+                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, $"Data/Clinics", authToken);
+                var responseProfile = await _restAPIService.GetResponse<DataResultDTO<Profile>>(APIType.Client, $"Profile", authToken);
                 request.ClinicName = responseClinic.Name;
                 var currentStaff = responseProfile.Data.Count();
                 var responseBills = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, $"BillPayments/latest/{userId}", authToken);
@@ -98,7 +97,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.PutResponse<BaseAPIResponse>(APIType.Client, "Profile/Deactive", id, "", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -115,7 +114,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
                 var response = await _restAPIService.PutResponse<Profile>(APIType.Client, "Profile", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
@@ -132,10 +131,10 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.DeleteResponse<Profile>(APIType.Client, $"Profile", id, authToken);
 
-                if(response.GlobalId != 0)
+                if (response.GlobalId != 0)
                 {
                     var responseMaster = await _restAPIService.DeleteResponse<UserProfileResponse>(APIType.Master, "Auth/Staff", response.GlobalId, authToken);
                 }

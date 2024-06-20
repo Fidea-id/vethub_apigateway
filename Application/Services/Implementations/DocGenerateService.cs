@@ -11,7 +11,6 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Services.Implementations
 {
@@ -328,7 +327,7 @@ namespace Application.Services.Implementations
                     clinicLogo = "https://vethub.id/images/vethubsmall.png";
                 }
                 string diagnoses = "";
-                if(data.MedicalDiagnoses != null)
+                if (data.MedicalDiagnoses != null)
                 {
                     var dd = data.MedicalDiagnoses.Select(x => x.Diagnose);
                     diagnoses = string.Join(", ", dd);

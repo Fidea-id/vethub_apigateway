@@ -7,6 +7,23 @@ namespace Domain.Utils
 {
     public static class FormatUtil
     {
+        public static string MethodTypeString(MethodType type)
+        {
+            var result = "undefined";
+            if (type == MethodType.Create)
+            {
+                result = "Create";
+            }
+            else if (type == MethodType.Delete)
+            {
+                result = "Delete";
+            }
+            else
+            {
+                result = "Update";
+            }
+            return result;
+        }
         public static double CountPercentageMonth(int month, int all)
         {
             if (all == 0)
@@ -15,7 +32,7 @@ namespace Domain.Utils
                 //throw new InvalidOperationException("CountAllData cannot be zero to calculate percentage increase.");
             }
 
-            double increasePercentage = ((double)month / all) * 100; 
+            double increasePercentage = ((double)month / all) * 100;
             return increasePercentage;
         }
         public static double CountDoublePercentageMonth(double month, double all)
@@ -26,7 +43,7 @@ namespace Domain.Utils
                 //throw new InvalidOperationException("CountAllData cannot be zero to calculate percentage increase.");
             }
 
-            double increasePercentage = ((double)month / all) * 100; 
+            double increasePercentage = ((double)month / all) * 100;
             return increasePercentage;
         }
         public static string GenerateOrdersNumber(string latest = null)

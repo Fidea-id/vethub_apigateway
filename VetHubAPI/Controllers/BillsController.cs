@@ -30,8 +30,8 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/UpdateBills/" +userId, authToken);
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/UpdateBills/" + userId, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch
@@ -46,7 +46,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/StopBills/" + userId, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -62,7 +62,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Master, "BillPayments/DeleteClinics/" + userId, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -79,7 +79,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments", authToken, filter);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
@@ -96,7 +96,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<BillPayments>(APIType.Master, $"BillPayments/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -113,7 +113,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<BillPayments>, BillPaymentsFilter>(APIType.Master, "BillPayments/status", authToken);
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
@@ -130,7 +130,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<BillPayments>(APIType.Master, $"BillPayments/status/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -146,7 +146,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
                 var response = await _restAPIService.PostResponse<BillPayments>(APIType.Master, "BillPayments", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);

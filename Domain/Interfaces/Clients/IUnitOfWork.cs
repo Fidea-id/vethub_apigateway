@@ -30,5 +30,8 @@
         IPrescriptionFrequentsRepository PrescriptionFrequentsRepository { get; }
         INotificationsRepository NotificationsRepository { get; }
         IProductStockHistoricalRepository ProductStockHistoricalRepository { get; }
+        IOpnamesRepository OpnamesRepository { get; }
+        IOpnamePatientsRepository OpnamePatientsRepository { get; }
+        IEventLogRepository EventLogRepository { get; }
     }
 }

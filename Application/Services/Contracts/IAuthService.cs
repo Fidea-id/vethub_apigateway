@@ -10,7 +10,7 @@ namespace Application.Services.Contracts
     {
         public Task<LoginResponse> LoginAsync(UserLoginRequest data);
         public Task<BaseAPIResponse> DemoAsync(UserDemoRequest data);
-        
+
         public Task<IEnumerable<RegisterResponse>> RegisterUserAsync(FullRegisterClinicRequest data, string auth);
 
         public Task<UserProfileResponse> GetByNameOrEmailAsync(string value, string auth);

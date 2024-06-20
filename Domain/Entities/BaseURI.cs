@@ -12,4 +12,8 @@
     {
         Client, Master
     }
+    public enum MethodType
+    {
+        Create, Update, Delete
+    }
 }

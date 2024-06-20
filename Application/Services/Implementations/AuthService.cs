@@ -10,7 +10,6 @@ using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
 
 namespace Application.Services.Implementations
 {
@@ -106,6 +105,7 @@ namespace Application.Services.Implementations
             _logger.LogInformation($"Done init db field");
         }
 
+        //TODO: buat event log register jadi 1 saja
         public async Task ProcessAdditionalLogic(IEnumerable<RegisterResponse> response, FullRegisterClinicRequest data, string auth, string newDBName)
         {
             try
@@ -178,7 +178,7 @@ namespace Application.Services.Implementations
         {
             throw new NotImplementedException();
         }
-        
+
         public async Task<BaseAPIResponse> ResendEmailVerif(int id, string auth)
         {
             try
@@ -207,7 +207,7 @@ namespace Application.Services.Implementations
             try
             {
                 var response = await _restAPIService.GetResponse<UserProfileResponse>(APIType.Master, "Auth/User/" + id, auth);
-                if(response.Roles != "Superadmin")
+                if (response.Roles != "Superadmin")
                 {
                     //get profile client data
                     var responseClient = await _restAPIService.GetResponse<UserProfileResponse>(APIType.Client, "Profile/User/" + response.Id, auth);
@@ -226,7 +226,7 @@ namespace Application.Services.Implementations
         {
             //client profile data to global profile
             master.GlobalId = master.Id;
-            if(client != null)
+            if (client != null)
             {
                 master.Id = client.Id;
                 master.Photo = client.Photo;

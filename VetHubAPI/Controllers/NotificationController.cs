@@ -6,7 +6,6 @@ using Domain.Entities.Models.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -28,7 +27,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<DataResultDTO<Notifications>>(APIType.Client, "Notification/GetAllNotif", authToken);
 
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
@@ -44,7 +43,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<Notifications>>(APIType.Client, "Notification/GetRecentNotif", authToken);
 
                 return ResponseUtil.CustomOk(response, 200);

@@ -6,7 +6,6 @@ using Domain.Entities.Responses.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Security.Claims;
 
@@ -33,7 +32,7 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> GenerateSuratKematian(DocsKematianRequest request)
         {
             //Get the AuthToken
-            string authToken = HttpContext.Request.Headers["Authorization"];
+            string? authToken = HttpContext.Request.Headers["Authorization"];
             var userId = User.FindFirstValue("Id");
             var generate = await _generateService.GenerateSuratKematianAsync(userId, request, authToken);
             _logger.LogInformation("Generate data : " + JsonConvert.SerializeObject(generate));
@@ -47,14 +46,14 @@ namespace VetHubAPI.Controllers
             };
             var postNote = await _restAPIService.PostResponse<MedicalRecordsNotesResponse>(APIType.Client, "MedicalRecords/Notes", JsonConvert.SerializeObject(noteRequest), authToken);
 
-            return ResponseUtil.CustomOk(postNote, 200); 
+            return ResponseUtil.CustomOk(postNote, 200);
         }
 
         [HttpPost("SuratPermintaanPulang")]
         public async Task<IActionResult> GenerateSuratPermintaanPulang(DocsPermintaanPulangRequest request)
         {
             //Get the AuthToken
-            string authToken = HttpContext.Request.Headers["Authorization"];
+            string? authToken = HttpContext.Request.Headers["Authorization"];
             var userId = User.FindFirstValue("Id");
             var generate = await _generateService.GenerateSuratPermintaanPulangAsync(userId, request, authToken);
 
@@ -76,7 +75,7 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> GenerateSuratTindakan(DocsTindakanRequest request)
         {
             //Get the AuthToken
-            string authToken = HttpContext.Request.Headers["Authorization"];
+            string? authToken = HttpContext.Request.Headers["Authorization"];
             var userId = User.FindFirstValue("Id");
             var generate = await _generateService.GenerateSuratTindakanAsync(userId, request, authToken);
             _logger.LogInformation("Generate data : " + JsonConvert.SerializeObject(generate));
@@ -97,7 +96,7 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> GenerateSuratRujukan(DocsRujukanRequest request)
         {
             //Get the AuthToken
-            string authToken = HttpContext.Request.Headers["Authorization"];
+            string? authToken = HttpContext.Request.Headers["Authorization"];
             var userId = User.FindFirstValue("Id");
             var generate = await _generateService.GenerateSuratRujukanAsync(userId, request, authToken);
             _logger.LogInformation("Generate data : " + JsonConvert.SerializeObject(generate));

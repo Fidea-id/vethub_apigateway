@@ -1,12 +1,8 @@
 ﻿using Application.Services.Contracts;
 using Domain.Entities;
-using Domain.Entities.Models.Masters;
 using Domain.Entities.Responses;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using RestSharp;
-using System.Net.Http;
-using System.Security.Policy;
 using System.Text;
 using System.Web;
 
@@ -512,7 +508,7 @@ namespace Application.Services.Implementations
                 HttpResponseMessage responseClient = await _httpClient.SendAsync(requestClient);
                 var responseClientValue = await responseClient.Content.ReadAsStringAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogInformation("Error for CheckSchemeVersion: " + ex.Message);
             }

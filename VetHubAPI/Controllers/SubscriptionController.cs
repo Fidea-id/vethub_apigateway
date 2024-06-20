@@ -1,19 +1,13 @@
 ﻿using Application.Services.Contracts;
-using Application.Services.Implementations;
-using Domain.Entities.Filters;
-using Domain.Entities.Models.Clients;
+using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.Filters.Masters;
 using Domain.Entities.Models.Masters;
-using Domain.Entities.Requests.Clients;
+using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Security.Claims;
-using Application.Utils;
-using Domain.Entities.Filters.Masters;
-using Domain.Entities.DTOs;
-using Domain.Entities.Responses.Masters;
 
 namespace VetHubAPI.Controllers
 {
@@ -23,7 +17,6 @@ namespace VetHubAPI.Controllers
     {
         private readonly IRestAPIService _restAPIService;
         private readonly ILogger<SubscriptionController> _logger;
-        private readonly HttpClient _httpClient;
 
         public SubscriptionController(IRestAPIService restAPIService,
             ILoggerFactory loggerFactory)
@@ -40,7 +33,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponseFilter<IEnumerable<SubscriptionResponse>, SubscriptionsFilter>(APIType.Master, "Subscriptions", authToken, filter);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -57,7 +50,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<SubscriptionResponse>(APIType.Master, $"Subscriptions/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -74,7 +67,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
                 var response = await _restAPIService.PostResponse<Subscriptions>(APIType.Master, "Subscriptions", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
@@ -92,7 +85,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
                 var response = await _restAPIService.PutResponse<Subscriptions>(APIType.Master, "Subscriptions", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
@@ -110,7 +103,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.DeleteResponse<Subscriptions>(APIType.Master, "Subscriptions", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }

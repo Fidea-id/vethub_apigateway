@@ -1,10 +1,4 @@
 ﻿using Domain.Entities.Models.Clients;
-using Domain.Entities.Responses.Masters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entities.Responses.Clients
 {
@@ -16,5 +10,5 @@ namespace Domain.Entities.Responses.Clients
         public IEnumerable<OrdersPayment> PaymentData { get; set; }
         public IEnumerable<OrdersPaymentResponse> PaymentDataResponse { get; set; }
         public IEnumerable<PaymentMethod> PaymentMethodData { get; set; }
-}
+    }
 }

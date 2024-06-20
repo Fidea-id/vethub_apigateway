@@ -29,7 +29,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<DashboardOrderResponse>(APIType.Client, "Orders/Dashboard", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -46,7 +46,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<OrderFullResponse>>(APIType.Client, "Orders/Full", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -63,7 +63,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<OrderFullResponse>>(APIType.Client, "Orders/FullMonth", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -80,7 +80,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
                 var response = await _restAPIService.PostResponse<OrderFullResponse>(APIType.Client, "Orders/Full", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
@@ -98,7 +98,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<OrderFullResponse>(APIType.Client, $"Orders/Full/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -114,7 +114,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.DeleteResponse<BaseAPIResponse>(APIType.Client, $"Orders", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
@@ -131,7 +131,7 @@ namespace VetHubAPI.Controllers
             try
             {
                 //Get the AuthToken
-                string authToken = HttpContext.Request.Headers["Authorization"];
+                string? authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
                 var response = await _restAPIService.PostResponse<OrdersPaymentResponse>(APIType.Client, "Orders/Payment", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
