@@ -2,6 +2,11 @@
 
 namespace Domain.Entities.Responses.Clients
 {
+    public class MedicalRecordsHistoryResponse
+    {
+        public DateTime Date { get; set; }
+        public MedicalRecordsDetailResponse Detail { get; set; }
+    }
     public class MedicalRecordsDetailResponse
     {
         public int Id { get; set; }

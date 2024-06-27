@@ -15,6 +15,7 @@ namespace Domain.Entities.Models.Clients.XPO
         public string MethodName { get; set; }
         public string MethodType { get; set; }
         public string ObjectName { get; set; }
+        [DbType("LONGTEXT")]
         public string Detail { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }

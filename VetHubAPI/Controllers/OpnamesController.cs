@@ -112,6 +112,23 @@ namespace VetHubAPI.Controllers
 
 
         #region OpnamePatients
+        [HttpGet("Patients/Close/{medId}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> PostCloseOpname(int medId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<OpnamePatients>(APIType.Client, $"MedicalRecords/CloseOpname/{medId}", authToken);
+
+                return ResponseUtil.CustomOk(response, 200, 1);
+            }
+            catch
+            {
+                throw;
+            }
+        }
         [HttpGet("Patients/Detail/{id}")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetOpnamePatientsDetailById(int id)

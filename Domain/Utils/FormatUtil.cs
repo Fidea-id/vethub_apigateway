@@ -7,6 +7,26 @@ namespace Domain.Utils
 {
     public static class FormatUtil
     {
+        public static int CalculateDaysBetween(DateTime start, DateTime end)
+        {
+            // Ensure that the end date is later than the start date
+            if (end < start)
+            {
+                throw new ArgumentException("End date must be later than start date");
+            }
+
+            // Calculate the number of full days between the start and end dates
+            int daysDifference = (end.Date - start.Date).Days;
+
+            // Add one to the count if there is any time difference beyond the start day
+            if (end.TimeOfDay > start.TimeOfDay)
+            {
+                daysDifference++;
+            }
+
+            // Ensure at least one day is counted
+            return Math.Max(daysDifference, 1);
+        }
         public static string MethodTypeString(MethodType type)
         {
             var result = "undefined";

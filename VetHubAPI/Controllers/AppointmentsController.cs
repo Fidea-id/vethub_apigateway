@@ -112,6 +112,23 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpGet("Detail/History/{medId}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetMedicalDetailHistory(int medId)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<DataResultDTO<MedicalRecordsHistoryResponse>>(APIType.Client, "MedicalRecords/Detail/History/" + medId, authToken);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpGet("Detail/Patient/{patientId}")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetAppointmentDetailPatient(int patientId)

@@ -25,6 +25,7 @@
         public string StatusName { get; set; }
         public string Notes { get; set; }
         public double Total { get; set; }
+        public bool IsOpname { get; set; }
         public MedicalRecordsDetailResponse? MedicalRecord { get; set; }
     }
 }
