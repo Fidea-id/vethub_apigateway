@@ -11,6 +11,7 @@ namespace Domain.Entities.Models.Clients.XPO
         [Key(true)]
         public int Id { get; set; }
         public string Name { get; set; }
+        public string? Alias { get; set; }
         [DbType("LONGTEXT")]
         public string Description { get; set; }
         public int CategoryId { get; set; }

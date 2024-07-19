@@ -33,5 +33,6 @@
         IOpnamesRepository OpnamesRepository { get; }
         IOpnamePatientsRepository OpnamePatientsRepository { get; }
         IEventLogRepository EventLogRepository { get; }
+        IClinicConfigRepository ClinicConfigRepository { get; }
     }
 }

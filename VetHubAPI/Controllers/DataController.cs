@@ -573,6 +573,54 @@ namespace VetHubAPI.Controllers
         }
         #endregion
 
+        #region ClinicConfig
+        [HttpGet("ClinicConfig/{key}")]
+        public async Task<IActionResult> GetClinicConfig(string key)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<ClinicConfig>(APIType.Client, "Data/ClinicConfig/" + key, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpGet("ClinicConfig")]
+        public async Task<IActionResult> GetClinicConfig()
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<ClinicConfig>>(APIType.Client, "Data/ClinicConfig", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpPut("ClinicConfig/{key}")]
+        public async Task<IActionResult> PutClinicConfig(string key, [FromBody] ClinicConfig request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<ClinicConfig>(APIType.Client, "Data/ClinicConfig", 1, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
 
         [HttpGet("RevenueLogs")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
