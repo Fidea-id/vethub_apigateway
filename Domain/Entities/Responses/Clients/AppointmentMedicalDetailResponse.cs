@@ -1,6 +1,12 @@
-﻿namespace Domain.Entities.Responses.Clients
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities.Responses.Clients
 {
-    public class AppointmentsDetailResponse
+    public class AppointmentMedicalDetailResponse
     {
         public int AppointmentId { get; set; }
         public int MedicalRecordId { get; set; }
@@ -21,12 +27,16 @@
         public string StaffName { get; set; }
         public int ServiceId { get; set; }
         public string ServiceName { get; set; }
-        public string Type { get; set; }
         public int StatusId { get; set; }
         public string StatusName { get; set; }
         public string Notes { get; set; }
         public double Total { get; set; }
         public bool IsOpname { get; set; }
-        public MedicalRecordsDetailResponse? MedicalRecord { get; set; }
+        public string Diagnoses { get; set; }
+        public string Code { get; set; }
+        public string Type { get; set; }
+        public string Prescriptions { get; set; }
+        public string Services { get; set; }
+        public string StatusPayment { get; set; }
     }
 }

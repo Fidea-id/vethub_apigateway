@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Masters;
 using Domain.Entities.Models.Masters;
+using Domain.Entities.Requests.Masters;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,6 +33,23 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/UpdateBills/" + userId, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("UpdateUserSubs")]
+        public async Task<IActionResult> UpdateUserSubs([FromBody] UserSubsRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<UserBillResponse>(APIType.Master, "BillPayments/UpdateUserSubs", requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch

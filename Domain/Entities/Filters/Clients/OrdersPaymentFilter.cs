@@ -7,5 +7,6 @@
         public DateTime? Date { get; set; }
         public double? Total { get; set; }
         public string? Status { get; set; }
+        public string? Note { get; set; }
     }
 }

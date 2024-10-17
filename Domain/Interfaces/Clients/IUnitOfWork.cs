@@ -34,5 +34,6 @@
         IOpnamePatientsRepository OpnamePatientsRepository { get; }
         IEventLogRepository EventLogRepository { get; }
         IClinicConfigRepository ClinicConfigRepository { get; }
+        IAppointmentsTypeRepository AppointmentsTypeRepository { get; }
     }
 }

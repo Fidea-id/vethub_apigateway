@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Requests.Clients;
+﻿using Domain.Entities.DTOs.Clients;
+using Domain.Entities.Requests.Clients;
 using Domain.Entities.Requests.Masters;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Masters;

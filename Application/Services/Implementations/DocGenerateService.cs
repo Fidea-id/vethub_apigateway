@@ -6,6 +6,8 @@ using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses.Clients;
 using Domain.Utils;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -18,11 +20,13 @@ namespace Application.Services.Implementations
     {
         private IUriService _uriService;
         private IRestAPIService _restAPIService;
+        private readonly ILogger<DocGenerateService> _logger;
 
-        public DocGenerateService(IUriService uriService, IRestAPIService restAPIService)
+        public DocGenerateService(IUriService uriService, IRestAPIService restAPIService, ILoggerFactory loggerFactory)
         {
             _uriService = uriService;
             _restAPIService = restAPIService;
+            _logger = loggerFactory.CreateLogger<DocGenerateService>();
         }
 
         public async Task<DocGenerateResponse> GenerateSuratKematianAsync(string userId, DocsKematianRequest request, string auth)
@@ -131,6 +135,12 @@ namespace Application.Services.Implementations
                 data.PatientLatestStatistic = responseData.PatientLatestStatistic;
                 data.StaffName = responseStaff.Name;
 
+                var ownerPhone = request.OwnerPhoneNumber;
+                if (!string.IsNullOrEmpty(data.OwnerData.PhoneNumber))
+                {
+                    ownerPhone = data.OwnerData.PhoneNumber;
+                }
+
                 string templatePath = PathHelper.GetTemplatePath(TemplateType.SuratTidakSetuju);
                 string outputPath = PathHelper.GetGenerateOutputPath(TemplateType.SuratTidakSetuju, userId);
                 string fileName = $"{data.MedicalData.Code}_SuratPulangTidakSetujuGenerated.docx";
@@ -142,11 +152,16 @@ namespace Application.Services.Implementations
                     Directory.CreateDirectory(outputPath);
                 }
 
-                var url = $"{baseUrl}Generate/{userId}/SuratPermintaanPulangAtauTidakSetuju/{fileName}";
+                var url = $"{baseUrl}Generate/{userId}/SuratTidakSetuju/{fileName}";
                 //populate data
                 var patientAge = FormatUtil.GetAgeInfo(data.PatientData.DateOfBirth);
                 string dateString = data.MedicalData.StartDate.ToString("dd MMMM yyyy"); // Year
-                string duration = GetDuration(data.MedicalData.EndDate.Value, data.MedicalData.StartDate);
+                string duration = "";
+
+                if (data.MedicalData.EndDate.HasValue)
+                {
+                    duration = GetDuration(data.MedicalData.EndDate.Value, data.MedicalData.StartDate);
+                }
                 var clinicLogo = data.ClinicData.Logo;
                 if (string.IsNullOrEmpty(clinicLogo) || !clinicLogo.Contains("http"))
                 {
@@ -162,7 +177,7 @@ namespace Application.Services.Implementations
                     { "{clinic_email}", data.ClinicData.Email },
                     { "{owner_name}", data.OwnerData.Name },
                     { "{owner_address}", data.OwnerData.Address },
-                    { "{owner_phone}", data.OwnerData.PhoneNumber },
+                    { "{owner_phone}", ownerPhone },
                     { "{owner_number_id}", data.RequestData.OwnerIdNumber },
                     { "{duration}", duration },
                     { "{patient_name}", data.PatientData.Name },
@@ -269,6 +284,13 @@ namespace Application.Services.Implementations
                         }
                     }
                 };
+                _logger.LogInformation("templatePath-" + templatePath);
+                _logger.LogInformation("outputFile-" + outputFile);
+                // Convert Dictionary to JSON string
+                string jsonString = JsonConvert.SerializeObject(replacementValues);
+                _logger.LogInformation("replacementValues-" + jsonString);
+                string jsonString2 = JsonConvert.SerializeObject(tableDataDictionary);
+                _logger.LogInformation("tableDataDictionary-" + jsonString2);
                 //generate file
                 GenerateDocXWithTables(templatePath, outputFile, replacementValues, tableDataDictionary);
 
@@ -469,9 +491,11 @@ namespace Application.Services.Implementations
             {
                 foreach (var keyValue in replacementValues)
                 {
-                    if (keyValue.Value.StartsWith("{IMAGE_URL}"))
+                    string valueToReplace = keyValue.Value ?? "-"; // Handle null value by replacing with "-"
+
+                    if (valueToReplace.StartsWith("{IMAGE_URL}"))
                     {
-                        string imageUrl = keyValue.Value.Substring("{IMAGE_URL}".Length);
+                        string imageUrl = valueToReplace.Substring("{IMAGE_URL}".Length);
                         using (WebClient webClient = new WebClient())
                         {
                             byte[] imageBytes = webClient.DownloadData(imageUrl);
@@ -508,7 +532,7 @@ namespace Application.Services.Implementations
                     }
                     else if (keyValue.Key.StartsWith("{BULLET"))
                     {
-                        var values = keyValue.Value.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                        var values = valueToReplace.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                         // Find the paragraph with the bullet placeholder
                         var bulletParagraph = templateDoc.Paragraphs.FirstOrDefault(p => p.Text.Contains(keyValue.Key));
                         if (bulletParagraph != null)
@@ -530,9 +554,8 @@ namespace Application.Services.Implementations
                     }
                     else
                     {
-                        templateDoc.ReplaceText(keyValue.Key, keyValue.Value);
+                        templateDoc.ReplaceText(keyValue.Key, valueToReplace);
                     }
-
                 }
 
                 // Add and populate tables
@@ -555,7 +578,7 @@ namespace Application.Services.Implementations
                                 {
                                     for (int colIndex = 0; colIndex < rowData.Count; colIndex++)
                                     {
-                                        table.Rows[rowIndex].Cells[colIndex].Paragraphs[0].Append(rowData[colIndex]);
+                                        table.Rows[rowIndex].Cells[colIndex].Paragraphs[0].Append(rowData[colIndex] ?? "-"); // Handle null in table data
                                     }
                                 }
                                 else
@@ -564,7 +587,7 @@ namespace Application.Services.Implementations
                                     Row newRow = table.InsertRow();
                                     for (int colIndex = 0; colIndex < rowData.Count; colIndex++)
                                     {
-                                        newRow.Cells[colIndex].Paragraphs[0].Append(rowData[colIndex]);
+                                        newRow.Cells[colIndex].Paragraphs[0].Append(rowData[colIndex] ?? "-"); // Handle null in table data
                                     }
                                 }
 
@@ -576,6 +599,7 @@ namespace Application.Services.Implementations
                 templateDoc.SaveAs(outputPath);
             }
         }
+
         private string ExtractNumber(string input)
         {
             // Using regular expression to match numbers within curly braces

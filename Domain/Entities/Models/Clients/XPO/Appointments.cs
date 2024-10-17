@@ -15,6 +15,7 @@ namespace Domain.Entities.Models.Clients.XPO
         public DateTime Date { get; set; }
         public int StaffId { get; set; }
         public int ServiceId { get; set; }
+        public string Type { get; set; }
         public int StatusId { get; set; }
         [DbType("LONGTEXT")]
         public string Notes { get; set; }

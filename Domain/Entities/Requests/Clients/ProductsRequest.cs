@@ -11,6 +11,7 @@
         public int? Stock { get; set; }
         public int? Id { get; set; }
         public double? Price { get; set; }
+        public double? BoughtPrice { get; set; }
         public bool? IsBundle { get; set; }
     }
 }

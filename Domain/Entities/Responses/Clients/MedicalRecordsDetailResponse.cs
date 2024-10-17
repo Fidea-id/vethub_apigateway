@@ -30,4 +30,13 @@ namespace Domain.Entities.Responses.Clients
         public OpnameDetailResponse? OpnameDetail { get; set; }
         public string StatusPayment { get; set; }
     }
+    public class MedicalRecordsMinResponse
+    {
+        public int Id { get; set; }
+        public string Code { get; set; }
+        public string Prescriptions { get; set; }
+        public string Services { get; set; }
+        public string Diagnoses { get; set; }
+        public string StatusPayment { get; set; }
+    }
 }

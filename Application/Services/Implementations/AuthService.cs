@@ -1,5 +1,6 @@
 ﻿using Application.Services.Contracts;
 using Domain.Entities;
+using Domain.Entities.DTOs.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;

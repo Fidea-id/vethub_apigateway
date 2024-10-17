@@ -13,6 +13,7 @@ namespace Domain.Entities.Models.Clients.XPO
         public string Name { get; set; }
         public string Email { get; set; }
         public string Logo { get; set; }
+        [DbType("LONGTEXT")]
         public string Address { get; set; }
         public string City { get; set; }
         public string State { get; set; }

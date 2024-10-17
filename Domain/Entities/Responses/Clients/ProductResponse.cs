@@ -7,6 +7,7 @@
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public double Price { get; set; }
+        public double BoughtPrice { get; set; }
         public bool IsBundle { get; set; }
         public bool HasDiscount { get; set; }
     }

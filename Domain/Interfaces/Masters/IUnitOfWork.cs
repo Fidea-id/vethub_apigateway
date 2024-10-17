@@ -14,5 +14,6 @@
         ISubscriptionsRepository SubscriptionsRepository { get; }
         IAppConfigRepository AppConfigRepository { get; }
         IUserDemoRepository UserDemoRepository { get; }
+        IPlaceRepository PlaceRepository { get; }
     }
 }

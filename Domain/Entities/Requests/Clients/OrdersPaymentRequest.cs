@@ -11,5 +11,6 @@
         public double? DiscountValue { get; set; }
         public double? DiscountTotal { get; set; }
         public string? Type { get; set; }
+        public string? Note { get; set; }
     }
 }

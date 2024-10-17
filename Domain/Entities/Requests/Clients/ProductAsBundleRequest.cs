@@ -11,6 +11,7 @@
         public double Volume { get; set; }
         public string VolumeUnit { get; set; }
         public double? Price { get; set; }
+        public double? BoughtPrice { get; set; }
         public bool IsBundle { get; set; }
         public IEnumerable<ProductItemBundle>? BundleItem { get; set; }
     }

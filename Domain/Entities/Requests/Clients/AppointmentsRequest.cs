@@ -4,6 +4,7 @@
     {
         public int? OwnersId { get; set; }
         public int? PatientsId { get; set; }
+        public string? Type { get; set; }
         public DateTime? Date { get; set; }
         public int? StaffId { get; set; }
         public int? ServiceId { get; set; }

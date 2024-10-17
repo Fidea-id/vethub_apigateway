@@ -18,6 +18,7 @@ namespace Domain.Entities.Responses
         public bool IsActive { get; set; }
         public bool HasDiscount { get; set; }
         public double Price { get; set; }
+        public double BoughtPrice { get; set; }
         public IEnumerable<ProductBundleDetailResponse>? BundlesItems { get; set; }
         public int BundlesItemsCount { get; set; }
         public IEnumerable<ProductDiscountDetailResponse>? Discounts { get; set; }

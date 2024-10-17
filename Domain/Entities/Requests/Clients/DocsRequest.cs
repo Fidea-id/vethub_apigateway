@@ -4,6 +4,7 @@
     {
         public int MedicalRecordsId { get; set; }
         public string DiedReason { get; set; }
+        public DateTime DiedDate { get; set; }
         public DateTime DiedTime { get; set; }
         public string DiedBuriedInfo { get; set; }
     }
@@ -11,6 +12,7 @@
     public class DocsPermintaanPulangRequest
     {
         public int MedicalRecordsId { get; set; }
+        public string? OwnerPhoneNumber { get; set; }
         public string OwnerIdNumber { get; set; }
     }
 

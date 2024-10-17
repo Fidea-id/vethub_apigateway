@@ -7,6 +7,16 @@ namespace Domain.Utils
 {
     public static class FormatUtil
     {
+        public static string GetMonthStartEndString(DateTime start, DateTime end)
+        {
+            // Format the output string in "dd MMMM yyyy"
+            string formattedStart = start.ToString("dd MMMM yyyy");
+            string formattedEnd = end.ToString("dd MMMM yyyy");
+
+            // Combine start and end date into the desired format
+            return $"{formattedStart} - {formattedEnd}";
+        }
+
         public static int CalculateDaysBetween(DateTime start, DateTime end)
         {
             // Ensure that the end date is later than the start date

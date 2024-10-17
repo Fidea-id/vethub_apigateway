@@ -1,4 +1,7 @@
 ﻿using Application.Services.Contracts;
+using Application.Utils;
+using Domain.Entities;
+using Domain.Entities.Models.Masters;
 using Domain.Entities.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,8 +25,9 @@ namespace VetHubAPI.Controllers
         {
             try
             {
-                var response = await _restAPIService.GetPlaceResponse<GoAPIResponse>("provinsi");
-                return Ok(response);
+                //var response = await _restAPIService.GetPlaceResponse<GoAPIResponse>("provinsi");
+                var response = await _restAPIService.GetResponse<IEnumerable<Provinces>>(APIType.Master, "PublicData/Provinces");
+                return ResponseUtil.CustomOk(response, 200);
             }
             catch
             {
@@ -37,8 +41,9 @@ namespace VetHubAPI.Controllers
         {
             try
             {
-                var response = await _restAPIService.GetPlaceResponse<GoAPIResponse>("kota", $"provinsi_id={id}");
-                return Ok(response);
+                //var response = await _restAPIService.GetPlaceResponse<GoAPIResponse>("kota", $"provinsi_id={id}");
+                var response = await _restAPIService.GetResponse<IEnumerable<States>>(APIType.Master, "PublicData/States/" + id);
+                return ResponseUtil.CustomOk(response, 200);
             }
             catch
             {
