@@ -8,6 +8,7 @@
         public string description { get; set; }
         public int categoryId { get; set; }
         public double price { get; set; }
+        public double? boughtPrice { get; set; }
         public double stock { get; set; }
         public double volume { get; set; }
         public string unit { get; set; }

@@ -182,7 +182,10 @@ namespace VetHubAPI.Controllers
                 {
                     var opnameResponse = await _restAPIService.GetResponse<Opnames>(APIType.Client, $"Opname/{item.OpnameId}", authToken);
                     var medicalResponse = await _restAPIService.GetResponse<MedicalRecordsDetailResponse>(APIType.Client, $"MedicalRecords/Detail/{item.MedicalRecordId}", authToken);
-
+                    if(medicalResponse == null)
+                    {
+                        continue;
+                    }
                     var itemResult = new OpnamePatientsDetailResponse();
                     itemResult.Id = item.Id;
                     itemResult.OpnameId = item.OpnameId;
