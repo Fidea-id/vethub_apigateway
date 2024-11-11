@@ -175,34 +175,34 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponseFilter<DataResultDTO<OpnamePatients>, OpnamePatientsFilter>(APIType.Client, "Opname/OpnamePatients", authToken, filter);
+                var response = await _restAPIService.GetResponse<DataResultDTO<OpnamePatientsDetailResponse>>(APIType.Client, "Opname/OpnamePatients/Detail", authToken);
 
-                var result = new List<OpnamePatientsDetailResponse>();
-                foreach (var item in response.Data)
-                {
-                    var opnameResponse = await _restAPIService.GetResponse<Opnames>(APIType.Client, $"Opname/{item.OpnameId}", authToken);
-                    var medicalResponse = await _restAPIService.GetResponse<MedicalRecordsDetailResponse>(APIType.Client, $"MedicalRecords/Detail/{item.MedicalRecordId}", authToken);
-                    if(medicalResponse == null)
-                    {
-                        continue;
-                    }
-                    var itemResult = new OpnamePatientsDetailResponse();
-                    itemResult.Id = item.Id;
-                    itemResult.OpnameId = item.OpnameId;
-                    itemResult.MedicalRecordId = item.MedicalRecordId;
-                    itemResult.Status = item.Status;
-                    itemResult.StartTime = item.StartTime;
-                    itemResult.EndTime = item.EndTime;
-                    itemResult.EstimatedDays = item.EstimateDays;
-                    itemResult.Price = item.Price;
-                    itemResult.TotalPrice = item.TotalPrice;
-                    itemResult.OpnameName = opnameResponse.Name;
-                    itemResult.PatientName = medicalResponse.Patients.Name;
-                    itemResult.PatientId = medicalResponse.Patients.Id;
-                    result.Add(itemResult);
-                }
+                //var result = new List<OpnamePatientsDetailResponse>();
+                //foreach (var item in response.Data)
+                //{
+                //    var opnameResponse = await _restAPIService.GetResponse<Opnames>(APIType.Client, $"Opname/{item.OpnameId}", authToken);
+                //    var medicalResponse = await _restAPIService.GetResponse<MedicalRecordsDetailResponse>(APIType.Client, $"MedicalRecords/Detail/{item.MedicalRecordId}", authToken);
+                //    if(medicalResponse == null)
+                //    {
+                //        continue;
+                //    }
+                //    var itemResult = new OpnamePatientsDetailResponse();
+                //    itemResult.Id = item.Id;
+                //    itemResult.OpnameId = item.OpnameId;
+                //    itemResult.MedicalRecordId = item.MedicalRecordId;
+                //    itemResult.Status = item.Status;
+                //    itemResult.StartTime = item.StartTime;
+                //    itemResult.EndTime = item.EndTime;
+                //    itemResult.EstimatedDays = item.EstimateDays;
+                //    itemResult.Price = item.Price;
+                //    itemResult.TotalPrice = item.TotalPrice;
+                //    itemResult.OpnameName = opnameResponse.Name;
+                //    itemResult.PatientName = medicalResponse.Patients.Name;
+                //    itemResult.PatientId = medicalResponse.Patients.Id;
+                //    result.Add(itemResult);
+                //}
 
-                return ResponseUtil.CustomOk(result, 200, result.Count());
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch
             {
