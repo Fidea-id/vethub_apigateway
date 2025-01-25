@@ -3,5 +3,6 @@
     public class AppointmentsType : BaseEntity
     {
         public string Name { get; set; }
+        public string? Color { get; set; }
     }
 }

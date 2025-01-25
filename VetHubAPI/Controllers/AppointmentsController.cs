@@ -81,17 +81,21 @@ namespace VetHubAPI.Controllers
                 }
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<AppointmentsDetailResponse>, AppointmentDetailFilter>(APIType.Client, "Appointments/Detail", authToken, filter);
                 var result = response.Data;
-                if (result.Count() > 0)
+                var filteredData = result
+                    .GroupBy(record => record.AppointmentId)
+                    .Select(group => group.OrderBy(record => record.MedicalRecordId).First())
+                    .ToList();
+                if (filteredData.Count() > 0)
                 {
                     if (!isCalendar) // if calendar true, then dont need to show the medical detail
                     {
-                        foreach (var item in result)
+                        foreach (var item in filteredData)
                         {
                             if (item.MedicalRecordId != null || item.MedicalRecordId != 0)
                             {
                                 try
                                 {
-                                    var responseDetail = await _restAPIService.GetResponse<MedicalRecordsDetailResponse>(APIType.Client, $"MedicalRecords/Detail/{item.MedicalRecordId}?flag=no_notes", authToken);
+                                    var responseDetail = await _restAPIService.GetResponse<MedicalRecordsDetailResponse>(APIType.Client, $"MedicalRecords/Detail/v2/{item.MedicalRecordId}?flag=no_notes", authToken);
                                     item.MedicalRecord = responseDetail;
                                 }
                                 catch
@@ -103,7 +107,7 @@ namespace VetHubAPI.Controllers
                     }
                 }
 
-                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+                return ResponseUtil.CustomOk(filteredData, 200, filteredData.Count());
             }
             catch
             {

@@ -2,6 +2,7 @@
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Responses.Clients;
+using System.Xml.Linq;
 
 namespace Domain.Interfaces.Clients
 {
@@ -14,9 +15,11 @@ namespace Domain.Interfaces.Clients
         Task<int> AddActivity(AppointmentsActivity entities, string dbName);
         Task<IEnumerable<AppointmentsStatus>> GetAllStatus(string dbName);
         Task<DataResultDTO<AppointmentsDetailResponse>> GetAllDetailList(string dbName, AppointmentDetailFilter filter);
+        Task<DataResultDTO<AppointmentsDetailResponse>> GetLastDetailList(string dbName, AppointmentDetailFilter filter, int take);
         Task<DataResultDTO<AppointmentMedicalDetailResponse>> GetAllDetailMedicalList(string dbName, AppointmentDetailFilter filter);
         Task<IEnumerable<Appointments>> GetAllByStatusId(string dbName, int statusId);
         Task<IEnumerable<AppointmentsDetailResponse>> GetAllDetailListToday(string dbName);
         Task<AppointmentsDetailResponse> GetAllDetail(int id, string dbName);
+        Task<IEnumerable<DataPoint>> GetClientWeek(string dbName);
     }
 }

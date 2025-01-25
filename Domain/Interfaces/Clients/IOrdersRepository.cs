@@ -12,5 +12,7 @@ namespace Domain.Interfaces.Clients
         Task<DataResultDTO<OrdersResponse>> GetOrdersList(string dbName, OrdersFilter filter);
         Task<IEnumerable<OrderFullResponse>> GetListOrderFull(string dbName, bool thisMonth);
         Task<OrderFullResponse> GetOrderFull(string dbName, int id);
+        Task<CardDashboard> CountInvoiceToCard(string dbName, string query);
+        Task<IEnumerable<MonthlyDataChart>> GetTotalOrderSales(string dbName, string dateFilter);
     }
 }

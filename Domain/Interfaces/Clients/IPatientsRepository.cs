@@ -9,5 +9,7 @@ namespace Domain.Interfaces.Clients
     {
         Task<DataResultDTO<PatientsListResponse>> GetPatientsList(string dbName, PatientsFilter filter);
         Task<IEnumerable<Patients>> GetPatientsByOwner(string dbName, int id);
+        Task<IEnumerable<MonthlyDataChart>> GetPatientTypeChart(string dbName, string dateFilter);
+        Task<IEnumerable<MonthlyDataChart>> GetPatientChart(string dbName, string dateFilter);
     }
 }

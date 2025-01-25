@@ -10,4 +10,10 @@
         public double Total { get; set; }
         public string Details { get; set; }
     }
+    public class RevenueDataResponse
+    {
+        public double ServicesTotal { get; set; }
+        public double ProductsTotal { get; set; }
+        public double Total { get; set; }
+    }
 }
