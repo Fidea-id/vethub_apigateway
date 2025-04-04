@@ -2,6 +2,7 @@
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
+using Domain.Entities.DTOs.Clients;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Requests.Clients;
@@ -62,6 +63,23 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpPost("bulkownerpatient")]
+        public async Task<IActionResult> BulkOwnerPatientGroup(BulkOwnerPatients data)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(data);
+                var response = await _restAPIService.PostResponse<ResponseUploadBulk>(APIType.Client, "owners/bulk", requestJson, authToken);
+
+                return ResponseUtil.CustomOk(response, response.status);
+            }
+            catch
+            {
+                throw;
+            }
+        }
         [HttpPost("Owners")]
         public async Task<IActionResult> PostOwner([FromBody] OwnersPetsRequest request)
         {

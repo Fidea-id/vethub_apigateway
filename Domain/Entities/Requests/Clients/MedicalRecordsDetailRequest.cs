@@ -4,6 +4,7 @@
     {
         public int MedicalRecordsId { get; set; }
         public bool IsOpname { get; set; }
+        public bool IsEdit { get; set; }
         public MedicalRecordsNotesRequest? Notes { get; set; }
         public IEnumerable<MedicalRecordsDiagnosesRequest> Diagnoses { get; set; }
         public IEnumerable<MedicalRecordsPrescriptionsRequest>? Prescriptions { get; set; }

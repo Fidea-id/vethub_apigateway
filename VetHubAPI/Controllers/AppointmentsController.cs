@@ -247,13 +247,18 @@ namespace VetHubAPI.Controllers
         }
         [HttpGet("MedicalRecords/Detail/{id}")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetMedicalRecordDetailById(int id)
+        public async Task<IActionResult> GetMedicalRecordDetailById(int id, [FromQuery] string? flag = null)
         {
             try
             {
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<MedicalRecordsDetailResponse>(APIType.Client, $"MedicalRecords/Detail/{id}", authToken);
+                string query = "";
+                if (!string.IsNullOrEmpty(flag))
+                {
+                    query = $"?flag={flag}";
+                }
+                var response = await _restAPIService.GetResponse<MedicalRecordsDetailResponse>(APIType.Client, $"MedicalRecords/Detail/v2/{id}{query}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch

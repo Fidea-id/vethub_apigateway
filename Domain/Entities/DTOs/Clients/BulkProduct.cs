@@ -6,7 +6,7 @@
         public string productName { get; set; }
         public string? aliasName { get; set; }
         public string description { get; set; }
-        public int categoryId { get; set; }
+        public string category { get; set; }
         public double price { get; set; }
         public double? boughtPrice { get; set; }
         public double stock { get; set; }

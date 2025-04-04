@@ -11,6 +11,7 @@
         public string PatientsName { get; set; }
         public string PatientsBreed { get; set; }
         public DateTime Date { get; set; }
+        public DateTime? InvoiceDate { get; set; }
         public int? DurationEstimate { get; set; }
         public string? DurationTypeEstimate { get; set; }
         public DateTime? EndDateEstimate { get; set; }
@@ -26,6 +27,7 @@
         public string StatusName { get; set; }
         public string Notes { get; set; }
         public double Total { get; set; }
+        public bool IsEdit { get; set; }
         public bool IsOpname { get; set; }
         public MedicalRecordsDetailResponse? MedicalRecord { get; set; }
     }

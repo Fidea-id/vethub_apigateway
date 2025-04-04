@@ -11,6 +11,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Services.Implementations
 {
@@ -118,6 +119,7 @@ namespace Application.Services.Implementations
 
                     var listProfile = new List<Profile>();
                     _logger.LogInformation($"Define profile data");
+                    var userOwner = response.FirstOrDefault(x => x.Roles == "Owner");
                     foreach (var item in response)
                     {
                         //insert user profile
@@ -142,8 +144,22 @@ namespace Application.Services.Implementations
                     _logger.LogInformation($"Start create clinic data," + clinicRequestJson);
                     var generateDB = await _restAPIService.PostResponseWithCTS<BaseAPIResponse>(APIType.Client, "Master/GenerateInitDBClient/" + newDBName, clinicRequestJson, auth, timespan);
                     _logger.LogInformation($"Done init db with name: {newDBName}");
+                    
+                    if(userOwner != null)
+                    {
+                        _logger.LogInformation($"Start send email verification to, " + newCLinicProfile.ClinicData.Name);
+                        var request = new ResendEmailVerifRequest()
+                        {
+                            Id = userOwner.Id,
+                            ClinicName = newCLinicProfile.ClinicData.Name
+                        };
+
+                        BackgroundJob.Enqueue(() => ResendVerificationEmail(auth, request));
+                        _logger.LogInformation($"Done send email verification");
+                    }
 
                     _logger.LogInformation("Background job done");
+
                 }
             }
             catch (Exception ex)
@@ -188,13 +204,13 @@ namespace Application.Services.Implementations
                 var clinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/ClinicsEntity/" + users.Entity, auth);
                 var request = new ResendEmailVerifRequest()
                 {
-                    UserData = users,
+                    Id = id,
                     ClinicName = clinic.Name
                 };
 
-                var response = await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/ResendEmailVerificaiton/", JsonConvert.SerializeObject(request), auth);
-
-                return response;
+                BackgroundJob.Enqueue(() => ResendVerificationEmail(auth, request));
+                //var response = await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/ResendEmailVerificaiton/", JsonConvert.SerializeObject(request), auth);
+                return default(BaseAPIResponse);
             }
             catch (Exception e)
             {
@@ -203,6 +219,10 @@ namespace Application.Services.Implementations
             }
         }
 
+        public async Task ResendVerificationEmail(string auth, ResendEmailVerifRequest request)
+        {
+            await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/ResendEmailVerificaiton/", JsonConvert.SerializeObject(request), auth);
+        }
         public async Task<UserProfileResponse> GetUserProfileByIdAsync(int id, string auth)
         {
             try
