@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Security.Claims;
+using Clinics = Domain.Entities.Models.Clients.Clinics;
 
 namespace VetHubAPI.Controllers
 {
@@ -41,6 +42,7 @@ namespace VetHubAPI.Controllers
                 string? authToken = HttpContext.Request.Headers["Authorization"];
                 var responseProduct = await _restAPIService.GetResponse<IEnumerable<ProductDetailsResponse>>(APIType.Client, "Products/Detail", authToken);
                 var responseService = await _restAPIService.GetResponse<DataResultDTO<Services>>(APIType.Client, "Services", authToken);
+                var responseMixedMedicine = await _restAPIService.GetResponse<DataResultDTO<MixedMedicineDetailResponse>>(APIType.Client, "Products/MixedMedicine", authToken);
                 //var responseOpname = await _restAPIService.GetResponse<DataResultDTO<Opnames>>(APIType.Client, "Opname", authToken);
                 var response = new List<PrescriptionsItemDTO>();
                 foreach (var item in responseProduct)
@@ -68,6 +70,20 @@ namespace VetHubAPI.Controllers
                         Price = item.Price,
                         Description = item.Duration + " " + item.DurationType,
                         Stock = 0
+                    };
+                    response.Add(data);
+                }
+                foreach (var item in responseMixedMedicine.Data)
+                {
+                    var compositionString = string.Join(", ", item.Compositions.Select(c => $"{c.QuantityPerUnit}{item.Unit} {c.ProductName}"));
+                    var data = new PrescriptionsItemDTO
+                    {
+                        Id = item.Id,
+                        Type = "Mixed Medicine",
+                        Name = item.Name,
+                        Price = item.Price,
+                        Description = item.Description+"("+ compositionString + ")",
+                        Stock = item.CurrentStock
                     };
                     response.Add(data);
                 }

@@ -90,6 +90,39 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpPost("admin/{id}")]
+        [Authorize(Policy = "RequireSuperadminRole")]
+        public async Task<IActionResult> PostStaffAdmin(int id, [FromBody] ProfileRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? globalToken = HttpContext.Request.Headers["Authorization"];
+                //get user entity
+                var responseToken = await _restAPIService.GetResponse<UserDataResponse>(APIType.Master, "Auth/User/Entity/" + id, globalToken);
+                var clientEntity = responseToken.Entity;
+                var userId = id;
+
+                var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, $"Data/Clinics/admin/" + clientEntity, globalToken);
+                var responseProfile = await _restAPIService.GetResponse<DataResultDTO<Profile>>(APIType.Client, $"Profile/admin/" + clientEntity, globalToken);
+                request.ClinicName = responseClinic.Name;
+                var currentStaff = responseProfile.Data.Count();
+                var responseBills = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, $"BillPayments/latest/{userId}", globalToken);
+                if (responseBills.MaxUser < (currentStaff + 1))
+                    throw new Exception("Cannot add more than limit user clinic!");
+                //register at master
+                var response = await _restAPIService.PostResponse<RegisterResponse>(APIType.Master, "Auth/Register/Staff/" + clientEntity, JsonConvert.SerializeObject(request), globalToken);
+                //register at client
+                var responseClient = await _restAPIService.PostResponse<RegisterResponse>(APIType.Client, $"Profile/Admin/{clientEntity}/{response.Id}", JsonConvert.SerializeObject(request), globalToken);
+
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost("ActiveDeactive/{id}")]
         [Authorize(Policy = "RequireOwnerRole")]
         public async Task<IActionResult> ActiveDeactiveStaff(int id)

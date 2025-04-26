@@ -35,5 +35,6 @@
         IEventLogRepository EventLogRepository { get; }
         IClinicConfigRepository ClinicConfigRepository { get; }
         IAppointmentsTypeRepository AppointmentsTypeRepository { get; }
+        IMixedMedicineRepository MixedMedicineRepository { get; }
     }
 }

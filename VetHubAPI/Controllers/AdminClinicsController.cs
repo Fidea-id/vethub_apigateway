@@ -9,6 +9,7 @@ using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Clinics = Domain.Entities.Models.Clients.Clinics;
 
 namespace VetHubAPI.Controllers
 {

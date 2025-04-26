@@ -9,6 +9,7 @@
         public string Image { get; set; }
         public string Roles { get; set; }
         public bool ClinicExpired { get; set; }
+        public bool ClinicExisted { get; set; }
         public string SessionToken { get; set; }
     }
 }

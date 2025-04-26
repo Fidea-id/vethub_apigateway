@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Clinics = Domain.Entities.Models.Clients.Clinics;
 
 namespace Application.Services.Implementations
 {
@@ -35,11 +36,32 @@ namespace Application.Services.Implementations
             {
                 var requestJson = JsonConvert.SerializeObject(data);
                 var response = await _restAPIService.PostResponse<LoginResponse>(APIType.Master, "Auth/Login", requestJson);
+
                 //update schema db client
-                //if (response.Roles != "Superadmin")
-                //{
-                //    var generateDB = await _restAPIService.GetResponse<BaseAPIResponse>(APIType.Client, "Master/CheckSchemeDB", "Bearer " + response.SessionToken);
-                //}
+                if (response.Roles != "Superadmin")
+                {
+                    if (response.ClinicExisted == false)
+                    {
+                        //get clinic data
+                        var responseClinic = await _restAPIService.GetResponse<Domain.Entities.Models.Clients.Clinics>(APIType.Client, "Data/Clinics", "Bearer " + response.SessionToken);
+                        //post clinic data to master
+                        var masterClinic = new Domain.Entities.Models.Masters.Clinics
+                        {
+                            Name = responseClinic.Name,
+                            Address = responseClinic.Address,
+                            PhoneNumber = responseClinic.PhoneNumber,
+                            Entity = response.Entity,
+                            City = responseClinic.City,
+                            Description = responseClinic.Description,
+                            Email = responseClinic.Email,
+                            IsActive = true,
+                            Logo = responseClinic.Logo,
+                            State = responseClinic.State,
+                        };
+                        var clinicRequestJson = JsonConvert.SerializeObject(masterClinic);
+                        var clinicResponse = await _restAPIService.PostResponse<BaseAPIResponse>(APIType.Master, "Auth/Register/Clinic", clinicRequestJson, "Bearer " + response.SessionToken);
+                    }
+                }
                 return response;
             }
             catch (Exception ex)

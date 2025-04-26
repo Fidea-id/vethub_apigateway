@@ -63,6 +63,24 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpPost("bulkownerpatient/check")]
+        public async Task<IActionResult> BulkOwnerPatientGroupCheck(BulkOwnerPatients data)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(data);
+                var response = await _restAPIService.PostResponse<ResponseUploadBulk>(APIType.Client, "owners/bulk/check", requestJson, authToken);
+
+                return ResponseUtil.CustomOk(response, response.status);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost("bulkownerpatient")]
         public async Task<IActionResult> BulkOwnerPatientGroup(BulkOwnerPatients data)
         {

@@ -42,8 +42,27 @@ namespace VetHubAPI.Controllers
                 throw;
             }
         }
+
+        [HttpPost("bulk/check")]
+        public async Task<IActionResult> BulkProductCheck(BulkProducts data)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(data);
+                var response = await _restAPIService.PostResponse<ResponseUploadBulk>(APIType.Client, "products/bulk/check", requestJson, authToken);
+
+                return ResponseUtil.CustomOk(response, response.status);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost("bulk")]
-        public async Task<IActionResult> BulkGroup(BulkProducts data)
+        public async Task<IActionResult> BulkProduct(BulkProducts data)
         {
             try
             {
@@ -52,7 +71,7 @@ namespace VetHubAPI.Controllers
                 var requestJson = JsonConvert.SerializeObject(data);
                 var response = await _restAPIService.PostResponse<ResponseUploadBulk>(APIType.Client, "products/bulk", requestJson, authToken);
 
-                return ResponseUtil.CustomOk(response, 200);
+                return ResponseUtil.CustomOk(response, response.status);
             }
             catch
             {
@@ -441,6 +460,90 @@ namespace VetHubAPI.Controllers
             }
         }
         #endregion
+        #region MixedMedicine
+        [HttpGet("MixedMedicine")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetMixedMedicine([FromQuery] BaseEntityFilter filter)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<MixedMedicineDetailResponse>, BaseEntityFilter>(APIType.Client, "Products/MixedMedicine", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
+        [HttpGet("MixedMedicine/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetMixedMedicineById(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<MixedMedicineDetailResponse>(APIType.Client, $"Products/MixedMedicine/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("MixedMedicine")]
+        public async Task<IActionResult> PostMixedMedicine([FromBody] MixedMedicineDetailRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<MixedMedicineDetailResponse>(APIType.Client, "Products/MixedMedicine", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPut("MixedMedicine/{id}")]
+        public async Task<IActionResult> PutMixedMedicine(int id, [FromBody] MixedMedicineDetailRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<MixedMedicineDetailResponse>(APIType.Client, "Products/MixedMedicine", id, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpDelete("MixedMedicine/{id}")]
+        public async Task<IActionResult> DeleteMixedMedicine(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.DeleteResponse<BaseAPIResponse>(APIType.Client, "Products/MixedMedicine", id, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
     }
 }
