@@ -11,6 +11,8 @@
         public double? Discount { get; set; }
         public double? TotalAfterDiscount { get; set; }
         public string Details { get; set; }
+        public string ClientName { get; set; }
+        public string PaymentMethod { get; set; }
     }
     public class RevenueDataResponse
     {

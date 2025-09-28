@@ -10,5 +10,6 @@ namespace Domain.Entities.Responses.Clients
         public IEnumerable<OrdersPayment> PaymentData { get; set; }
         public IEnumerable<OrdersPaymentResponse> PaymentDataResponse { get; set; }
         public IEnumerable<PaymentMethod> PaymentMethodData { get; set; }
+        public IEnumerable<MixedMedicineDetailResponse> RecipeDetail { get; set; }
     }
 }

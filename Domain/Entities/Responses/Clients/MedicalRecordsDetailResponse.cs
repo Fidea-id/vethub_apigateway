@@ -29,6 +29,7 @@ namespace Domain.Entities.Responses.Clients
         public IEnumerable<MedicalRecordsDiagnoses>? Diagnoses { get; set; }
         public OpnameDetailResponse? OpnameDetail { get; set; }
         public string StatusPayment { get; set; }
+        public string PaymentMethod { get; set; }
     }
     public class MedicalRecordsMinResponse
     {

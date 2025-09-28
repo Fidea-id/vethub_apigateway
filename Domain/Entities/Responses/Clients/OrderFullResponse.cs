@@ -14,7 +14,7 @@ namespace Domain.Entities.Responses.Clients
         public int StaffId { get; set; }
         public string StaffName { get; set; }
         public string Type { get; set; }
-        public int TotalQuantity { get; set; }
+        public double TotalQuantity { get; set; }
         public string Status { get; set; }
         public double TotalPrice { get; set; }
         public double TotalDiscountedPrice { get; set; }
@@ -27,7 +27,7 @@ namespace Domain.Entities.Responses.Clients
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }
-        public int Quantity { get; set; }
+        public double Quantity { get; set; }
         public double Price { get; set; }
         public double? Discount { get; set; }
         public string? DiscountType { get; set; }

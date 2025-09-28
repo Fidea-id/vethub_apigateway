@@ -8,6 +8,7 @@
         public const string SUPERADMIN = "Superadmin";
         public const string OWNERS = "Owner";
         public const string ADMIN = "Admin";
+        public const string MEDICALADMIN = "MedicalAdmin";
         public const string DOCTOR = "Doctor";
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Services.Contracts;
+﻿using Application.Jobs;
+using Application.Services.Contracts;
 using Application.Services.Implementations;
 using Application.Utils;
 using Domain.Entities;
@@ -21,7 +22,8 @@ namespace Application
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRestAPIService, RestAPIService>();
             services.AddScoped<IFileUploadService, FileUploadService>();
-            services.AddScoped<IDocGenerateService, DocGenerateService>();
+            services.AddScoped<IDocGenerateService, DocGenerateService>(); 
+            services.AddScoped<ClinicReportsJob>();
 
             var connectionString = "";
 

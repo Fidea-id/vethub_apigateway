@@ -1,14 +1,19 @@
-﻿using Application.Services.Contracts;
+﻿using Application.Jobs;
+using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.DTOs;
+using Domain.Entities.DTOs.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
 using Domain.Entities.Responses.Masters;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Clinics = Domain.Entities.Models.Clients.Clinics;
 
 namespace VetHubAPI.Controllers
@@ -223,6 +228,36 @@ namespace VetHubAPI.Controllers
             {
                 throw;
             }
+        }
+
+        [HttpGet("ClinicReports")]
+        public async Task<IActionResult> GetClinicReports()
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<ClinicReports>>(APIType.Master, "Data/ClinicReports", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("ClinicReports/Generate")]
+        public async Task<IActionResult> GenerateClinicReports()
+        {
+            string? authToken = HttpContext.Request.Headers["Authorization"];
+            //BackgroundJob.Enqueue<ClinicReportsJob>(job => job.ExecuteAsync(authToken));
+            //return Accepted(new { message = "ClinicReports job queued to Hangfire" });
+            RecurringJob.AddOrUpdate<ClinicReportsJob>(
+                job => job.ExecuteAsync(authToken), // authToken bisa null kalau scheduled
+                "1 0 * * *", // setiap jam 00:01
+                TimeZoneInfo.FindSystemTimeZoneById("Asia/Jakarta") // GMT+7
+            );
+            return Accepted(new { message = "ClinicReports job queued is started to Hangfire" });
         }
 
         //[HttpGet]

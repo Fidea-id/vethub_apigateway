@@ -19,6 +19,8 @@ namespace Domain.Entities.Models.Clients.XPO
         public string ProductName { get; set; }
         public string PrescriptionFrequency { get; set; }
         public string Type { get; set; }
+        public string? MixId { get; set; }
+        public string? MixName { get; set; }
         public double PrescriptionAmount { get; set; }
         public double Price { get; set; }
         public double Quantity { get; set; }

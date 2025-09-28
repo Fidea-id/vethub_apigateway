@@ -65,6 +65,46 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpGet("Detail/Report")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetAppointmentDetailReport()
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var qs = HttpContext.Request.QueryString.Value ?? string.Empty;
+
+                var apiResponse = await _restAPIService.GetResponse<LoadResultDTO<AppointmentsDetailReport>>(APIType.Client, $"Appointments/DetailReport{qs}", authToken);
+
+                return Ok(apiResponse);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("Detail/ReportFilter")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetDetailReportFilter([FromQuery] string filterField)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var qs = HttpContext.Request.QueryString.Value ?? string.Empty;
+
+                var apiResponse = await _restAPIService.GetResponse<IEnumerable<string>>(APIType.Client, $"Appointments/DetailReportFilter{qs}", authToken);
+
+                return Ok(apiResponse);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpGet("Detail")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetAppointmentDetail([FromQuery] AppointmentDetailFilter filter)

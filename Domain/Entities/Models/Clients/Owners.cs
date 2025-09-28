@@ -15,7 +15,7 @@ namespace Domain.Entities.Models.Clients
         public string Name { get; set; }
         public string Photo { get; set; }
         [MaxLength(100)]
-        public string Email { get; set; }
+        public string? Email { get; set; }
         [MaxLength(10)]
         public string Title { get; set; }
         public string Address { get; set; }

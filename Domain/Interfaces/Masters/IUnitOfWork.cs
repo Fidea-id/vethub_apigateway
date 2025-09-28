@@ -16,5 +16,6 @@
         IUserDemoRepository UserDemoRepository { get; }
         IPlaceRepository PlaceRepository { get; }
         IClinicRepository ClinicRepository  { get; }
+        IClinicReportsRepository ClinicReportsRepository  { get; }
     }
 }

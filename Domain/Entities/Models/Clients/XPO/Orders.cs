@@ -21,7 +21,7 @@ namespace Domain.Entities.Models.Clients.XPO
         public int ClientId { get; set; }
         public string ClientName { get; set; }
         public int StaffId { get; set; }
-        public int TotalQuantity { get; set; }
+        public double TotalQuantity { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }
         public double TotalPrice { get; set; }

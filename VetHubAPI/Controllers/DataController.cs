@@ -1,5 +1,7 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
+using DevExtreme.AspNet.Data.ResponseModel;
+using DevExtreme.AspNet.Mvc;
 using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.DTOs.Clients;
@@ -9,6 +11,7 @@ using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -620,6 +623,24 @@ namespace VetHubAPI.Controllers
                 throw;
             }
         }
+
+        [HttpPost("ClinicConfig")]
+        public async Task<IActionResult> PostClinicConfig([FromBody] ClinicConfig request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<ClinicConfig>(APIType.Client, "Data/ClinicConfig", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPut("ClinicConfig/{key}")]
         public async Task<IActionResult> PutClinicConfig(string key, [FromBody] ClinicConfig request)
         {
@@ -646,7 +667,49 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<List<RevenueResponse>>(APIType.Client, "Orders/RevenueLogs", authToken);
+                var qs = HttpContext.Request.QueryString.Value ?? string.Empty;
+
+                var apiResponse = await _restAPIService.GetResponse<LoadResultDTO<RevenueResponse>>(APIType.Client, $"Orders/RevenueLogs{qs}", authToken);
+
+                return Ok(apiResponse);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("RevenueLogsFilter")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetRevenueLogsFilter([FromQuery] string filterField)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var qs = HttpContext.Request.QueryString.Value ?? string.Empty;
+
+                var apiResponse = await _restAPIService.GetResponse<IEnumerable<string>>(APIType.Client, $"Orders/RevenueLogsFilter{qs}", authToken);
+
+                return Ok(apiResponse);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("MedicalRecordService")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetMedicalRecordService(
+        [FromQuery] string? startDate = null,
+        [FromQuery] string? endDate = null)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<List<MedicalRecordServicesReportDto>>(APIType.Client, "MedicalRecords/ServicesReport", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch

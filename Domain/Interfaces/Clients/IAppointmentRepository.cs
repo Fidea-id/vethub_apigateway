@@ -10,6 +10,8 @@ namespace Domain.Interfaces.Clients
     {
         //Task<IEnumerable<PatientsListResponse>> GetPatientsList(string dbName, AppointmentsFilter filter);
         Task<IEnumerable<BookingHistoryResponse>> GetBookingHistoryOwner(string dbName, int ownerId);
+        Task<IEnumerable<AppointmentsDetailReport>> GetDetailReport(string dbName);
+        Task<IEnumerable<string>> GetDetailReportFilter(string dbName, string filterField);
         Task<IEnumerable<BookingHistoryResponse>> GetBookingHistoryPatient(string dbName, int patientId);
         Task AddStatusRange(IEnumerable<AppointmentsStatus> entities, string dbName);
         Task<int> AddActivity(AppointmentsActivity entities, string dbName);
