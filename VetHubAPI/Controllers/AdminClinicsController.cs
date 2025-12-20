@@ -2,9 +2,6 @@
 using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
-using Domain.Entities.DTOs;
-using Domain.Entities.DTOs.Clients;
-using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
@@ -13,7 +10,6 @@ using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Clinics = Domain.Entities.Models.Clients.Clinics;
 
 namespace VetHubAPI.Controllers

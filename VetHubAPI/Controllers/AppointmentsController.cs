@@ -1,22 +1,18 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
-using Domain.Constants;
 using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
-using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
 using Domain.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Security.Claims;
-using System.Web;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VetHubAPI.Controllers
 {
@@ -104,7 +100,7 @@ namespace VetHubAPI.Controllers
                 throw;
             }
         }
-
+        
         [HttpGet("Detail")]
         [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetAppointmentDetail([FromQuery] AppointmentDetailFilter filter)
@@ -119,6 +115,21 @@ namespace VetHubAPI.Controllers
                     isCalendar = true;
                     filter.Date = FormatUtil.GetMonthStartEndString(filter.Start.Value, filter.End.Value);
                 }
+
+                if ((filter.StatusId == 1 || filter.StatusId == 2) &&
+                    !string.IsNullOrWhiteSpace(filter.Date))
+                {
+                    if (DateTime.TryParse(filter.Date, out var selectedDate))
+                    {
+                        // Only apply if Start/End not manually set
+                        if (!filter.Start.HasValue)
+                            filter.Start = selectedDate.AddDays(-7);
+
+                        if (!filter.End.HasValue)
+                            filter.End = selectedDate;
+                    }
+                }
+
                 var response = await _restAPIService.GetResponseFilter<DataResultDTO<AppointmentsDetailResponse>, AppointmentDetailFilter>(APIType.Client, "Appointments/Detail", authToken, filter);
                 var result = response.Data;
                 var filteredData = result
@@ -640,7 +651,7 @@ namespace VetHubAPI.Controllers
                 throw;
             }
         }
-        
+
         [HttpDelete("Type/{id}")]
         public async Task<IActionResult> DeleteAppointmentsType(int id)
         {

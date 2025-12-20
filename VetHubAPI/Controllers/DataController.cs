@@ -1,7 +1,5 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
-using DevExtreme.AspNet.Data.ResponseModel;
-using DevExtreme.AspNet.Mvc;
 using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.DTOs.Clients;
@@ -11,7 +9,6 @@ using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
-using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -85,7 +82,7 @@ namespace VetHubAPI.Controllers
                         Type = "Mixed Medicine",
                         Name = item.Name,
                         Price = item.Price,
-                        Description = item.Description+"("+ compositionString + ")",
+                        Description = item.Description + "(" + compositionString + ")",
                         Stock = item.CurrentStock
                     };
                     response.Add(data);
@@ -141,6 +138,22 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<DashboardAdminResponse>(APIType.Master, "Data/DashboardData", authToken);
+
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpGet("DoctorPerformance")]
+        public async Task<IActionResult> GetDoctorPerformance([FromQuery] int year)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<DoctorPerformanceResponse>(APIType.Client, "MedicalRecords/DoctorPerformance?year=" + year, authToken);
 
                 return ResponseUtil.CustomOk(response, 200);
             }

@@ -18,6 +18,7 @@
         public List<ChartDataSeries> ChartPatientType { get; set; }
         public List<ChartHeatmapSeries> WeeklyClient { get; set; }
         public List<FrequentDiagnoseMeds> FrequentDiagnoseMeds { get; set; }
+        public DoctorPerformanceResponse? DoctorPerformance { get; set; }
 
         public string DateFilter { get; set; }
     }

@@ -1,8 +1,8 @@
 ﻿using Application.Services.Contracts;
+using Domain.Entities;
 using Domain.Entities.DTOs.Clients;
 using Domain.Entities.Models.Masters;
 using Domain.Entities.Responses.Masters;
-using Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 

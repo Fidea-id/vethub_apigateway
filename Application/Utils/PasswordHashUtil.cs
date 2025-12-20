@@ -1,5 +1,4 @@
-﻿using Domain.Entities.DTOs.Clients;
-using Domain.Entities.Models.Masters;
+﻿using Domain.Entities.Models.Masters;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using System.Text;

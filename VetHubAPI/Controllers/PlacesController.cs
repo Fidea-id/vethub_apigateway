@@ -2,7 +2,6 @@
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.Models.Masters;
-using Domain.Entities.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

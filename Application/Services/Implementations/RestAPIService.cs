@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Entities.Responses;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net;
 using System.Text;
 using System.Web;
 
@@ -259,19 +260,34 @@ namespace Application.Services.Implementations
         {
             Uri getUrl = _uriService.GetAPIUri(type);
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, getUrl + url);
+
             if (auth != null)
             {
-                await CheckSchemeVersion(auth); // always check scheme version
+                await CheckSchemeVersion(auth);
                 request.Headers.Add("Authorization", auth);
             }
+
             HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+            // ✅ 204 is VALID for dashboard
+            if (response.StatusCode == HttpStatusCode.NoContent)
+            {
+                return default;
+            }
 
             if (!response.IsSuccessStatusCode)
             {
                 await ThrowError(response, $"{type}");
             }
-            _logger.LogInformation("Success Get Response " + type, getUrl.ToString());
-            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()) ?? default;
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return default;
+            }
+
+            return JsonConvert.DeserializeObject<T>(content) ?? default;
         }
         public async Task<T> GetResponseWithCTS<T>(APIType type, string url, string auth = null, TimeSpan? timeout = null) where T : class
         {
@@ -516,12 +532,36 @@ namespace Application.Services.Implementations
 
         private async Task ThrowError(HttpResponseMessage response, string type)
         {
-            var errors = JsonConvert.DeserializeObject<ErrorResponseModel>(await response.Content.ReadAsStringAsync());
-            var message = errors.Errors[0].Message;
-            _logger.LogError($"{type}API-{errors.Errors[0].Field}-{message}");
-            var newExc = new Exception($"{message}");
-            newExc.Source = $"{type}API-{errors.Errors[0].Field}";
-            throw newExc;
+            var content = await response.Content.ReadAsStringAsync();
+
+            ErrorResponseModel? errors = null;
+
+            if (!string.IsNullOrWhiteSpace(content))
+            {
+                try
+                {
+                    errors = JsonConvert.DeserializeObject<ErrorResponseModel>(content);
+                }
+                catch
+                {
+                    // ignore deserialize error
+                }
+            }
+
+            // fallback message
+            var message = errors?.Errors?.FirstOrDefault()?.Message
+                          ?? $"Unexpected API error ({(int)response.StatusCode})";
+
+            var field = errors?.Errors?.FirstOrDefault()?.Field ?? "Unknown";
+
+            _logger.LogError($"{type}API-{field}-{message}");
+
+            var ex = new Exception(message)
+            {
+                Source = $"{type}API-{field}"
+            };
+
+            throw ex;
         }
         //private async Task ThrowError(RestResponse response, string type)
         //{

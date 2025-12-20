@@ -1,6 +1,5 @@
 ﻿using Application.Services.Contracts;
 using Domain.Entities;
-using Domain.Entities.DTOs.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
@@ -11,7 +10,6 @@ using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Clinics = Domain.Entities.Models.Clients.Clinics;
 
 namespace Application.Services.Implementations
@@ -129,7 +127,6 @@ namespace Application.Services.Implementations
             _logger.LogInformation($"Done init db field");
         }
 
-        //TODO: buat event log register jadi 1 saja
         public async Task ProcessAdditionalLogic(IEnumerable<RegisterResponse> response, FullRegisterClinicRequest data, string auth, string newDBName)
         {
             try
@@ -166,8 +163,8 @@ namespace Application.Services.Implementations
                     _logger.LogInformation($"Start create clinic data," + clinicRequestJson);
                     var generateDB = await _restAPIService.PostResponseWithCTS<BaseAPIResponse>(APIType.Client, "Master/GenerateInitDBClient/" + newDBName, clinicRequestJson, auth, timespan);
                     _logger.LogInformation($"Done init db with name: {newDBName}");
-                    
-                    if(userOwner != null)
+
+                    if (userOwner != null)
                     {
                         _logger.LogInformation($"Start send email verification to, " + newCLinicProfile.ClinicData.Name);
                         var request = new ResendEmailVerifRequest()
@@ -179,6 +176,7 @@ namespace Application.Services.Implementations
                         BackgroundJob.Enqueue(() => ResendVerificationEmail(auth, request));
                         _logger.LogInformation($"Done send email verification");
                     }
+
 
                     _logger.LogInformation("Background job done");
 

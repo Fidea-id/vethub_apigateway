@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Entities.Models.Masters
+﻿namespace Domain.Entities.Models.Masters
 {
-    public class ClinicReports: BaseEntity
+    public class ClinicReports : BaseEntity
     {
         public int? ClinicId { get; set; } //ambil dari tabel Clinics.Id di master (jika ada)
         public int? OwnerId { get; set; } //ambil dari tabel User.Id di master (roleOwner, jika ada dobel, sandingkan dengan BillPayment.UserId, harusnya hanya ada 1 owner yg terdaftar di BillPayment)

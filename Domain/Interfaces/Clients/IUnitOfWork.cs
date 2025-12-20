@@ -1,6 +1,6 @@
 ﻿namespace Domain.Interfaces.Clients
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
         //tambahkan interface repository disini
         IProfileRepository ProfileRepository { get; }

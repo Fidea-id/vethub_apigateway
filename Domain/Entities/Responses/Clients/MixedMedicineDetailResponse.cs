@@ -1,11 +1,4 @@
-﻿using Domain.Entities.Models.Clients;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Entities.Responses.Clients
+﻿namespace Domain.Entities.Responses.Clients
 {
     public class MixedMedicineDetailResponse : BaseEntity
     {
@@ -24,6 +17,6 @@ namespace Domain.Entities.Responses.Clients
         public string ProductName { get; set; }
         public double ProductPrice { get; set; }
         public double ProductBoughtPrice { get; set; }
-        public double QuantityPerUnit { get; set; } 
+        public double QuantityPerUnit { get; set; }
     }
 }

@@ -15,7 +15,7 @@
         IAppConfigRepository AppConfigRepository { get; }
         IUserDemoRepository UserDemoRepository { get; }
         IPlaceRepository PlaceRepository { get; }
-        IClinicRepository ClinicRepository  { get; }
-        IClinicReportsRepository ClinicReportsRepository  { get; }
+        IClinicRepository ClinicRepository { get; }
+        IClinicReportsRepository ClinicReportsRepository { get; }
     }
 }
