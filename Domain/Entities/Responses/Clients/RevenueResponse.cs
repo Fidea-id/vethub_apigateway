@@ -21,4 +21,9 @@
         public double TotalDiscount { get; set; }
         public double Total { get; set; }
     }
+
+    public class RevenueSummaryResponse
+    {
+        public double TotalRevenue { get; set; }
+    }
 }

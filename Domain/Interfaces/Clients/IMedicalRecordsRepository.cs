@@ -12,6 +12,7 @@ namespace Domain.Interfaces.Clients
         Task<MedicalRecordsDetailResponse> GetDetailById(string dbName, int id, string flag);
         Task<int> GetRevenuePagedData(string dbName);
         Task<IEnumerable<RevenueResponse>> GetRevenueData(string dbName);
+        Task<RevenueSummaryResponse> GetRevenueDataSummary(string dbName, DateTime? startDate, DateTime? endDate);
         Task<IEnumerable<string>> GetRevenueDataFilter(string dbName, string filterField);
         Task<RevenueDataResponse> GetSalesDetail(string dbName, string query);
         Task<MedicalRecords> GetByAppointmentId(string dbName, int appointmentId);

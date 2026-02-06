@@ -17,5 +17,8 @@
         IPlaceRepository PlaceRepository { get; }
         IClinicRepository ClinicRepository { get; }
         IClinicReportsRepository ClinicReportsRepository { get; }
+        IClinicServiceUsageRepository ClinicServiceUsageRepository { get; }
+        IClinicProductUsageRepository ClinicProductUsageRepository { get; }
+        IClinicAnimalUsageRepository ClinicAnimalUsageRepository { get; }
     }
 }

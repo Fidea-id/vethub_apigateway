@@ -246,14 +246,83 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> GenerateClinicReports()
         {
             string? authToken = HttpContext.Request.Headers["Authorization"];
-            //BackgroundJob.Enqueue<ClinicReportsJob>(job => job.ExecuteAsync(authToken));
-            //return Accepted(new { message = "ClinicReports job queued to Hangfire" });
             RecurringJob.AddOrUpdate<ClinicReportsJob>(
                 job => job.ExecuteAsync(authToken), // authToken bisa null kalau scheduled
                 "1 0 * * *", // setiap jam 00:01
                 TimeZoneInfo.FindSystemTimeZoneById("Asia/Jakarta") // GMT+7
             );
             return Accepted(new { message = "ClinicReports job queued is started to Hangfire" });
+        }
+
+        [HttpGet("ClinicServiceUsage")]
+        public async Task<IActionResult> GetClinicServiceUsage()
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<ClinicServiceUsage>>(APIType.Master, "Data/ClinicServiceUsage", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpGet("ClinicProductUsage")]
+        public async Task<IActionResult> GetClinicProductUsage()
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<ClinicProductUsage>>(APIType.Master, "Data/ClinicProductUsage", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpGet("ClinicAnimalUsage")]
+        public async Task<IActionResult> GetClinicAnimalUsage()
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<IEnumerable<ClinicAnimalUsage>>(APIType.Master, "Data/ClinicAnimalUsage", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("ClinicUsageReport/Generate")]
+        public async Task<IActionResult> GenerateClinicUsageReports()
+        {
+            string? authToken = HttpContext.Request.Headers["Authorization"];
+            //
+            RecurringJob.AddOrUpdate<ClinicServiceUsageJob>(
+                job => job.ExecuteAsync(authToken), // authToken bisa null kalau scheduled
+                "10 2 * * *", // setiap jam 02:10
+                TimeZoneInfo.FindSystemTimeZoneById("Asia/Jakarta") // GMT+7
+            );
+            //
+            RecurringJob.AddOrUpdate<ClinicProductUsageJob>(
+                job => job.ExecuteAsync(authToken), // authToken bisa null kalau scheduled
+                "10 2 * * *", // setiap jam 02:10
+                TimeZoneInfo.FindSystemTimeZoneById("Asia/Jakarta") // GMT+7
+            );
+            //
+            RecurringJob.AddOrUpdate<ClinicAnimalUsageJob>(
+                job => job.ExecuteAsync(authToken), // authToken bisa null kalau scheduled
+                "10 2 * * *", // setiap jam 02:10
+                TimeZoneInfo.FindSystemTimeZoneById("Asia/Jakarta") // GMT+7
+            );
+            return Accepted(new { message = "ClinicUsageReports job queued is started to Hangfire" });
         }
 
         //[HttpGet]
