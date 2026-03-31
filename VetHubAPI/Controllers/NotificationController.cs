@@ -6,6 +6,7 @@ using Domain.Entities.Models.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -28,9 +29,9 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<DataResultDTO<Notifications>>(APIType.Client, "Notification/GetAllNotif", authToken);
+                var response = await _restAPIService.GetResponse<IEnumerable<Notifications>>(APIType.Client, "Notification/GetAllNotif", authToken);
 
-                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+                return ResponseUtil.CustomOk(response, 200);
             }
             catch
             {
@@ -45,6 +46,39 @@ namespace VetHubAPI.Controllers
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
                 var response = await _restAPIService.GetResponse<IEnumerable<Notifications>>(APIType.Client, "Notification/GetRecentNotif", authToken);
+
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpPost("Read/{id:int}")]
+        public async Task<IActionResult> ReadNotification(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.PostResponse<object>(APIType.Client, "Notification//Read/"+id, authToken);
+
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("ReadAll")]
+        public async Task<IActionResult> ReadAllNotifications()
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.PostResponse<object>(APIType.Client, "Notification//ReadAll", authToken);
 
                 return ResponseUtil.CustomOk(response, 200);
             }
