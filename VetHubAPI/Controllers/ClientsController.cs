@@ -63,6 +63,23 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpGet("OwnersSpending")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetOwnerSpending([FromQuery] OwnersSpendingFilter filter)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<OwnerListSpending>, OwnersSpendingFilter>(APIType.Client, "Owners/OwnerSpending", authToken, filter);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost("bulkownerpatient/check")]
         public async Task<IActionResult> BulkOwnerPatientGroupCheck(BulkOwnerPatients data)
         {

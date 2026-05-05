@@ -1,6 +1,8 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.DTOs;
+using Domain.Entities.Filters.Clients;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
@@ -40,15 +42,46 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpGet("Full")]
-        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetOrderFull()
+        [ResponseCache(Duration = 60)]
+        public async Task<IActionResult> GetOrderFull([FromQuery] OrderFilterRequest filter)
         {
             try
             {
-                //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<IEnumerable<OrderFullResponse>>(APIType.Client, "Orders/Full", authToken);
-                return ResponseUtil.CustomOk(response, 200);
+
+                // Convert filter -> query string
+                var queryParams = new List<string>();
+
+                if (filter.Month.HasValue)
+                    queryParams.Add($"Month={filter.Month}");
+
+                if (filter.Year.HasValue)
+                    queryParams.Add($"Year={filter.Year}");
+
+                if (!string.IsNullOrEmpty(filter.Type))
+                    queryParams.Add($"Type={Uri.EscapeDataString(filter.Type)}");
+
+                if (!string.IsNullOrEmpty(filter.Status))
+                    queryParams.Add($"Status={Uri.EscapeDataString(filter.Status)}");
+
+                if (filter.MinPrice.HasValue)
+                    queryParams.Add($"MinPrice={filter.MinPrice.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+
+                if (filter.MaxPrice.HasValue)
+                    queryParams.Add($"MaxPrice={filter.MaxPrice.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+
+                // Pagination (default tetap dikirim)
+                queryParams.Add($"PageNumber={filter.PageNumber}");
+                queryParams.Add($"PageSize={filter.PageSize}");
+
+                var queryString = queryParams.Any()
+                    ? "?" + string.Join("&", queryParams)
+                    : "";
+
+                var url = $"Orders/Full{queryString}";
+
+                var response = await _restAPIService.GetResponse<DataResultDTO<OrderFullResponse>>(APIType.Client, url, authToken);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }
             catch
             {
