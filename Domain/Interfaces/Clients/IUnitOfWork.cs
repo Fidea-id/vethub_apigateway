@@ -1,4 +1,4 @@
-﻿namespace Domain.Interfaces.Clients
+namespace Domain.Interfaces.Clients
 {
     public interface IUnitOfWork
     {
@@ -36,5 +36,6 @@
         IClinicConfigRepository ClinicConfigRepository { get; }
         IAppointmentsTypeRepository AppointmentsTypeRepository { get; }
         IMixedMedicineRepository MixedMedicineRepository { get; }
+        IChartOfAccountsRepository ChartOfAccountsRepository { get; }
     }
 }

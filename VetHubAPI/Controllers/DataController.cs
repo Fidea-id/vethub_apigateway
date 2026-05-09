@@ -1,9 +1,10 @@
-﻿using Application.Services.Contracts;
+using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.DTOs.Clients;
 using Domain.Entities.Filters;
+using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 using Domain.Entities.Models.Masters;
 using Domain.Entities.Requests.Clients;
@@ -663,6 +664,92 @@ namespace VetHubAPI.Controllers
                 string? authToken = HttpContext.Request.Headers["Authorization"];
                 var requestJson = JsonConvert.SerializeObject(request);
                 var response = await _restAPIService.PutResponse<ClinicConfig>(APIType.Client, "Data/ClinicConfig", 1, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
+
+        #region ChartOfAccounts
+        [HttpGet("ChartOfAccounts")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetChartOfAccounts([FromQuery] ChartOfAccountsFilter filters)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<ChartOfAccountsResponse>, ChartOfAccountsFilter>(APIType.Client, "ChartOfAccounts", authToken, filters);
+                return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("ChartOfAccounts/{id}")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetChartOfAccountsById(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<ChartOfAccountsResponse>(APIType.Client, $"ChartOfAccounts/{id}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("ChartOfAccounts")]
+        public async Task<IActionResult> PostChartOfAccounts([FromBody] ChartOfAccountsRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<ChartOfAccountsResponse>(APIType.Client, "ChartOfAccounts", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPut("ChartOfAccounts/{id}")]
+        public async Task<IActionResult> PutChartOfAccounts(int id, [FromBody] ChartOfAccountsRequest request)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<ChartOfAccountsResponse>(APIType.Client, "ChartOfAccounts", id, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpDelete("ChartOfAccounts/{id}")]
+        public async Task<IActionResult> DeleteChartOfAccounts(int id)
+        {
+            try
+            {
+                //Get the AuthToken
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.DeleteResponse<BaseAPIResponse>(APIType.Client, "ChartOfAccounts", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch
