@@ -37,5 +37,7 @@ namespace Domain.Interfaces.Clients
         IAppointmentsTypeRepository AppointmentsTypeRepository { get; }
         IMixedMedicineRepository MixedMedicineRepository { get; }
         IChartOfAccountsRepository ChartOfAccountsRepository { get; }
+        IFinancialTransactionsRepository FinancialTransactionsRepository { get; }
+        IJournalEntriesRepository JournalEntriesRepository { get; }
     }
 }
