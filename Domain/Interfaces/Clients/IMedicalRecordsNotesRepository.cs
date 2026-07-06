@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Filters.Clients;
+using Domain.Entities.Filters.Clients;
 using Domain.Entities.Models.Clients;
 
 namespace Domain.Interfaces.Clients
@@ -7,5 +7,6 @@ namespace Domain.Interfaces.Clients
     {
         Task<MedicalRecordsNotes> CheckRecordType(string dbName, int medicalRecordsId, string type);
         Task<IEnumerable<MedicalRecordsNotes>> GetByMedicalRecordId(string dbName, int medicalRecordsId);
+        Task<IEnumerable<MedicalRecordsNotes>> GetNotesForMigration(string dbName, int batchCount);
     }
 }

@@ -325,6 +325,24 @@ namespace VetHubAPI.Controllers
             return Accepted(new { message = "ClinicUsageReports job queued is started to Hangfire" });
         }
 
+        [HttpPost("MigratePendapatanOrder/Enqueue")]
+        public async Task<IActionResult> EnqueuePendapatanOrderMigration()
+        {
+            try
+            {
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                // Enqueue background job with Hangfire
+                var jobId = BackgroundJob.Enqueue<PendapatanOrderMigrationJob>(
+                    job => job.ExecuteAsync(authToken, null)
+                );
+                return Accepted(new { message = "PendapatanOrder migration job queued", jobId = jobId });
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         //[HttpGet]
         //[ResponseCache(Duration = 60)] // Cache response for 60 seconds
         //public async Task<IActionResult> GetClinic([FromQuery] ClinicsFilter filter)

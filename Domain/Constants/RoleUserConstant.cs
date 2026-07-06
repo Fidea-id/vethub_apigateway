@@ -10,5 +10,6 @@
         public const string ADMIN = "Admin";
         public const string MEDICALADMIN = "MedicalAdmin";
         public const string DOCTOR = "Doctor";
+        public const string DOCTORADMIN = "DoctorAdmin";
     }
 }

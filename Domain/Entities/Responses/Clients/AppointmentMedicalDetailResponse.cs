@@ -29,6 +29,7 @@
         public string Diagnoses { get; set; }
         public string Code { get; set; }
         public string Type { get; set; }
+        public string? TypeColor { get; set; }
         public string Prescriptions { get; set; }
         public string Services { get; set; }
         public string StatusPayment { get; set; }

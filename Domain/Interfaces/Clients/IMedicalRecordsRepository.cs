@@ -10,6 +10,7 @@ namespace Domain.Interfaces.Clients
         Task<IEnumerable<MonthlyDataChart>> GetVisitYearly(string dbName, string? dateFilter);
         Task<IEnumerable<MedicalRecordsDetailResponse>> GetDetailList(string dbName, string flag);
         Task<MedicalRecordsDetailResponse> GetDetailById(string dbName, int id, string flag);
+        Task<PharmacyMedicalRecordDetailResponse> GetPharmacyDetailById(string dbName, int id);
         Task<int> GetRevenuePagedData(string dbName);
         Task<IEnumerable<RevenueResponse>> GetRevenueData(string dbName);
         Task<RevenueSummaryResponse> GetRevenueDataSummary(string dbName, DateTime? startDate, DateTime? endDate);

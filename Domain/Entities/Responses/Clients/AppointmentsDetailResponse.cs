@@ -23,6 +23,7 @@
         public int ServiceId { get; set; }
         public string ServiceName { get; set; }
         public string Type { get; set; }
+        public string? TypeColor { get; set; }
         public int StatusId { get; set; }
         public string StatusName { get; set; }
         public string Notes { get; set; }
@@ -55,6 +56,7 @@
         public int ServiceId { get; set; }
         public string ServiceName { get; set; }
         public string Type { get; set; }
+        public string? TypeColor { get; set; }
         public int StatusId { get; set; }
         public string StatusName { get; set; }
         public string Notes { get; set; }

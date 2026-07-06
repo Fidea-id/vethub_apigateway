@@ -9,6 +9,7 @@ namespace Domain.Entities.Responses.Clients
         public string? SubType { get; set; }
         public int? ParentId { get; set; }
         public bool IsActive { get; set; }
+        public double Balance { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

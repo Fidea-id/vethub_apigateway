@@ -1,4 +1,4 @@
-﻿using Application.Services.Contracts;
+using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
@@ -10,9 +10,11 @@ using Domain.Entities.Responses.Clients;
 using Domain.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace VetHubAPI.Controllers
 {
@@ -22,9 +24,19 @@ namespace VetHubAPI.Controllers
     public class AppointmentsController : Controller
     {
         private readonly IRestAPIService _restAPIService;
-        public AppointmentsController(IRestAPIService restAPIService)
+        private readonly IFileUploadService _fileUploadService;
+        public AppointmentsController(IRestAPIService restAPIService, IFileUploadService fileUploadService)
         {
             _restAPIService = restAPIService;
+            _fileUploadService = fileUploadService;
+        }
+
+        [HttpPost("UploadNoteImage")]
+        public async Task<IActionResult> UploadNoteImage(IFormFile file)
+        {
+            var userId = User.FindFirstValue("Id");
+            var upload = await _fileUploadService.UploadImageAsync(file, $"medicalnotes/{userId}");
+            return Ok(upload);
         }
 
         [HttpGet]
@@ -310,6 +322,21 @@ namespace VetHubAPI.Controllers
                     query = $"?flag={flag}";
                 }
                 var response = await _restAPIService.GetResponse<MedicalRecordsDetailResponse>(APIType.Client, $"MedicalRecords/Detail/v2/{id}{query}", authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("MedicalRecords/PharmacyDetail/{id}")]
+        public async Task<IActionResult> GetPharmacyMedicalRecordDetailById(int id)
+        {
+            try
+            {
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var response = await _restAPIService.GetResponse<PharmacyMedicalRecordDetailResponse>(APIType.Client, $"MedicalRecords/PharmacyDetail/{id}", authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch

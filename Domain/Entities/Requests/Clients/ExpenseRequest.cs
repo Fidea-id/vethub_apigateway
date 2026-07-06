@@ -9,5 +9,6 @@ namespace Domain.Entities.Requests.Clients
         public double Amount { get; set; }
         public string Description { get; set; }
         public DateTime TransactionDate { get; set; }
+        public string? TransactionType { get; set; }
     }
 }

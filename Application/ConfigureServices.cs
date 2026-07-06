@@ -1,4 +1,4 @@
-﻿using Application.Jobs;
+using Application.Jobs;
 using Application.Services.Contracts;
 using Application.Services.Implementations;
 using Application.Utils;
@@ -24,6 +24,8 @@ namespace Application
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IDocGenerateService, DocGenerateService>();
             services.AddScoped<ClinicReportsJob>();
+            services.AddScoped<IMedicalRecordNoteMigrationService, MedicalRecordNoteMigrationService>();
+            services.AddScoped<MedicalRecordNoteMigrationJob>();
 
             var connectionString = "";
 

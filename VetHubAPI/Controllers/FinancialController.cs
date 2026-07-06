@@ -64,12 +64,16 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpGet("BalanceSheet")]
-        public async Task<IActionResult> GetBalanceSheet([FromQuery] DateTime? date)
+        public async Task<IActionResult> GetBalanceSheet([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
         {
             try
             {
                 string? authToken = HttpContext.Request.Headers["Authorization"];
-                var url = $"Financial/BalanceSheet" + (date.HasValue ? $"?date={date.Value:O}" : "");
+                var queryParams = new List<string>();
+                if (startDate.HasValue) queryParams.Add($"startDate={startDate.Value:O}");
+                if (endDate.HasValue) queryParams.Add($"endDate={endDate.Value:O}");
+                var queryString = queryParams.Any() ? "?" + string.Join("&", queryParams) : "";
+                var url = $"Financial/BalanceSheet{queryString}";
                 var response = await _restAPIService.GetResponse<FinancialReportResponse>(APIType.Client, url, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
