@@ -178,6 +178,75 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpGet("Detail/Paged")]
+        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
+        public async Task<IActionResult> GetAppointmentDetailPaged([FromQuery] AppointmentDetailFilter filter)
+        {
+            try
+            {
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                bool isCalendar = false;
+                if (filter.Start.HasValue && filter.End.HasValue)
+                {
+                    isCalendar = true;
+                    filter.Date = FormatUtil.GetMonthStartEndString(filter.Start.Value, filter.End.Value);
+                }
+
+                if ((filter.StatusId == 1 || filter.StatusId == 2) &&
+                    !string.IsNullOrWhiteSpace(filter.Date))
+                {
+                    if (DateTime.TryParse(filter.Date, out var selectedDate))
+                    {
+                        if (!filter.Start.HasValue)
+                            filter.Start = selectedDate.AddDays(-7);
+
+                        if (!filter.End.HasValue)
+                            filter.End = selectedDate;
+                    }
+                }
+
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<AppointmentsDetailResponse>, AppointmentDetailFilter>(
+                    APIType.Client,
+                    "Appointments/Detail/Paged",
+                    authToken,
+                    filter);
+
+                var result = response.Data ?? Enumerable.Empty<AppointmentsDetailResponse>();
+                var filteredData = result
+                    .GroupBy(record => record.AppointmentId)
+                    .Select(group => group.OrderBy(record => record.MedicalRecordId).First())
+                    .ToList();
+
+                if (filteredData.Count > 0 && !isCalendar)
+                {
+                    foreach (var item in filteredData)
+                    {
+                        if (item.MedicalRecordId != null || item.MedicalRecordId != 0)
+                        {
+                            try
+                            {
+                                var responseDetail = await _restAPIService.GetResponse<MedicalRecordsDetailResponse>(
+                                    APIType.Client,
+                                    $"MedicalRecords/Detail/v2/{item.MedicalRecordId}?flag=no_notes",
+                                    authToken);
+                                item.MedicalRecord = responseDetail;
+                            }
+                            catch
+                            {
+                                item.MedicalRecord = null;
+                            }
+                        }
+                    }
+                }
+
+                return ResponseUtil.CustomOk(filteredData, 200, response.TotalData);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpGet("InvoiceEmail/{id}")]
         public async Task<IActionResult> PostInvoiceEmail(int id)
         {

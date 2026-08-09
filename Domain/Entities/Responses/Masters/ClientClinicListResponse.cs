@@ -6,6 +6,7 @@
         public ClientClinicResponse ClinicData { get; set; }
         public ClientOwnerResponse OwnerData { get; set; }
         public DateTime JoinDate { get; set; }
+        public DateTime StartDate { get; set; }
         public string Status { get; set; }
         public DateTime EndDate { get; set; }
     }

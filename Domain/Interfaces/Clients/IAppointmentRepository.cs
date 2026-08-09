@@ -16,6 +16,7 @@ namespace Domain.Interfaces.Clients
         Task<int> AddActivity(AppointmentsActivity entities, string dbName);
         Task<IEnumerable<AppointmentsStatus>> GetAllStatus(string dbName);
         Task<DataResultDTO<AppointmentsDetailResponse>> GetAllDetailList(string dbName, AppointmentDetailFilter filter);
+        Task<DataResultDTO<AppointmentsDetailResponse>> GetPagedDetailList(string dbName, AppointmentDetailFilter filter);
         Task<DataResultDTO<AppointmentsDetailResponse>> GetLastDetailList(string dbName, AppointmentDetailFilter filter, int take);
         Task<DataResultDTO<AppointmentMedicalDetailResponse>> GetAllDetailMedicalList(string dbName, AppointmentDetailFilter filter);
         Task<IEnumerable<Appointments>> GetAllByStatusId(string dbName, int statusId);

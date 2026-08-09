@@ -62,7 +62,11 @@ namespace Application
             // Add the processing server as IHostedService
             services.AddHangfireServer(options => options.WorkerCount = hangFireWorkerCount);
 
-            services.AddSingleton<RestClient>();
+            services.AddSingleton(_ =>
+            {
+                var options = new RestClientOptions();
+                return new RestClient(options);
+            });
 
             services.Configure<KestrelServerOptions>(options =>
             {

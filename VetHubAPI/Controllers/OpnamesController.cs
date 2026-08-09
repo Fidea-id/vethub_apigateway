@@ -168,14 +168,16 @@ namespace VetHubAPI.Controllers
             }
         }
         [HttpGet("Patients/Detail")]
-        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
         public async Task<IActionResult> GetOpnamePatientsDetail([FromQuery] OpnamePatientsFilter filter)
         {
             try
             {
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<DataResultDTO<OpnamePatientsDetailResponse>>(APIType.Client, "Opname/OpnamePatients/Detail", authToken);
+                filter ??= new OpnamePatientsFilter();
+                var rawStatus = Request.Query["Status"].ToString();
+                filter.Status = !string.IsNullOrWhiteSpace(rawStatus) ? rawStatus.Trim() : filter.Status?.Trim();
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<OpnamePatientsDetailResponse>, OpnamePatientsFilter>(APIType.Client, "Opname/OpnamePatients/Detail", authToken, filter);
 
                 return ResponseUtil.CustomOk(response.Data, 200, response.TotalData);
             }

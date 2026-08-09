@@ -2,6 +2,7 @@
 using Application.Services.Contracts;
 using Application.Utils;
 using Domain.Entities;
+using Domain.Entities.DTOs;
 using Domain.Entities.Models.Masters;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
@@ -66,72 +67,139 @@ namespace VetHubAPI.Controllers
         }
 
         [HttpGet("List")]
-        [ResponseCache(Duration = 60)] // Cache response for 60 seconds
-        public async Task<IActionResult> GetClinicList()
+        public async Task<IActionResult> GetClinicList([FromQuery] BaseEntityFilter? filter)
         {
             try
             {
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.GetResponse<IEnumerable<UserDataResponse>>(APIType.Master, "Auth/User/Entity", authToken);
-                var dataList = new List<ClientClinicListResponse>();
+                var searchTerm = filter?.Search?.Trim();
+                var hasSearch = !string.IsNullOrWhiteSpace(searchTerm);
 
-                foreach (var item in response)
+                // The admin grid searches across the composed clinic rows, not just the upstream owner list.
+                // When a search term exists, fetch the full matching owner set and apply the final filter
+                // after the clinic details are hydrated so nested columns such as clinic name/city/phone work.
+                var requestFilter = hasSearch
+                    ? new BaseEntityFilter
+                    {
+                        Id = filter?.Id,
+                        IsActive = filter?.IsActive,
+                        CreatedAt = filter?.CreatedAt,
+                        UpdatedAt = filter?.UpdatedAt,
+                        SortProp = string.IsNullOrWhiteSpace(filter?.SortProp) ? "Id" : filter?.SortProp,
+                        SortMode = string.IsNullOrWhiteSpace(filter?.SortMode) ? "ASC" : filter?.SortMode
+                    }
+                    : new BaseEntityFilter
+                    {
+                        Id = filter?.Id,
+                        IsActive = filter?.IsActive,
+                        CreatedAt = filter?.CreatedAt,
+                        UpdatedAt = filter?.UpdatedAt,
+                        Search = filter?.Search,
+                        SortProp = string.IsNullOrWhiteSpace(filter?.SortProp) ? "Id" : filter?.SortProp,
+                        SortMode = string.IsNullOrWhiteSpace(filter?.SortMode) ? "ASC" : filter?.SortMode,
+                        Skip = filter?.Skip,
+                        Take = filter?.Take
+                    };
+
+                var response = await _restAPIService.GetResponseFilter<DataResultDTO<UserDataResponse>, BaseEntityFilter>(APIType.Master, "Auth/User/Entity", authToken, requestFilter);
+                var tasks = response.Data.Select(async item =>
                 {
                     try
                     {
                         var responseClinic = await _restAPIService.GetResponse<Clinics>(APIType.Client, "Data/ClinicsEntity/" + item.Entity, authToken);
-
-                        var clinicData = new ClientClinicResponse
-                        {
-                            Id = responseClinic.Id,
-                            Name = responseClinic.Name,
-                            Address = responseClinic.Address,
-                            City = responseClinic.City,
-                            Description = responseClinic.Description,
-                            Email = responseClinic.Email,
-                            Logo = responseClinic.Logo,
-                            MapUrl = responseClinic.MapUrl,
-                            PhoneNumber = responseClinic.PhoneNumber,
-                            State = responseClinic.State,
-                            WebUrl = responseClinic.WebUrl
-                        };
-
-                        var data = new ClientClinicListResponse();
-                        var ownerData = new ClientOwnerResponse
-                        {
-                            Id = item.Id,
-                            Name = item.Name,
-                            Email = item.Email,
-                            IsVerified = item.IsVerified
-                        };
-
                         var responseLatestBill = await _restAPIService.GetResponse<UserBillResponse>(APIType.Master, "BillPayments/Latest/" + item.Id, authToken);
                         string statusBill = "On Going";
                         if (responseLatestBill.EndDate < DateTime.Now || responseLatestBill.Status == "Expired")
                         {
                             statusBill = "Expired";
                         }
-                        data.OwnerData = ownerData;
-                        data.JoinDate = item.CreatedAt;
-                        data.Id = item.Id;
-                        data.ClinicData = clinicData;
-                        data.Status = statusBill;
-                        data.EndDate = responseLatestBill.EndDate;
-                        dataList.Add(data);
+
+                        return new ClientClinicListResponse
+                        {
+                            OwnerData = new ClientOwnerResponse
+                            {
+                                Id = item.Id,
+                                Name = item.Name,
+                                Email = item.Email,
+                                IsVerified = item.IsVerified
+                            },
+                            JoinDate = item.CreatedAt,
+                            Id = item.Id,
+                            ClinicData = new ClientClinicResponse
+                            {
+                                Id = responseClinic.Id,
+                                Name = responseClinic.Name,
+                                Address = responseClinic.Address,
+                                City = responseClinic.City,
+                                Description = responseClinic.Description,
+                                Email = responseClinic.Email,
+                                Logo = responseClinic.Logo,
+                                MapUrl = responseClinic.MapUrl,
+                                PhoneNumber = responseClinic.PhoneNumber,
+                                State = responseClinic.State,
+                                WebUrl = responseClinic.WebUrl
+                            },
+                            StartDate = responseLatestBill.StartDate,
+                            Status = statusBill,
+                            EndDate = responseLatestBill.EndDate
+                        };
                     }
                     catch
                     {
                         _logger.LogInformation("User Clinic of " + item.Email + " not found");
+                        return null;
+                    }
+                });
+
+                var dataList = (await Task.WhenAll(tasks)).Where(x => x != null).Select(x => x!).ToList();
+
+                var filteredCount = response.TotalData;
+
+                if (hasSearch)
+                {
+                    dataList = dataList
+                        .Where(item =>
+                            Contains(item.ClinicData?.Name, searchTerm) ||
+                            Contains(item.ClinicData?.City, searchTerm) ||
+                            Contains(item.ClinicData?.PhoneNumber, searchTerm) ||
+                            Contains(item.ClinicData?.Email, searchTerm) ||
+                            Contains(item.OwnerData?.Name, searchTerm) ||
+                            Contains(item.OwnerData?.Email, searchTerm) ||
+                            Contains(item.Status, searchTerm))
+                        .ToList();
+
+                    filteredCount = dataList.Count;
+
+                    if (filter?.Skip.HasValue == true && filter.Skip.Value > 0)
+                    {
+                        dataList = dataList.Skip(filter.Skip.Value).ToList();
                     }
 
+                    if (filter?.Take.HasValue == true && filter.Take.Value > 0)
+                    {
+                        dataList = dataList.Take(filter.Take.Value).ToList();
+                    }
                 }
-                return ResponseUtil.CustomOk(dataList, 200, dataList.Count());
+
+                var totalData = hasSearch ? filteredCount : response.TotalData;
+                return ResponseUtil.CustomOk(new DataResultDTO<ClientClinicListResponse>
+                {
+                    Data = dataList,
+                    TotalData = totalData
+                }, 200, totalData);
             }
             catch
             {
                 throw;
             }
+        }
+
+        private static bool Contains(string? value, string? searchTerm)
+        {
+            return !string.IsNullOrWhiteSpace(value)
+                && !string.IsNullOrWhiteSpace(searchTerm)
+                && value.Contains(searchTerm, StringComparison.OrdinalIgnoreCase);
         }
 
         [HttpGet("Detail/{id}")]

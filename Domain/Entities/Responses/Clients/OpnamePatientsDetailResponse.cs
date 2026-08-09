@@ -6,6 +6,7 @@
         public string PatientName { get; set; }
         public int MedicalRecordId { get; set; }
         public int PatientId { get; set; }
+        public int AppointmentId { get; set; }
         public int OpnameId { get; set; }
         public string OpnameName { get; set; }
         public DateTime StartTime { get; set; }

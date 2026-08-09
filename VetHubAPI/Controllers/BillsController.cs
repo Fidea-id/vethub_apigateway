@@ -58,6 +58,22 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpPost("ExtendUserSubs")]
+        public async Task<IActionResult> ExtendUserSubs([FromBody] ExtendSubscriptionRequest request)
+        {
+            try
+            {
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PostResponse<UserBillResponse>(APIType.Master, "BillPayments/ExtendUserSubs", requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpGet("StopBills/{userId}")]
         public async Task<IActionResult> StopBills(int userId)
         {

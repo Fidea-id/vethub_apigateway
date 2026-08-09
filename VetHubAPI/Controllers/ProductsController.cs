@@ -37,6 +37,20 @@ namespace VetHubAPI.Controllers
                 var response = await _restAPIService.PutResponse<Products>(APIType.Client, "Products/Bundle", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
+            catch (Exception ex) when (ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
+            {
+                return Conflict(new
+                {
+                    errors = new[]
+                    {
+                        new
+                        {
+                            field = "Name",
+                            message = ex.Message
+                        }
+                    }
+                });
+            }
             catch
             {
                 throw;
@@ -96,6 +110,20 @@ namespace VetHubAPI.Controllers
                     var response = await _restAPIService.PostResponse<Products>(APIType.Client, "Products", requestJson, authToken);
                     return ResponseUtil.CustomOk(response, 200);
                 }
+            }
+            catch (Exception ex) when (ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
+            {
+                return Conflict(new
+                {
+                    errors = new[]
+                    {
+                        new
+                        {
+                            field = "Name",
+                            message = ex.Message
+                        }
+                    }
+                });
             }
             catch
             {
