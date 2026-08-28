@@ -5,6 +5,8 @@
         public int Id { get; set; }
         public string Code { get; set; }
         public string Type { get; set; }
+        public DateTime? AppointmentDate { get; set; }
+        public DateTime? InvoiceDate { get; set; }
         public DateTime Date { get; set; }
         public string Status { get; set; }
         public double Total { get; set; }

@@ -12,6 +12,7 @@ namespace Domain.Entities.Models.Masters
         [MaxLength(20)]
         public string Roles { get; set; }
         public bool IsVerified { get; set; }
+        public int SessionVersion { get; set; } = 1;
         public string? KeyChipper { get; set; }
         public string? PasswordToken { get; set; }
     }

@@ -4,9 +4,10 @@ using Application.Utils;
 using Domain.Entities;
 using Domain.Entities.DTOs;
 using Domain.Entities.Models.Masters;
+using Domain.Entities.Requests.Masters;
+using Domain.Entities.Responses.Masters;
 using Domain.Entities.Responses;
 using Domain.Entities.Responses.Clients;
-using Domain.Entities.Responses.Masters;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -193,6 +194,19 @@ namespace VetHubAPI.Controllers
             {
                 throw;
             }
+        }
+
+        [HttpPost("RevokeUserSession")]
+        public async Task<IActionResult> RevokeUserSession([FromBody] RevokeUserSessionRequest request)
+        {
+            string? authToken = HttpContext.Request.Headers["Authorization"];
+            var response = await _restAPIService.PostResponse<SessionVersionResponse>(
+                APIType.Master,
+                "Auth/Session/Revoke",
+                System.Text.Json.JsonSerializer.Serialize(request),
+                authToken);
+
+            return ResponseUtil.CustomOk(response, 200);
         }
 
         private static bool Contains(string? value, string? searchTerm)

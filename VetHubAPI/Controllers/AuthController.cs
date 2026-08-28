@@ -1,7 +1,9 @@
 ﻿using Application.Services.Contracts;
 using Application.Utils;
+using Domain.Entities;
 using Domain.Entities.Requests.Clients;
 using Domain.Entities.Requests.Masters;
+using Domain.Entities.Responses.Masters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -14,9 +16,11 @@ namespace VetHubAPI.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private readonly IRestAPIService _restAPIService;
+        public AuthController(IAuthService authService, IRestAPIService restAPIService)
         {
             _authService = authService;
+            _restAPIService = restAPIService;
         }
 
         [HttpPost("Login")]
@@ -29,6 +33,14 @@ namespace VetHubAPI.Controllers
         public async Task<IActionResult> Demo(UserDemoRequest data)
         {
             var result = await _authService.DemoAsync(data);
+            return ResponseUtil.CustomOk(result, 200);
+        }
+
+        [HttpGet("Session/Version/{userId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetSessionVersion(int userId)
+        {
+            var result = await _restAPIService.GetResponse<SessionVersionResponse>(APIType.Master, $"Auth/Session/Version/{userId}");
             return ResponseUtil.CustomOk(result, 200);
         }
 

@@ -7,5 +7,6 @@ namespace Domain.Interfaces.Clients
     {
         Task UpdateMinStock(int productId, double quantity, string dbName);
         Task UpdateAddStock(int productId, double quantity, string dbName);
+        Task ApplyMedicalRecordStockChanges(string dbName, IEnumerable<Domain.Entities.Requests.Clients.MedicalRecordStockChangeRequest> changes);
     }
 }

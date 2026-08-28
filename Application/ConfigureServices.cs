@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using RestSharp;
 using System.Text;
 
@@ -20,6 +21,7 @@ namespace Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ISessionVersionValidator, MasterSessionVersionValidator>();
             services.AddScoped<IRestAPIService, RestAPIService>();
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IDocGenerateService, DocGenerateService>();
@@ -86,6 +88,32 @@ namespace Application
                     ValidAudience = JwtUtil.Audience,
                     ValidIssuer = JwtUtil.Issuer,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtUtil.Key))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = async context =>
+                    {
+                        var userId = context.Principal?.FindFirstValue("Id");
+                        var sessionVersion = context.Principal?.FindFirstValue("sv");
+                        if (!int.TryParse(userId, out var parsedUserId) || !int.TryParse(sessionVersion, out var parsedSessionVersion))
+                        {
+                            context.Fail("Session version claim is missing or invalid.");
+                            return;
+                        }
+
+                        var validator = context.HttpContext.RequestServices.GetRequiredService<ISessionVersionValidator>();
+                        try
+                        {
+                            if (!await validator.IsValidAsync(parsedUserId, parsedSessionVersion, context.HttpContext.RequestAborted))
+                            {
+                                context.Fail("Session has been revoked.");
+                            }
+                        }
+                        catch
+                        {
+                            context.Fail("Session validation failed.");
+                        }
+                    }
                 };
             });
 
