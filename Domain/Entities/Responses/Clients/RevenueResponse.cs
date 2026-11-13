@@ -3,6 +3,7 @@
     public class RevenueResponse
     {
         public int Id { get; set; }
+        public int? MedicalRecordId { get; set; }
         public string Code { get; set; }
         public string Type { get; set; }
         public DateTime? AppointmentDate { get; set; }

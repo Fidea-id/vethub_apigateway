@@ -567,6 +567,38 @@ namespace VetHubAPI.Controllers
             }
         }
 
+        [HttpPut("Payment/{paymentId}")]
+        public async Task<IActionResult> PutAppointmentPayment(int paymentId, [FromBody] OrdersPaymentRequest request)
+        {
+            try
+            {
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<OrdersPaymentResponse>(APIType.Client, "MedicalRecords/Payment", paymentId, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPut("MedicalRecords/Discount/{id}")]
+        public async Task<IActionResult> PutMedicalRecordDiscount(int id, [FromBody] MedicalRecordDiscountRequest request)
+        {
+            try
+            {
+                string? authToken = HttpContext.Request.Headers["Authorization"];
+                var requestJson = JsonConvert.SerializeObject(request);
+                var response = await _restAPIService.PutResponse<MedicalRecordsDetailResponse>(APIType.Client, "MedicalRecords/Discount", id, requestJson, authToken);
+                return ResponseUtil.CustomOk(response, 200);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost("StatusChange")]
         public async Task<IActionResult> StatusChange([FromBody] AppointmentsRequestChangeStatus request)
         {

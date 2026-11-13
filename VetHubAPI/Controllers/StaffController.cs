@@ -148,6 +148,20 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
+                var profile = await _restAPIService.GetResponse<Profile>(APIType.Client, $"Profile/{id}", authToken);
+
+                if (profile.GlobalId != 0)
+                {
+                    // Only shared identity fields belong in Master User. Clinic-only fields, such as Photo, stay local.
+                    var masterRequest = new ProfileRequest
+                    {
+                        Name = request.Name,
+                        Email = request.Email,
+                        Roles = request.Roles
+                    };
+                    await _restAPIService.PutResponse<UserProfileResponse>(APIType.Master, "Auth/User", profile.GlobalId, JsonConvert.SerializeObject(masterRequest), authToken);
+                }
+
                 var requestJson = JsonConvert.SerializeObject(request);
                 var response = await _restAPIService.PutResponse<Profile>(APIType.Client, "Profile", id, requestJson, authToken);
                 return ResponseUtil.CustomOk(response, 200);
@@ -165,12 +179,15 @@ namespace VetHubAPI.Controllers
             {
                 //Get the AuthToken
                 string? authToken = HttpContext.Request.Headers["Authorization"];
-                var response = await _restAPIService.DeleteResponse<Profile>(APIType.Client, $"Profile", id, authToken);
+                var profile = await _restAPIService.GetResponse<Profile>(APIType.Client, $"Profile/{id}", authToken);
 
-                if (response.GlobalId != 0)
+                if (profile.GlobalId != 0)
                 {
-                    var responseMaster = await _restAPIService.DeleteResponse<UserProfileResponse>(APIType.Master, "Auth/Staff", response.GlobalId, authToken);
+                    // Master validates the Owner invariant before the Clinic profile is deactivated.
+                    await _restAPIService.DeleteResponse<UserProfileResponse>(APIType.Master, "Auth/Staff", profile.GlobalId, authToken);
                 }
+
+                var response = await _restAPIService.DeleteResponse<Profile>(APIType.Client, $"Profile", id, authToken);
                 return ResponseUtil.CustomOk(response, 200);
             }
             catch

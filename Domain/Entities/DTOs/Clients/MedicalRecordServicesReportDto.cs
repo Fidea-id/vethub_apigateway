@@ -2,6 +2,7 @@
 {
     public class MedicalRecordServicesReportDto
     {
+        public int MedicalRecordId { get; set; }
         public string MedicalRecordCode { get; set; }
         public DateTime Date { get; set; }
         public string StaffName { get; set; }

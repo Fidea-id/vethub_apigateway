@@ -25,6 +25,7 @@ namespace Domain.Interfaces.Clients
         Task<int> Count(string dbName);
         Task<int> CountWithQuery(string dbName, string query);
         Task<CardDashboard> CountToCard(string dbName, string date, string query);
+        Task<CardDashboard> CountActiveToCard(string dbName);
         Task<int> Sum(string dbName, string columnName);
         Task<int> SumWithQuery(string dbName, string columnName, string query);
         Task<double> SumDoubleWithQuery(string dbName, string columnName, string query);
